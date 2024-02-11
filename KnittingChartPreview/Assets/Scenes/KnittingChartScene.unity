@@ -417,7 +417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c76080af5de4415aaf142fcb78795aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numRadialSegments: 300
-  numSegments: 1
-  radius: 0.1
-  height: 20
+  nRadialPoints: 4
+  nPoints: 1
+  width: 1
+  length: 4
