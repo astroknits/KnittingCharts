@@ -1,72 +1,66 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class CreateCylinder : MonoBehaviour
+public class Yarn : MonoBehaviour
 {
-    [FormerlySerializedAs("numSegments")] public int numRadialSegments = 300;
-    public int numSegments = 1;
-    public float radius = 1f;
-    public float height = 20f;
+    public int nRadialPoints = 4;
+    public int nPoints = 1;
+    public float width = 1f;
+    public float length = 4f;
 
     void Start()
     {
-        CreateCylinderObject();
-    }
-    
-    private void OnGUI()
-    {
-        if (GUILayout.Button("Generate Cylinder"))
-        {
-            CreateCylinderObject();
-        }
+        Debug.Log($"Hello");
+        GenerateYarn(nRadialPoints, nPoints, width, length);
     }
 
-    float GetVerticalOffset(int row, int stitch)
+    static float GetVerticalOffset(int row, int stitch)
     {
         return 0.0f;
     }
     
-    float GetDepthOffset(int row, int stitch)
+    static float GetDepthOffset(int row, int stitch)
     {
         return 0.0f;
     }
-    
-    void CreateCylinderObject()
+
+    public static void GenerateYarn(int n, int m, float radius, float height)
     {
+        Debug.Log($"Generating Yarn: {n} {m} {radius} {height}");
         GameObject cylinder = new GameObject("Cylinder");
         MeshFilter meshFilter = cylinder.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = cylinder.AddComponent<MeshRenderer>();
         Mesh mesh = new Mesh();
         meshFilter.mesh = mesh;
 
-        Vector3[] vertices = new Vector3[numRadialSegments * (numSegments + 1)];
-        int[] triangles = new int[numRadialSegments * 6];
+        Vector3[] vertices = new Vector3[n * (m + 1)];
+        int[] triangles = new int[n * 6];
 
         // Generate vertices
-        for (int i = 0; i < numRadialSegments; i++)
+        for (int i = 0; i < n; i++)
         {
-            float angle = Mathf.PI * 2 * i / numRadialSegments;
+            float angle = Mathf.PI * 2 * i / n;
             float y = Mathf.Cos(angle) * radius + GetVerticalOffset(0, 0);
             float z = Mathf.Sin(angle) * radius + GetDepthOffset(0, 0);
-            for (int j = 0; j < numSegments + 1; j++)
+            for (int j = 0; j < m + 1; j++)
             {
-                float x = j / numSegments * height - height/2;
-                vertices[i + j * numRadialSegments] = new Vector3(x, y, z);
+                float x = j / m * height - height/2;
+                vertices[i + j * n] = new Vector3(x, y, z);
             }
 
             // Generate triangles
-            int nextIndex = (i + 1) % numRadialSegments;
-            for (int j = 0; j < numSegments; j++)
+            int nextIndex = (i + 1) % n;
+            for (int j = 0; j < m; j++)
             {
                 int triangleIndex = i * 6 + j * 3;
                 Debug.Log($"i, j, nextIndex: {i} {j} {nextIndex}, triangleIndex {triangleIndex}");
                 // Side triangles
                 triangles[triangleIndex] = i;
-                triangles[triangleIndex + 1] = i + numRadialSegments;
+                triangles[triangleIndex + 1] = i + n;
                 triangles[triangleIndex + 2] = nextIndex;
                 triangles[triangleIndex + 3] = nextIndex;
-                triangles[triangleIndex + 4] = i + numRadialSegments;
-                triangles[triangleIndex + 5] = nextIndex + numRadialSegments;
+                triangles[triangleIndex + 4] = i + n;
+                triangles[triangleIndex + 5] = nextIndex + n;
             }
         }
 
