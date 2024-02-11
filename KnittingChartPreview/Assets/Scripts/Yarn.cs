@@ -10,7 +10,6 @@ public class Yarn : MonoBehaviour
 
     void Start()
     {
-        Debug.Log($"Hello");
         GenerateYarn(nRadialPoints, nPoints, width, length);
     }
 
@@ -24,18 +23,9 @@ public class Yarn : MonoBehaviour
         return 0.0f;
     }
 
-    public static void GenerateYarn(int n, int m, float radius, float height)
+    static Vector3[] GenerateVertices(int n, int m, float radius, float height)
     {
-        Debug.Log($"Generating Yarn: {n} {m} {radius} {height}");
-        GameObject cylinder = new GameObject("Cylinder");
-        MeshFilter meshFilter = cylinder.AddComponent<MeshFilter>();
-        MeshRenderer meshRenderer = cylinder.AddComponent<MeshRenderer>();
-        Mesh mesh = new Mesh();
-        meshFilter.mesh = mesh;
-
         Vector3[] vertices = new Vector3[n * (m + 1)];
-        int[] triangles = new int[n * 6];
-
         // Generate vertices
         for (int i = 0; i < n; i++)
         {
@@ -44,16 +34,25 @@ public class Yarn : MonoBehaviour
             float z = Mathf.Sin(angle) * radius + GetDepthOffset(0, 0);
             for (int j = 0; j < m + 1; j++)
             {
-                float x = j / m * height - height/2;
+                float x = j / m * height - height / 2;
                 vertices[i + j * n] = new Vector3(x, y, z);
             }
+        }
 
+        return vertices;
+    }
+
+    static int[] GenerateTriangles(int n, int m)
+    {
+        int[] triangles = new int[n * 6];
+        
+        for (int i = 0; i < n; i++)
+        {
             // Generate triangles
             int nextIndex = (i + 1) % n;
             for (int j = 0; j < m; j++)
             {
                 int triangleIndex = i * 6 + j * 3;
-                Debug.Log($"i, j, nextIndex: {i} {j} {nextIndex}, triangleIndex {triangleIndex}");
                 // Side triangles
                 triangles[triangleIndex] = i;
                 triangles[triangleIndex + 1] = i + n;
@@ -64,9 +63,20 @@ public class Yarn : MonoBehaviour
             }
         }
 
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
+        return triangles;
+    }
 
+    public static void GenerateYarn(int n, int m, float radius, float height)
+    {
+        Debug.Log($"Generating Yarn: {n} {m} {radius} {height}");
+        GameObject cylinder = new GameObject("Yarn");
+        MeshFilter meshFilter = cylinder.AddComponent<MeshFilter>();
+        MeshRenderer meshRenderer = cylinder.AddComponent<MeshRenderer>();
+        Mesh mesh = new Mesh();
+        meshFilter.mesh = mesh;
+
+        mesh.vertices = GenerateVertices(n, m, radius, height);
+        mesh.triangles = GenerateTriangles(n, m);
         mesh.RecalculateNormals();
 
         // Assign a default material
