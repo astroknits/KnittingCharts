@@ -26,6 +26,7 @@ public class Yarn : MonoBehaviour
     static Vector3[] GenerateVertices(int n, int m, float radius, float height)
     {
         Vector3[] vertices = new Vector3[n * (m + 1)];
+        
         // Generate vertices
         for (int i = 0; i < n; i++)
         {
@@ -44,22 +45,23 @@ public class Yarn : MonoBehaviour
 
     static int[] GenerateTriangles(int n, int m)
     {
-        int[] triangles = new int[n * 6];
+        int[] triangles = new int[n * m * 6];
         
         for (int i = 0; i < n; i++)
         {
             // Generate triangles
-            int nextIndex = (i + 1) % n;
             for (int j = 0; j < m; j++)
             {
-                int triangleIndex = i * 6 + j * 3;
+                int index = j * n + i;
+                int nextIndex = j * n + (i + 1) % n;
+                int triangleIndex = i * 6 + j * n * 6;
                 // Side triangles
-                triangles[triangleIndex] = i;
-                triangles[triangleIndex + 1] = i + n;
-                triangles[triangleIndex + 2] = nextIndex;
-                triangles[triangleIndex + 3] = nextIndex;
-                triangles[triangleIndex + 4] = i + n;
-                triangles[triangleIndex + 5] = nextIndex + n;
+                triangles[triangleIndex] = nextIndex;
+                triangles[triangleIndex + 1] = index + n;
+                triangles[triangleIndex + 2] = index;
+                triangles[triangleIndex + 3] = nextIndex + n;
+                triangles[triangleIndex + 4] = index + n;
+                triangles[triangleIndex + 5] = nextIndex;
             }
         }
 
