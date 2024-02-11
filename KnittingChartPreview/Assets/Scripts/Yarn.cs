@@ -12,6 +12,14 @@ public class CreateCylinder : MonoBehaviour
     {
         CreateCylinderObject();
     }
+    
+    private void OnGUI()
+    {
+        if (GUILayout.Button("Generate Cylinder"))
+        {
+            CreateCylinderObject();
+        }
+    }
 
     float GetVerticalOffset(int row, int stitch)
     {
@@ -45,21 +53,21 @@ public class CreateCylinder : MonoBehaviour
                 float x = j / numSegments * height - height/2;
                 vertices[i + j * numRadialSegments] = new Vector3(x, y, z);
             }
-        }
 
-        // Generate triangles
-        for (int i = 0; i < numRadialSegments; i++)
-        {
+            // Generate triangles
             int nextIndex = (i + 1) % numRadialSegments;
-
-            // Side triangles
-            triangles[i * 6] = i;
-            triangles[i * 6 + 1] = i + numRadialSegments;
-            triangles[i * 6 + 2] = nextIndex;
-
-            triangles[i * 6 + 3] = nextIndex;
-            triangles[i * 6 + 4] = i + numRadialSegments;
-            triangles[i * 6 + 5] = nextIndex + numRadialSegments;
+            for (int j = 0; j < numSegments; j++)
+            {
+                int triangleIndex = i * 6 + j * 3;
+                Debug.Log($"i, j, nextIndex: {i} {j} {nextIndex}, triangleIndex {triangleIndex}");
+                // Side triangles
+                triangles[triangleIndex] = i;
+                triangles[triangleIndex + 1] = i + numRadialSegments;
+                triangles[triangleIndex + 2] = nextIndex;
+                triangles[triangleIndex + 3] = nextIndex;
+                triangles[triangleIndex + 4] = i + numRadialSegments;
+                triangles[triangleIndex + 5] = nextIndex + numRadialSegments;
+            }
         }
 
         mesh.vertices = vertices;
