@@ -6,7 +6,7 @@ public class YarnEditor : EditorWindow
     // Parameters for yarn
     int nRadialPoints = 4;
     int nPoints = 1;
-    float width = 1f;
+    float width = 0.1f;
     float length = 4f;
     
     // Add menu item named "My Window" to the Window menu
@@ -26,7 +26,7 @@ public class YarnEditor : EditorWindow
         nPoints = (int)EditorGUILayout.IntSlider(
             "Segments", nPoints, 1, 200);
         width = EditorGUILayout.Slider(
-            "Width", width, 1f, 5f);
+            "Width", width, 0.0001f, 5f);
         length = EditorGUILayout.Slider(
                 "Length", length, 1f, 300f);
 

@@ -5,7 +5,7 @@ public class Yarn : MonoBehaviour
 {
     public int nRadialPoints = 4;
     public int nPoints = 1;
-    public float width = 1f;
+    public float width = 0.1f;
     public float length = 4f;
 
     void Start()
@@ -35,7 +35,8 @@ public class Yarn : MonoBehaviour
             float z = Mathf.Sin(angle) * radius + GetDepthOffset(0, 0);
             for (int j = 0; j < m + 1; j++)
             {
-                float x = j / m * height - height / 2;
+                float x = (float)j / (float)m * height - height / 2;
+                Debug.Log($"(i={i}, j={j}) (x={x}, y={y})");
                 vertices[i + j * n] = new Vector3(x, y, z);
             }
         }
