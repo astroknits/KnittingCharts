@@ -418,6 +418,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numRadialSegments: 300
-  numSegments: 2
+  numSegments: 1
   radius: 0.1
   height: 20
