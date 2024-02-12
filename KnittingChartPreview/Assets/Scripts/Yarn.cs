@@ -38,7 +38,7 @@ public class Yarn : MonoBehaviour
         }
         
         float res = sigmoid(pos / kappa);
-        Debug.Log($"index {index}, totalSegments {totalSegments}, fraction: {pos}, offset: {res}");
+        // Debug.Log($"index {index}, totalSegments {totalSegments}, fraction: {pos}, offset: {res}");
         return res;
     }
 
@@ -52,27 +52,55 @@ public class Yarn : MonoBehaviour
         return 0.0f;
     }
 
-    static Vector3[] GenerateVertices(int n, int m, float radius, float height)
+    static Vector3[] GenerateCurve(int m)
     {
-        Vector3[] vertices = new Vector3[n * (m + 1)];
-        
-        // Generate vertices
+        Vector3[] curve = new Vector3[m + 1];
+        for (int j = 0; j < m + 1; j++)
+        {
+            float x = (float)j / (float)m - 0.5f;
+            float verticalOffset = GetVerticalOffset(j, m);
+            float depthOffset = GetDepthOffset(j);
+            curve[j] = new Vector3(
+                x,  verticalOffset, depthOffset);
+            // Debug.Log($"j, curve: {j} {curve[j]}");
+        }
+        return curve;
+    }
+
+    static Vector3[] GenerateCircle(Vector3[] curve, int n, int m, float radius, float height, int j)
+    {
+        Vector3[] circle = new Vector3[n];
+
         for (int i = 0; i < n; i++)
         {
             float angle = Mathf.PI * 2 * i / n;
             float y = Mathf.Cos(angle) * radius;
             float z = Mathf.Sin(angle) * radius;
-            for (int j = 0; j < m + 1; j++)
-            {
-                float x = (float)j / (float)m * height - height / 2;
-                float verticalOffset = GetVerticalOffset(j, m);
-                float depthOffset = GetDepthOffset(j);
-                vertices[i + j * n] = new Vector3(
-                    x, y + verticalOffset, z + depthOffset);
-                Debug.Log($"verticalOffset {verticalOffset}");
-            }
+            float x = (float)j / (float)m * height - height / 2;
+            float verticalOffset = GetVerticalOffset(j, m);
+            float depthOffset = GetDepthOffset(j);
+            circle[i] = new Vector3(
+                x, y + verticalOffset, z + depthOffset);
         }
 
+        return circle;
+    }
+    
+    static Vector3[] GenerateVertices(int n, int m, float radius, float height)
+    {
+        // Generate curve
+        Vector3[] curve = GenerateCurve(m);
+        
+        // Generate vertices
+        Vector3[] vertices = new Vector3[n * (m + 1)];
+        for (int j = 0; j < m + 1; j++)
+        {
+                Vector3[] circle = GenerateCircle(curve, n, m, radius, height, j);
+                for (int i = 0; i < n; i++)
+                {
+                    vertices[j * n + i] = circle[i];
+                }
+        }
         return vertices;
     }
 
@@ -103,7 +131,7 @@ public class Yarn : MonoBehaviour
 
     public static void GenerateYarn(int n, int m, float radius, float height)
     {
-        Debug.Log($"Generating Yarn: {n} {m} {radius} {height}");
+        // Debug.Log($"Generating Yarn: {n} {m} {radius} {height}");
         GameObject cylinder = new GameObject("Yarn");
         MeshFilter meshFilter = cylinder.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = cylinder.AddComponent<MeshRenderer>();
