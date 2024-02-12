@@ -38,7 +38,6 @@ public class Yarn : MonoBehaviour
         }
         
         float res = sigmoid(pos / kappa);
-        // Debug.Log($"index {index}, totalSegments {totalSegments}, fraction: {pos}, offset: {res}");
         return res;
     }
 
@@ -67,38 +66,58 @@ public class Yarn : MonoBehaviour
         return curve;
     }
 
-    static Vector3[] GenerateCircle(Vector3[] curve, int n, int m, float radius, float height, int j)
+    static Vector3[] GenerateCircle(int n, float width)
     {
         Vector3[] circle = new Vector3[n];
-        float x = (float)j / (float)m * height - height / 2;
-
         for (int i = 0; i < n; i++)
         {
             float angle = Mathf.PI * 2 * i / n;
-            float y = Mathf.Cos(angle) * radius;
-            float z = Mathf.Sin(angle) * radius;
-            float verticalOffset = curve[j].y;
-            float depthOffset = curve[j].z;
             circle[i] = new Vector3(
-                x, y + verticalOffset, z + depthOffset);
+                0.0f, width * Mathf.Cos(angle), width * Mathf.Sin(angle));
         }
 
         return circle;
     }
-    
-    static Vector3[] GenerateVertices(int n, int m, float radius, float height)
+
+    static Vector3[] GenerateRotatedCircle(Vector3[] circle, Vector3[] curve, int n, int m, float width, float length, int j)
+    {
+        Vector3[] rotatedCircle = new Vector3[n];
+        Vector3 direction = new Vector3();
+
+        if (j < m)
+        {
+            direction = curve[j + 1] - curve[j];
+        }
+        else
+        {
+            direction = new Vector3(1.0f, 0, 0);
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+            float xVal = length * curve[j].x;
+            float yVal = curve[j].y;
+            float zVal = curve[j].z;
+            rotatedCircle[i] = new Vector3(
+                 xVal + circle[i].x, yVal + circle[i].y , zVal + circle[i].z);
+        }
+
+        return rotatedCircle;
+    }
+    static Vector3[] GenerateVertices(int n, int m, float width, float length)
     {
         // Generate curve
         Vector3[] curve = GenerateCurve(m);
+        Vector3[] circle = GenerateCircle(n, width);
         
         // Generate vertices
         Vector3[] vertices = new Vector3[n * (m + 1)];
         for (int j = 0; j < m + 1; j++)
         {
-                Vector3[] circle = GenerateCircle(curve, n, m, radius, height, j);
+                Vector3[] rotatedCircle = GenerateRotatedCircle(circle, curve, n, m, width, length, j);
                 for (int i = 0; i < n; i++)
                 {
-                    vertices[j * n + i] = circle[i];
+                    vertices[j * n + i] = rotatedCircle[i];
                 }
         }
         return vertices;
@@ -129,16 +148,16 @@ public class Yarn : MonoBehaviour
         return triangles;
     }
 
-    public static void GenerateYarn(int n, int m, float radius, float height)
+    public static void GenerateYarn(int n, int m, float width, float length)
     {
-        // Debug.Log($"Generating Yarn: {n} {m} {radius} {height}");
+        // Debug.Log($"Generating Yarn: {n} {m} {width} {length}");
         GameObject cylinder = new GameObject("Yarn");
         MeshFilter meshFilter = cylinder.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = cylinder.AddComponent<MeshRenderer>();
         Mesh mesh = new Mesh();
         meshFilter.mesh = mesh;
 
-        mesh.vertices = GenerateVertices(n, m, radius, height);
+        mesh.vertices = GenerateVertices(n, m, width, length);
         mesh.triangles = GenerateTriangles(n, m);
         mesh.RecalculateNormals();
 
