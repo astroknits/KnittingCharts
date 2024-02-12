@@ -70,15 +70,15 @@ public class Yarn : MonoBehaviour
     static Vector3[] GenerateCircle(Vector3[] curve, int n, int m, float radius, float height, int j)
     {
         Vector3[] circle = new Vector3[n];
+        float x = (float)j / (float)m * height - height / 2;
 
         for (int i = 0; i < n; i++)
         {
             float angle = Mathf.PI * 2 * i / n;
             float y = Mathf.Cos(angle) * radius;
             float z = Mathf.Sin(angle) * radius;
-            float x = (float)j / (float)m * height - height / 2;
-            float verticalOffset = GetVerticalOffset(j, m);
-            float depthOffset = GetDepthOffset(j);
+            float verticalOffset = curve[j].y;
+            float depthOffset = curve[j].z;
             circle[i] = new Vector3(
                 x, y + verticalOffset, z + depthOffset);
         }
