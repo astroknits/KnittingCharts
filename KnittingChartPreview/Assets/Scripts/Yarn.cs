@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -6,19 +7,29 @@ public class Yarn : MonoBehaviour
     public int nRadialPoints = 4;
     public int nPoints = 1;
     public float width = 0.1f;
-    public float length = 4f;
+    public float length = 1f;
 
     void Start()
     {
         GenerateYarn(nRadialPoints, nPoints, width, length);
     }
 
-    static float GetVerticalOffset(int row, int stitch)
+    static float sigmoid(float x)
     {
-        return 0.0f;
+        // sigmoid(x) = 1 / (1 + exp(-x))
+        return 1.0f / (1.0f + (float) Math.Exp(x));
+    }
+
+    static float GetVerticalOffset(int index, int totalSegments)
+    {
+        float kappa = 0.25f;
+        float pos = 12.0f * (float)index / (float)totalSegments - 2.0f;
+        float res = 1.0f / (1.0f + (float)Math.Exp(-1.0f * pos / kappa)) - 0.5f;
+        Debug.Log($"index {index}, totalSegments {totalSegments}, fraction: {pos}, offset: {res}");
+        return res;
     }
     
-    static float GetDepthOffset(int row, int stitch)
+    static float GetDepthOffset(int index)
     {
         return 0.0f;
     }
@@ -31,13 +42,16 @@ public class Yarn : MonoBehaviour
         for (int i = 0; i < n; i++)
         {
             float angle = Mathf.PI * 2 * i / n;
-            float y = Mathf.Cos(angle) * radius + GetVerticalOffset(0, 0);
-            float z = Mathf.Sin(angle) * radius + GetDepthOffset(0, 0);
+            float y = Mathf.Cos(angle) * radius;
+            float z = Mathf.Sin(angle) * radius;
             for (int j = 0; j < m + 1; j++)
             {
                 float x = (float)j / (float)m * height - height / 2;
-                Debug.Log($"(i={i}, j={j}) (x={x}, y={y})");
-                vertices[i + j * n] = new Vector3(x, y, z);
+                float verticalOffset = GetVerticalOffset(j, m);
+                float depthOffset = GetDepthOffset(j);
+                vertices[i + j * n] = new Vector3(
+                    x, y + verticalOffset, z + depthOffset);
+                Debug.Log($"verticalOffset {verticalOffset}");
             }
         }
 
