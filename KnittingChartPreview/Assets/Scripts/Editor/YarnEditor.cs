@@ -7,7 +7,7 @@ public class YarnEditor : EditorWindow
     int nRadialPoints = 4;
     int nPoints = 1;
     float width = 0.1f;
-    float length = 4f;
+    float length = 2f;
     
     // Add menu item named "My Window" to the Window menu
     [MenuItem("Window/Create Yarn")]

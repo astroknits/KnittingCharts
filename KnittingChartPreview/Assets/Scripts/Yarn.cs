@@ -9,24 +9,42 @@ public class Yarn : MonoBehaviour
     public float width = 0.1f;
     public float length = 1f;
 
-    void Start()
-    {
-        GenerateYarn(nRadialPoints, nPoints, width, length);
-    }
+    //
+    // void Start()
+    // {
+    //     GenerateYarn(nRadialPoints, nPoints, width, length);
+    // }
 
     static float sigmoid(float x)
     {
         // sigmoid(x) = 1 / (1 + exp(-x))
-        return 1.0f / (1.0f + (float) Math.Exp(x));
+        return 1.0f / (1.0f + (float) Math.Exp(-1.0f * x));
+    }
+
+    static float GetVerticalOffsetForStitch(int index, int totalSegments)
+    {
+        float kappa = 0.25f;
+        float scale = 4.0f; // range goes from -scale to +scale
+        float shift = 0.8f;
+        float pos = scale * (2 * (float) index / (float) totalSegments - 0.5f);
+
+        if (index * 2 > totalSegments)
+        {
+            pos = scale - (pos + shift);
+        }
+        else
+        {
+            pos = pos - shift;
+        }
+        
+        float res = sigmoid(pos / kappa);
+        Debug.Log($"index {index}, totalSegments {totalSegments}, fraction: {pos}, offset: {res}");
+        return res;
     }
 
     static float GetVerticalOffset(int index, int totalSegments)
     {
-        float kappa = 0.25f;
-        float pos = 12.0f * (float)index / (float)totalSegments - 2.0f;
-        float res = 1.0f / (1.0f + (float)Math.Exp(-1.0f * pos / kappa)) - 0.5f;
-        Debug.Log($"index {index}, totalSegments {totalSegments}, fraction: {pos}, offset: {res}");
-        return res;
+        return GetVerticalOffsetForStitch(index, totalSegments);
     }
     
     static float GetDepthOffset(int index)
