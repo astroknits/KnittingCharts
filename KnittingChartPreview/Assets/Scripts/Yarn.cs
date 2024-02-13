@@ -51,7 +51,7 @@ public class Yarn : MonoBehaviour
         return 0.0f;
     }
 
-    static Vector3[] GenerateCurve(int m)
+    static Vector3[] GenerateCurve(float length, int m)
     {
         Vector3[] curve = new Vector3[m + 1];
         for (int j = 0; j < m + 1; j++)
@@ -60,13 +60,13 @@ public class Yarn : MonoBehaviour
             float verticalOffset = GetVerticalOffset(j, m);
             float depthOffset = GetDepthOffset(j);
             curve[j] = new Vector3(
-                x,  verticalOffset, depthOffset);
-            // Debug.Log($"j, curve: {j} {curve[j]}");
+                length * x,  verticalOffset, depthOffset);
+            // Debug.Log($"j, x, y: {j} {curve[j].x} {curve[j].y}");
         }
         return curve;
     }
 
-    static Vector3[] GenerateCircle(int n, float width)
+    static Vector3[] GenerateCircle(float width, int n)
     {
         Vector3[] circle = new Vector3[n];
         for (int i = 0; i < n; i++)
@@ -79,27 +79,39 @@ public class Yarn : MonoBehaviour
         return circle;
     }
 
-    static Vector3[] GenerateRotatedCircle(Vector3[] circle, Vector3[] curve, int n, int m, float width, float length, int j)
+    static Vector3[] GenerateRotatedCircle(Vector3[] circle, Vector3[] curve, int n, int m, int j)
     {
         Vector3[] rotatedCircle = new Vector3[n];
-        Vector3 direction = new Vector3();
+        float theta = 0.0f;
 
         if (j < m)
         {
-            direction = curve[j + 1] - curve[j];
-        }
-        else
-        {
-            direction = new Vector3(1.0f, 0, 0);
+            // theta = (float) (Vector3.Angle(curve[j], curve[j + 1]) * Math.PI / 180.0);
+            Vector3 diff = curve[j + 1] - curve[j];
+            float length = (float)(Math.Sqrt(Math.Pow(diff.x, 2) + Math.Pow(diff.y, 2)));
+            theta = (float)Math.Acos(diff.x/length);
+            Debug.Log($"theta: {theta}");
         }
 
         for (int i = 0; i < n; i++)
         {
-            float xVal = length * curve[j].x;
-            float yVal = curve[j].y;
-            float zVal = curve[j].z;
+            float xOffset = circle[i].y * (float) Math.Sin(theta);
+            float yOffset = circle[i].y * (float) Math.Cos(theta);
+            if (2 * j < m)
+            {
+                Debug.Log($"j, m: {j}, {m}");
+                xOffset = -1.0f * xOffset;
+                yOffset = 1.0f * yOffset;
+            }
+            else
+            {
+                Debug.Log($" not: j, m: {j}, {m}");
+            }
             rotatedCircle[i] = new Vector3(
-                 xVal + circle[i].x, yVal + circle[i].y , zVal + circle[i].z);
+                curve[j].x +  xOffset,
+                curve[j].y +  yOffset,
+                curve[j].z + circle[i].z
+            );
         }
 
         return rotatedCircle;
@@ -107,14 +119,14 @@ public class Yarn : MonoBehaviour
     static Vector3[] GenerateVertices(int n, int m, float width, float length)
     {
         // Generate curve
-        Vector3[] curve = GenerateCurve(m);
-        Vector3[] circle = GenerateCircle(n, width);
+        Vector3[] curve = GenerateCurve(length, m);
+        Vector3[] circle = GenerateCircle(width, n);
         
         // Generate vertices
         Vector3[] vertices = new Vector3[n * (m + 1)];
         for (int j = 0; j < m + 1; j++)
         {
-                Vector3[] rotatedCircle = GenerateRotatedCircle(circle, curve, n, m, width, length, j);
+                Vector3[] rotatedCircle = GenerateRotatedCircle(circle, curve, n, m, j);
                 for (int i = 0; i < n; i++)
                 {
                     vertices[j * n + i] = rotatedCircle[i];
