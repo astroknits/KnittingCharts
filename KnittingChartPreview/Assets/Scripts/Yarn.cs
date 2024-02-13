@@ -4,12 +4,12 @@ using UnityEngine.Serialization;
 
 public class Yarn : MonoBehaviour
 {
-    public int nRadialPoints = 4;
-    public int nPoints = 1;
-    public float width = 0.1f;
-    public float length = 1f;
+    public int nRadialPoints = 4; // number of radial points when rendering yarn
+    public int stitchRes = 100; // number of segments in each stitch 
+    public float stitchLength = 1f;
+    public float yarnWidth = 0.1f;
 
-    public static void Generate(int n, int m, float width, float length)
+    public static void Generate(int nRadialPoints, int stitchRes, float width, float stitchLength)
     {
         GameObject yarn = new GameObject("Yarn");
         MeshFilter meshFilter = yarn.AddComponent<MeshFilter>();
@@ -17,8 +17,8 @@ public class Yarn : MonoBehaviour
         Mesh mesh = new Mesh();
         meshFilter.mesh = mesh;
 
-        mesh.vertices = GenerateVertices(n, m, width, length);
-        mesh.triangles = GenerateTriangles(n, m);
+        mesh.vertices = GenerateVertices(nRadialPoints, stitchRes, width, stitchLength);
+        mesh.triangles = GenerateTriangles(nRadialPoints, stitchRes);
         mesh.RecalculateNormals();
 
         // Assign a default material
@@ -31,14 +31,14 @@ public class Yarn : MonoBehaviour
         return 1.0f / (1.0f + (float) Math.Exp(-1.0f * x));
     }
 
-    static float GetVerticalOffsetForStitch(int index, int totalSegments)
+    static float GetVerticalOffsetForStitch(int index, int stitchRes)
     {
         float kappa = 0.25f;
         float scale = 4.0f; // range goes from -scale to +scale
         float shift = 0.8f;
-        float pos = scale * (2 * (float) index / (float) totalSegments - 0.5f);
+        float pos = scale * (2 * (float) index / (float) stitchRes - 0.5f);
 
-        if (index * 2 > totalSegments)
+        if (index * 2 > stitchRes)
         {
             pos = scale - (pos + shift);
         }
@@ -51,9 +51,9 @@ public class Yarn : MonoBehaviour
         return res;
     }
 
-    static float GetVerticalOffset(int index, int totalSegments)
+    static float GetVerticalOffset(int index, int stitchRes)
     {
-        return GetVerticalOffsetForStitch(index, totalSegments);
+        return GetVerticalOffsetForStitch(index, stitchRes);
     }
     
     static float GetDepthOffset(int index)
@@ -61,13 +61,13 @@ public class Yarn : MonoBehaviour
         return 0.0f;
     }
 
-    static Vector3[] GenerateCurve(float length, int m)
+    static Vector3[] GenerateCurve(float length, int stitchRes)
     {
-        Vector3[] curve = new Vector3[m + 1];
-        for (int j = 0; j < m + 1; j++)
+        Vector3[] curve = new Vector3[stitchRes + 1];
+        for (int j = 0; j < stitchRes + 1; j++)
         {
-            float x = (float)j / (float)m - 0.5f;
-            float verticalOffset = GetVerticalOffset(j, m);
+            float x = (float)j / (float)stitchRes - 0.5f;
+            float verticalOffset = GetVerticalOffset(j, stitchRes);
             float depthOffset = GetDepthOffset(j);
             curve[j] = new Vector3(
                 length * x,  verticalOffset, depthOffset);
@@ -76,31 +76,31 @@ public class Yarn : MonoBehaviour
         return curve;
     }
 
-    static Vector3[] GenerateCircle(float width, int n)
+    static Vector3[] GenerateCircle(float width, int nRadialPoints)
     {
-        Vector3[] circle = new Vector3[n];
-        for (int i = 0; i < n; i++)
+        Vector3[] circle = new Vector3[nRadialPoints];
+        for (int i = 0; i < nRadialPoints; i++)
         {
-            float angle = Mathf.PI * 2 * i / n;
+            float angle = Mathf.PI * 2 * i / nRadialPoints;
             circle[i] = new Vector3(
                 0.0f, width * Mathf.Cos(angle), width * Mathf.Sin(angle));
         }
         return circle;
     }
 
-    static Vector3[] GenerateRotatedCircle(Vector3[] circle, Vector3[] curve, int n, int m, int j)
+    static Vector3[] GenerateRotatedCircle(Vector3[] circle, Vector3[] curve, int nRadialPoints, int stitchRes, int j)
     {
-        Vector3[] rotatedCircle = new Vector3[n];
+        Vector3[] rotatedCircle = new Vector3[nRadialPoints];
         float theta = 0.0f;
 
-        if (j < m)
+        if (j < stitchRes)
         {
             Vector3 diff = curve[j + 1] - curve[j];
             float length = (float)(Math.Sqrt(Math.Pow(diff.x, 2) + Math.Pow(diff.y, 2)));
             theta = (float) Math.Asin(diff.y / length);
         }
 
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < nRadialPoints; i++)
         {
             rotatedCircle[i] = new Vector3(
                 curve[j].x + circle[i].y * (float) Math.Sin(theta),
@@ -111,43 +111,43 @@ public class Yarn : MonoBehaviour
 
         return rotatedCircle;
     }
-    static Vector3[] GenerateVertices(int n, int m, float width, float length)
+    static Vector3[] GenerateVertices(int nRadialPoints, int stitchRes, float width, float length)
     {
         // Generate curve
-        Vector3[] curve = GenerateCurve(length, m);
+        Vector3[] curve = GenerateCurve(length, stitchRes);
         
         // Generate vertices
-        Vector3[] circle = GenerateCircle(width, n);
-        Vector3[] vertices = new Vector3[n * (m + 1)];
-        for (int j = 0; j < m + 1; j++)
+        Vector3[] circle = GenerateCircle(width, nRadialPoints);
+        Vector3[] vertices = new Vector3[nRadialPoints * (stitchRes + 1)];
+        for (int j = 0; j < stitchRes + 1; j++)
         {
-                Vector3[] rotatedCircle = GenerateRotatedCircle(circle, curve, n, m, j);
-                for (int i = 0; i < n; i++)
+                Vector3[] rotatedCircle = GenerateRotatedCircle(circle, curve, nRadialPoints, stitchRes, j);
+                for (int i = 0; i < nRadialPoints; i++)
                 {
-                    vertices[j * n + i] = rotatedCircle[i];
+                    vertices[j * nRadialPoints + i] = rotatedCircle[i];
                 }
         }
         return vertices;
     }
 
-    static int[] GenerateTriangles(int n, int m)
+    static int[] GenerateTriangles(int nRadialPoints, int stitchRes)
     {
-        int[] triangles = new int[n * m * 6];
+        int[] triangles = new int[nRadialPoints * stitchRes * 6];
         
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < nRadialPoints; i++)
         {
             // Generate triangles
-            for (int j = 0; j < m; j++)
+            for (int j = 0; j < stitchRes; j++)
             {
-                int index = j * n + i;
-                int nextIndex = j * n + (i + 1) % n;
-                int triangleIndex = i * 6 + j * n * 6;
+                int index = j * nRadialPoints + i;
+                int nextIndex = j * nRadialPoints + (i + 1) % nRadialPoints;
+                int triangleIndex = i * 6 + j * nRadialPoints * 6;
                 // Side triangles
                 triangles[triangleIndex] = nextIndex;
-                triangles[triangleIndex + 1] = index + n;
+                triangles[triangleIndex + 1] = index + nRadialPoints;
                 triangles[triangleIndex + 2] = index;
-                triangles[triangleIndex + 3] = nextIndex + n;
-                triangles[triangleIndex + 4] = index + n;
+                triangles[triangleIndex + 3] = nextIndex + nRadialPoints;
+                triangles[triangleIndex + 4] = index + nRadialPoints;
                 triangles[triangleIndex + 5] = nextIndex;
             }
         }
