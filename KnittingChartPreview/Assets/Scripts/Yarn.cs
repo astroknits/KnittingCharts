@@ -86,30 +86,16 @@ public class Yarn : MonoBehaviour
 
         if (j < m)
         {
-            // theta = (float) (Vector3.Angle(curve[j], curve[j + 1]) * Math.PI / 180.0);
             Vector3 diff = curve[j + 1] - curve[j];
             float length = (float)(Math.Sqrt(Math.Pow(diff.x, 2) + Math.Pow(diff.y, 2)));
-            theta = (float)Math.Acos(diff.x/length);
-            Debug.Log($"theta: {theta}");
+            theta = (float) Math.Asin(diff.y / length);
         }
 
         for (int i = 0; i < n; i++)
         {
-            float xOffset = circle[i].y * (float) Math.Sin(theta);
-            float yOffset = circle[i].y * (float) Math.Cos(theta);
-            if (2 * j < m)
-            {
-                Debug.Log($"j, m: {j}, {m}");
-                xOffset = -1.0f * xOffset;
-                yOffset = 1.0f * yOffset;
-            }
-            else
-            {
-                Debug.Log($" not: j, m: {j}, {m}");
-            }
             rotatedCircle[i] = new Vector3(
-                curve[j].x +  xOffset,
-                curve[j].y +  yOffset,
+                curve[j].x + circle[i].y * (float) Math.Sin(theta),
+                curve[j].y - circle[i].y * (float) Math.Cos(theta),
                 curve[j].z + circle[i].z
             );
         }
