@@ -4,8 +4,8 @@ using UnityEngine;
 public class YarnEditor : EditorWindow
 {
     // Parameters for yarn
-    int nRadialPoints = 4;
-    int nPoints = 1;
+    int nRadialPoints = 8;
+    int nPoints = 100;
     float width = 0.1f;
     float length = 2f;
     
@@ -32,7 +32,7 @@ public class YarnEditor : EditorWindow
 
         if (GUILayout.Button("Generate Yarn"))
         {
-            Yarn.GenerateYarn(nRadialPoints, nPoints, width, length);
+            Yarn.Generate(nRadialPoints, nPoints, width, length);
         }
 
     }

@@ -9,11 +9,21 @@ public class Yarn : MonoBehaviour
     public float width = 0.1f;
     public float length = 1f;
 
-    //
-    // void Start()
-    // {
-    //     GenerateYarn(nRadialPoints, nPoints, width, length);
-    // }
+    public static void Generate(int n, int m, float width, float length)
+    {
+        GameObject yarn = new GameObject("Yarn");
+        MeshFilter meshFilter = yarn.AddComponent<MeshFilter>();
+        MeshRenderer meshRenderer = yarn.AddComponent<MeshRenderer>();
+        Mesh mesh = new Mesh();
+        meshFilter.mesh = mesh;
+
+        mesh.vertices = GenerateVertices(n, m, width, length);
+        mesh.triangles = GenerateTriangles(n, m);
+        mesh.RecalculateNormals();
+
+        // Assign a default material
+        meshRenderer.material = new Material(Shader.Find("Standard"));
+    }
 
     static float sigmoid(float x)
     {
@@ -75,7 +85,6 @@ public class Yarn : MonoBehaviour
             circle[i] = new Vector3(
                 0.0f, width * Mathf.Cos(angle), width * Mathf.Sin(angle));
         }
-
         return circle;
     }
 
@@ -106,9 +115,9 @@ public class Yarn : MonoBehaviour
     {
         // Generate curve
         Vector3[] curve = GenerateCurve(length, m);
-        Vector3[] circle = GenerateCircle(width, n);
         
         // Generate vertices
+        Vector3[] circle = GenerateCircle(width, n);
         Vector3[] vertices = new Vector3[n * (m + 1)];
         for (int j = 0; j < m + 1; j++)
         {
@@ -146,20 +155,5 @@ public class Yarn : MonoBehaviour
         return triangles;
     }
 
-    public static void GenerateYarn(int n, int m, float width, float length)
-    {
-        // Debug.Log($"Generating Yarn: {n} {m} {width} {length}");
-        GameObject cylinder = new GameObject("Yarn");
-        MeshFilter meshFilter = cylinder.AddComponent<MeshFilter>();
-        MeshRenderer meshRenderer = cylinder.AddComponent<MeshRenderer>();
-        Mesh mesh = new Mesh();
-        meshFilter.mesh = mesh;
 
-        mesh.vertices = GenerateVertices(n, m, width, length);
-        mesh.triangles = GenerateTriangles(n, m);
-        mesh.RecalculateNormals();
-
-        // Assign a default material
-        meshRenderer.material = new Material(Shader.Find("Standard"));
-    }
 }
