@@ -1,11 +1,10 @@
 using UnityEditor;
 using UnityEngine;
+using YarnGenerator;
 
 public class YarnEditor : EditorWindow
 {
     // Parameters for yarn
-    int nRadialPoints = 8;
-    int nPoints = 100;
     float rowLength = 2f;
     float stitchLength = 2f;
     float yarnWidth = 0.1f;
@@ -22,10 +21,6 @@ public class YarnEditor : EditorWindow
     {
         GUILayout.Label ("Yarn Settings", EditorStyles.boldLabel);
         
-        nRadialPoints = (int)EditorGUILayout.IntSlider(
-            "Radial Segments", nRadialPoints, 4, 20);
-        nPoints = (int)EditorGUILayout.IntSlider(
-            "Segments", nPoints, 1, 200);
         rowLength = EditorGUILayout.Slider(
             "Row Length", rowLength, 1f, 300f);
         stitchLength = EditorGUILayout.Slider(
@@ -41,7 +36,7 @@ public class YarnEditor : EditorWindow
                 Debug.LogError("Yarn Width needs to be less than 1/8 the stitch length"
                 + $"Please choose a yarn width less than {stitchLength/8.0f}");
                 return;}
-            Yarn.GenerateRow(nRadialPoints, nPoints, yarnWidth, stitchLength);
+            Yarn.GenerateRow(KnitSettings.radialRes, KnitSettings.stitchRes, yarnWidth, stitchLength);
         }
 
     }

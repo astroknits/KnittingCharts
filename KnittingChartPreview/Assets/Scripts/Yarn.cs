@@ -1,15 +1,14 @@
 using System;
 using UnityEngine;
 using UnityEngine.Serialization;
+using YarnGenerator;
 
 public class Yarn : MonoBehaviour
 {
-    public int nRadialPoints = 4; // number of radial points when rendering yarn
-    public int stitchRes = 100; // number of segments in each stitch 
     public float stitchLength = 1f;
     public float yarnWidth = 0.1f;
 
-    public static void GenerateRow(int nRadialPoints, int stitchRes, float width, float stitchLength)
+    public static void GenerateRow(int radialRes, int stitchRes, float yarnWidth, float stitchLength)
     {
         GameObject yarn = new GameObject("Yarn");
         MeshFilter meshFilter = yarn.AddComponent<MeshFilter>();
@@ -20,8 +19,8 @@ public class Yarn : MonoBehaviour
         // Generate curve
         Vector3[] curve = GenerateCurve(stitchLength, stitchRes);
         
-        mesh.vertices = GenerateVertices(curve, nRadialPoints, stitchRes, width, stitchLength);
-        mesh.triangles = GenerateTriangles(nRadialPoints, stitchRes);
+        mesh.vertices = GenerateVertices(curve, radialRes, stitchRes, yarnWidth, stitchLength);
+        mesh.triangles = GenerateTriangles(radialRes, stitchRes);
         mesh.RecalculateNormals();
 
         // Assign a default material
@@ -79,21 +78,21 @@ public class Yarn : MonoBehaviour
         return curve;
     }
 
-    static Vector3[] GenerateCircle(float width, int nRadialPoints)
+    static Vector3[] GenerateCircle(float yarnWidth, int radialRes)
     {
-        Vector3[] circle = new Vector3[nRadialPoints];
-        for (int i = 0; i < nRadialPoints; i++)
+        Vector3[] circle = new Vector3[radialRes];
+        for (int i = 0; i < radialRes; i++)
         {
-            float angle = Mathf.PI * 2 * i / nRadialPoints;
+            float angle = Mathf.PI * 2 * i / radialRes;
             circle[i] = new Vector3(
-                0.0f, width * Mathf.Cos(angle), width * Mathf.Sin(angle));
+                0.0f, yarnWidth * Mathf.Cos(angle), yarnWidth * Mathf.Sin(angle));
         }
         return circle;
     }
 
-    static Vector3[] GenerateRotatedCircle(Vector3[] circle, Vector3[] curve, int nRadialPoints, int stitchRes, int j)
+    static Vector3[] GenerateRotatedCircle(Vector3[] circle, Vector3[] curve, int radialRes, int stitchRes, int j)
     {
-        Vector3[] rotatedCircle = new Vector3[nRadialPoints];
+        Vector3[] rotatedCircle = new Vector3[radialRes];
         float theta = 0.0f;
 
         if (j < stitchRes)
@@ -103,7 +102,7 @@ public class Yarn : MonoBehaviour
             theta = (float) Math.Asin(diff.y / length);
         }
 
-        for (int i = 0; i < nRadialPoints; i++)
+        for (int i = 0; i < radialRes; i++)
         {
             rotatedCircle[i] = new Vector3(
                 curve[j].x + circle[i].y * (float) Math.Sin(theta),
@@ -114,40 +113,40 @@ public class Yarn : MonoBehaviour
 
         return rotatedCircle;
     }
-    static Vector3[] GenerateVertices(Vector3[] curve, int nRadialPoints, int stitchRes, float width, float stitchLength)
+    static Vector3[] GenerateVertices(Vector3[] curve, int radialRes, int stitchRes, float yarnWidth, float stitchLength)
     {
         // Generate vertices
-        Vector3[] circle = GenerateCircle(width, nRadialPoints);
-        Vector3[] vertices = new Vector3[nRadialPoints * (stitchRes + 1)];
+        Vector3[] circle = GenerateCircle(yarnWidth, radialRes);
+        Vector3[] vertices = new Vector3[radialRes * (stitchRes + 1)];
         for (int j = 0; j < stitchRes + 1; j++)
         {
-                Vector3[] rotatedCircle = GenerateRotatedCircle(circle, curve, nRadialPoints, stitchRes, j);
-                for (int i = 0; i < nRadialPoints; i++)
+                Vector3[] rotatedCircle = GenerateRotatedCircle(circle, curve, radialRes, stitchRes, j);
+                for (int i = 0; i < radialRes; i++)
                 {
-                    vertices[j * nRadialPoints + i] = rotatedCircle[i];
+                    vertices[j * radialRes + i] = rotatedCircle[i];
                 }
         }
         return vertices;
     }
 
-    static int[] GenerateTriangles(int nRadialPoints, int stitchRes)
+    static int[] GenerateTriangles(int radialRes, int stitchRes)
     {
-        int[] triangles = new int[nRadialPoints * stitchRes * 6];
+        int[] triangles = new int[radialRes * stitchRes * 6];
         
-        for (int i = 0; i < nRadialPoints; i++)
+        for (int i = 0; i < radialRes; i++)
         {
             // Generate triangles
             for (int j = 0; j < stitchRes; j++)
             {
-                int index = j * nRadialPoints + i;
-                int nextIndex = j * nRadialPoints + (i + 1) % nRadialPoints;
-                int triangleIndex = i * 6 + j * nRadialPoints * 6;
+                int index = j * radialRes + i;
+                int nextIndex = j * radialRes + (i + 1) % radialRes;
+                int triangleIndex = i * 6 + j * radialRes * 6;
                 // Side triangles
                 triangles[triangleIndex] = nextIndex;
-                triangles[triangleIndex + 1] = index + nRadialPoints;
+                triangles[triangleIndex + 1] = index + radialRes;
                 triangles[triangleIndex + 2] = index;
-                triangles[triangleIndex + 3] = nextIndex + nRadialPoints;
-                triangles[triangleIndex + 4] = index + nRadialPoints;
+                triangles[triangleIndex + 3] = nextIndex + radialRes;
+                triangles[triangleIndex + 4] = index + radialRes;
                 triangles[triangleIndex + 5] = nextIndex;
             }
         }
