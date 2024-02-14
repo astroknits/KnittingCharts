@@ -10,7 +10,7 @@ namespace YarnGenerator
         public float stitchLength = 1f;
         public float yarnWidth = 0.1f;
 
-        public static void GenerateRow(int radialRes, int stitchRes, float yarnWidth, float stitchLength)
+        public static void GenerateRow(float yarnWidth, float stitchLength)
         {
             // For now, each row only has one stitch in it
 
@@ -25,11 +25,11 @@ namespace YarnGenerator
             // stitch.GenerateCurve();
 
             // Generate curve for the stitch
-            Vector3[] curve = GenerateCurve(stitchLength, stitchRes);
+            Vector3[] curve = GenerateCurve(stitchLength);
 
             // Set up vertices and triangles for the row based on the curve
-            Vector3[] vertices = GenerateVertices(curve, radialRes, stitchRes, yarnWidth, stitchLength);
-            int[] triangles = GenerateTriangles(radialRes, stitchRes);
+            Vector3[] vertices = GenerateVertices(curve, yarnWidth);
+            int[] triangles = GenerateTriangles();
 
             mesh.vertices = vertices;
             mesh.triangles = triangles;
@@ -45,14 +45,14 @@ namespace YarnGenerator
             return 1.0f / (1.0f + (float) Math.Exp(-1.0f * x));
         }
 
-        static float GetVerticalOffsetForStitch(int index, int stitchRes)
+        static float GetVerticalOffsetForStitch(int index)
         {
             float kappa = 0.25f;
             float scale = 4.0f; // range goes from -scale to +scale
             float shift = 0.8f;
-            float pos = scale * (2 * (float) index / (float) stitchRes - 0.5f);
+            float pos = scale * (2 * (float) index / (float) KnitSettings.stitchRes - 0.5f);
 
-            if (index * 2 > stitchRes)
+            if (index * 2 > KnitSettings.stitchRes)
             {
                 pos = scale - (pos + shift);
             }
@@ -65,9 +65,9 @@ namespace YarnGenerator
             return res;
         }
 
-        static float GetVerticalOffset(int index, int stitchRes)
+        static float GetVerticalOffset(int index)
         {
-            return GetVerticalOffsetForStitch(index, stitchRes);
+            return GetVerticalOffsetForStitch(index);
         }
 
         static float GetDepthOffset(int index)
@@ -75,13 +75,13 @@ namespace YarnGenerator
             return 0.0f;
         }
 
-        static Vector3[] GenerateCurve(float length, int stitchRes)
+        static Vector3[] GenerateCurve(float length)
         {
-            Vector3[] curve = new Vector3[stitchRes + 1];
-            for (int j = 0; j < stitchRes + 1; j++)
+            Vector3[] curve = new Vector3[KnitSettings.stitchRes + 1];
+            for (int j = 0; j < KnitSettings.stitchRes + 1; j++)
             {
-                float x = (float) j / (float) stitchRes - 0.5f;
-                float verticalOffset = GetVerticalOffset(j, stitchRes);
+                float x = (float) j / (float) KnitSettings.stitchRes - 0.5f;
+                float verticalOffset = GetVerticalOffset(j);
                 float depthOffset = GetDepthOffset(j);
                 curve[j] = new Vector3(
                     length * x, verticalOffset, depthOffset);
@@ -91,12 +91,12 @@ namespace YarnGenerator
             return curve;
         }
 
-        static Vector3[] GenerateCircle(float yarnWidth, int radialRes)
+        static Vector3[] GenerateCircle(float yarnWidth)
         {
-            Vector3[] circle = new Vector3[radialRes];
-            for (int i = 0; i < radialRes; i++)
+            Vector3[] circle = new Vector3[KnitSettings.radialRes];
+            for (int i = 0; i < KnitSettings.radialRes; i++)
             {
-                float angle = Mathf.PI * 2 * i / radialRes;
+                float angle = Mathf.PI * 2 * i / KnitSettings.radialRes;
                 circle[i] = new Vector3(
                     0.0f, yarnWidth * Mathf.Cos(angle), yarnWidth * Mathf.Sin(angle));
             }
@@ -104,19 +104,19 @@ namespace YarnGenerator
             return circle;
         }
 
-        static Vector3[] GenerateRotatedCircle(Vector3[] circle, Vector3[] curve, int radialRes, int stitchRes, int j)
+        static Vector3[] GenerateRotatedCircle(Vector3[] circle, Vector3[] curve, int j)
         {
-            Vector3[] rotatedCircle = new Vector3[radialRes];
+            Vector3[] rotatedCircle = new Vector3[KnitSettings.radialRes];
             float theta = 0.0f;
 
-            if (j < stitchRes)
+            if (j < KnitSettings.stitchRes)
             {
                 Vector3 diff = curve[j + 1] - curve[j];
                 float length = (float) (Math.Sqrt(Math.Pow(diff.x, 2) + Math.Pow(diff.y, 2)));
                 theta = (float) Math.Asin(diff.y / length);
             }
 
-            for (int i = 0; i < radialRes; i++)
+            for (int i = 0; i < KnitSettings.radialRes; i++)
             {
                 rotatedCircle[i] = new Vector3(
                     curve[j].x + circle[i].y * (float) Math.Sin(theta),
@@ -128,42 +128,41 @@ namespace YarnGenerator
             return rotatedCircle;
         }
 
-        static Vector3[] GenerateVertices(Vector3[] curve, int radialRes, int stitchRes, float yarnWidth,
-            float stitchLength)
+        static Vector3[] GenerateVertices(Vector3[] curve, float yarnWidth)
         {
             // Generate vertices
-            Vector3[] circle = GenerateCircle(yarnWidth, radialRes);
-            Vector3[] vertices = new Vector3[radialRes * (stitchRes + 1)];
-            for (int j = 0; j < stitchRes + 1; j++)
+            Vector3[] circle = GenerateCircle(yarnWidth);
+            Vector3[] vertices = new Vector3[KnitSettings.radialRes * (KnitSettings.stitchRes + 1)];
+            for (int j = 0; j < KnitSettings.stitchRes + 1; j++)
             {
-                Vector3[] rotatedCircle = GenerateRotatedCircle(circle, curve, radialRes, stitchRes, j);
-                for (int i = 0; i < radialRes; i++)
+                Vector3[] rotatedCircle = GenerateRotatedCircle(circle, curve, j);
+                for (int i = 0; i < KnitSettings.radialRes; i++)
                 {
-                    vertices[j * radialRes + i] = rotatedCircle[i];
+                    vertices[j * KnitSettings.radialRes + i] = rotatedCircle[i];
                 }
             }
 
             return vertices;
         }
 
-        static int[] GenerateTriangles(int radialRes, int stitchRes)
+        static int[] GenerateTriangles()
         {
-            int[] triangles = new int[radialRes * stitchRes * 6];
+            int[] triangles = new int[KnitSettings.radialRes * KnitSettings.stitchRes * 6];
 
-            for (int i = 0; i < radialRes; i++)
+            for (int i = 0; i < KnitSettings.radialRes; i++)
             {
                 // Generate triangles
-                for (int j = 0; j < stitchRes; j++)
+                for (int j = 0; j < KnitSettings.stitchRes; j++)
                 {
-                    int index = j * radialRes + i;
-                    int nextIndex = j * radialRes + (i + 1) % radialRes;
-                    int triangleIndex = i * 6 + j * radialRes * 6;
+                    int index = j * KnitSettings.radialRes + i;
+                    int nextIndex = j * KnitSettings.radialRes + (i + 1) % KnitSettings.radialRes;
+                    int triangleIndex = i * 6 + j * KnitSettings.radialRes * 6;
                     // Side triangles
                     triangles[triangleIndex] = nextIndex;
-                    triangles[triangleIndex + 1] = index + radialRes;
+                    triangles[triangleIndex + 1] = index + KnitSettings.radialRes;
                     triangles[triangleIndex + 2] = index;
-                    triangles[triangleIndex + 3] = nextIndex + radialRes;
-                    triangles[triangleIndex + 4] = index + radialRes;
+                    triangles[triangleIndex + 3] = nextIndex + KnitSettings.radialRes;
+                    triangles[triangleIndex + 4] = index + KnitSettings.radialRes;
                     triangles[triangleIndex + 5] = nextIndex;
                 }
             }

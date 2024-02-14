@@ -40,7 +40,7 @@ namespace YarnGenerator
                     return;
                 }
 
-                Yarn.GenerateRow(KnitSettings.radialRes, KnitSettings.stitchRes, yarnWidth, stitchLength);
+                Yarn.GenerateRow(yarnWidth, stitchLength);
             }
 
         }
