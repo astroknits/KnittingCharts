@@ -83,10 +83,11 @@ namespace YarnGenerator
             StitchType[] stitches, float gauge, float yarnWidth)
         {
             Vector3[] rowVertices = Array.Empty<Vector3>();
-            foreach (StitchType stitch in stitches)
+            foreach (StitchType stitchType in stitches)
             {
                 // Generate curve for the stitch
-                Vector3[] stitchCurve = Stitch.GenerateCurve(stitch, gauge);
+                Stitch stitch = Stitch.GetStitch(stitchType, gauge);
+                Vector3[] stitchCurve = stitch.GenerateCurve();
                 
                 // Set up vertices for the stitch based on the stitch curve
                 // and add to the vertices row array
