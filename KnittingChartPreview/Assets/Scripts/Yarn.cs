@@ -21,14 +21,11 @@ namespace YarnGenerator
             Mesh mesh = new Mesh();
             meshFilter.mesh = mesh;
 
-            // Stitch stitch = new Stitch(yarnWidth, stitchLength);
-            // stitch.GenerateCurve();
-
             // Generate curve for the stitch
-            Vector3[] curve = GenerateCurve(stitchLength);
-
+            Vector3[] stitchCurve = Stitch.GenerateCurve(StitchType.KnitStitch, stitchLength);
+            
             // Set up vertices and triangles for the row based on the curve
-            Vector3[] vertices = GenerateVertices(curve, yarnWidth);
+            Vector3[] vertices = GenerateVertices(stitchCurve, yarnWidth);
             int[] triangles = GenerateTriangles();
 
             mesh.vertices = vertices;
@@ -38,59 +35,7 @@ namespace YarnGenerator
             // Assign a default material
             meshRenderer.material = new Material(Shader.Find("Standard"));
         }
-
-        static float sigmoid(float x)
-        {
-            // sigmoid(x) = 1 / (1 + exp(-x))
-            return 1.0f / (1.0f + (float) Math.Exp(-1.0f * x));
-        }
-
-        static float GetVerticalOffsetForStitch(int index)
-        {
-            float kappa = 0.25f;
-            float scale = 4.0f; // range goes from -scale to +scale
-            float shift = 0.8f;
-            float pos = scale * (2 * (float) index / (float) KnitSettings.stitchRes - 0.5f);
-
-            if (index * 2 > KnitSettings.stitchRes)
-            {
-                pos = scale - (pos + shift);
-            }
-            else
-            {
-                pos = pos - shift;
-            }
-
-            float res = sigmoid(pos / kappa);
-            return res;
-        }
-
-        static float GetVerticalOffset(int index)
-        {
-            return GetVerticalOffsetForStitch(index);
-        }
-
-        static float GetDepthOffset(int index)
-        {
-            return 0.0f;
-        }
-
-        static Vector3[] GenerateCurve(float length)
-        {
-            Vector3[] curve = new Vector3[KnitSettings.stitchRes + 1];
-            for (int j = 0; j < KnitSettings.stitchRes + 1; j++)
-            {
-                float x = (float) j / (float) KnitSettings.stitchRes - 0.5f;
-                float verticalOffset = GetVerticalOffset(j);
-                float depthOffset = GetDepthOffset(j);
-                curve[j] = new Vector3(
-                    length * x, verticalOffset, depthOffset);
-                // Debug.Log($"j, x, y: {j} {curve[j].x} {curve[j].y}");
-            }
-
-            return curve;
-        }
-
+        
         static Vector3[] GenerateCircle(float yarnWidth)
         {
             Vector3[] circle = new Vector3[KnitSettings.radialRes];
