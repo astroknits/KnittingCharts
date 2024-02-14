@@ -6,11 +6,11 @@ namespace YarnGenerator
 {
     public class Yarn : MonoBehaviour
     {
-        public float stitchLength = 1f;
+        public float gauge = 1f;
         public float yarnWidth = 0.1f;
 
         public static void GenerateRow(
-            StitchType[] stitches, float yarnWidth, float stitchLength)
+            StitchType[] stitches, float yarnWidth, float gauge)
         {
             // For now, each row only has one stitch in it
 
@@ -23,7 +23,7 @@ namespace YarnGenerator
 
             // Set up vertices for the row based on the curve
             Vector3[] rowVertices = GenerateVerticesForRow(
-                stitches, stitchLength, yarnWidth);
+                stitches, gauge, yarnWidth);
             
             // Set up triangles for the row based on the vertices
             int[] triangles = GenerateTriangles();
@@ -80,13 +80,13 @@ namespace YarnGenerator
         }
 
         static Vector3[] GenerateVerticesForRow(
-            StitchType[] stitches, float stitchLength, float yarnWidth)
+            StitchType[] stitches, float gauge, float yarnWidth)
         {
             Vector3[] rowVertices = Array.Empty<Vector3>();
             foreach (StitchType stitch in stitches)
             {
                 // Generate curve for the stitch
-                Vector3[] stitchCurve = Stitch.GenerateCurve(stitch, stitchLength);
+                Vector3[] stitchCurve = Stitch.GenerateCurve(stitch, gauge);
                 
                 // Set up vertices for the stitch based on the stitch curve
                 // and add to the vertices row array

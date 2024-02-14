@@ -8,7 +8,7 @@ namespace YarnGenerator
     {
         // Parameters for yarn
         float rowLength = 2f;
-        float stitchLength = 2f;
+        float gauge = 2f;
         float yarnWidth = 0.1f;
 
         // Add menu item named "My Window" to the Window menu
@@ -25,24 +25,24 @@ namespace YarnGenerator
 
             rowLength = EditorGUILayout.Slider(
                 "Row Length", rowLength, 1f, 300f);
-            stitchLength = EditorGUILayout.Slider(
-                "Stitch Length", stitchLength, 0.5f, 5f);
+            gauge = EditorGUILayout.Slider(
+                "Stitch Length", gauge, 0.5f, 5f);
             yarnWidth = EditorGUILayout.Slider(
                 "Width", yarnWidth, 0.0001f, 0.5f);
 
 
             if (GUILayout.Button("Generate Yarn"))
             {
-                if (yarnWidth > stitchLength / 8.0f)
+                if (yarnWidth > gauge / 8.0f)
                 {
                     Debug.LogError("Yarn Width needs to be less than 1/8 the stitch length"
-                                   + $"Please choose a yarn width less than {stitchLength / 8.0f}");
+                                   + $"Please choose a yarn width less than {gauge / 8.0f}");
                     return;
                 }
 
                 StitchType[] stitches = new StitchType[1];
                 stitches[0] = StitchType.KnitStitch;
-                Yarn.GenerateRow(stitches, yarnWidth, stitchLength);
+                Yarn.GenerateRow(stitches, yarnWidth, gauge);
             }
 
         }

@@ -6,23 +6,27 @@ namespace YarnGenerator
 {
     public class Stitch
     {
-        public static Vector3[] GenerateCurve(StitchType stitchType, float stitchLength)
+        public StitchType stitchType;
+        // number of stitches from previous row used by this stitch definition
+        public int stitchLength;
+
+        public static Vector3[] GenerateCurve(StitchType stitchType, float gauge)
         {
             switch (stitchType)
             {
                 case StitchType.KnitStitch:
-                    return KnitStitch.GenerateCurve(stitchLength);
+                    return KnitStitch.GenerateCurve(gauge);
                 case StitchType.PurlStitch:
-                    return PurlStitch.GenerateCurve(stitchLength);
+                    return PurlStitch.GenerateCurve(gauge);
                 default:
-                    return KnitStitch.GenerateCurve(stitchLength);
+                    return KnitStitch.GenerateCurve(gauge);
             }
         }
     }
 
     public class KnitStitch
     {
-        public static Vector3[] GenerateCurve(float stitchLength)
+        public static Vector3[] GenerateCurve(float gauge)
         {
             Vector3[] curve = new Vector3[KnitSettings.stitchRes + 1];
             for (int j = 0; j < KnitSettings.stitchRes + 1; j++)
@@ -31,7 +35,7 @@ namespace YarnGenerator
                 float verticalOffset = GetVerticalOffset(j);
                 float depthOffset = GetDepthOffset(j);
                 curve[j] = new Vector3(
-                    stitchLength * x, verticalOffset, depthOffset);
+                    gauge * x, verticalOffset, depthOffset);
                 // Debug.Log($"j, x, y: {j} {curve[j].x} {curve[j].y}");
             }
 
@@ -71,7 +75,7 @@ namespace YarnGenerator
     
     public class PurlStitch
     {
-        public static Vector3[] GenerateCurve(float stitchLength)
+        public static Vector3[] GenerateCurve(float gauge)
         {
             Vector3[] curve = new Vector3[KnitSettings.stitchRes + 1];
             for (int j = 0; j < KnitSettings.stitchRes + 1; j++)
@@ -80,7 +84,7 @@ namespace YarnGenerator
                 float verticalOffset = GetVerticalOffset(j);
                 float depthOffset = GetDepthOffset(j);
                 curve[j] = new Vector3(
-                    stitchLength * x, verticalOffset, depthOffset);
+                    gauge * x, verticalOffset, depthOffset);
                 // Debug.Log($"j, x, y: {j} {curve[j].x} {curve[j].y}");
             }
 
