@@ -25,22 +25,24 @@ namespace YarnGenerator
             }
         }
 
-        public Vector3[] GenerateCurve()
+        public Vector3[] GenerateCurve(int stitchNo)
         {
             Vector3[] curve = new Vector3[KnitSettings.stitchRes + 1];
             for (int j = 0; j < KnitSettings.stitchRes + 1; j++)
             {
+                // x is defined from -0.5f to 0.5f for a given stitch
                 float x = (float) j / (float) KnitSettings.stitchRes - 0.5f;
-                float verticalOffset = GetVerticalOffset(j, x);
-                float depthOffset = GetDepthOffset(j);
+                float verticalOffset = GetVerticalOffset(x);
+                float depthOffset = GetDepthOffset(x);
+                // Debug.Log($"{stitchNo}: {x} {this.gauge * (x + stitchNo)}");
                 curve[j] = new Vector3(
-                    this.gauge * x, verticalOffset, depthOffset);
+                    this.gauge * (x + stitchNo), verticalOffset, depthOffset);
             }
 
             return curve;
         }
 
-        public float GetVerticalOffset(int index, float x)
+        public float GetVerticalOffset(float x)
         {
             float scale = 4.0f; // range goes from -scale to +scale
             float shift = 0.8f;
@@ -59,7 +61,7 @@ namespace YarnGenerator
             return res;
         }
         
-        public float GetDepthOffset(int index)
+        public float GetDepthOffset(float x)
         {
             return 0.0f;
         }
