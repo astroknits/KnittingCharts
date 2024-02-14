@@ -26,6 +26,8 @@ namespace YarnGenerator
 
     public class KnitStitch
     {
+        public static int stitchLength = 1;
+        
         public static Vector3[] GenerateCurve(float gauge)
         {
             Vector3[] curve = new Vector3[KnitSettings.stitchRes + 1];
@@ -75,6 +77,8 @@ namespace YarnGenerator
     
     public class PurlStitch
     {
+        public static int stitchLength = 1;
+
         public static Vector3[] GenerateCurve(float gauge)
         {
             Vector3[] curve = new Vector3[KnitSettings.stitchRes + 1];
