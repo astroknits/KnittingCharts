@@ -9,7 +9,7 @@ public class Yarn : MonoBehaviour
     public float stitchLength = 1f;
     public float yarnWidth = 0.1f;
 
-    public static void Generate(int nRadialPoints, int stitchRes, float width, float stitchLength)
+    public static void GenerateRow(int nRadialPoints, int stitchRes, float width, float stitchLength)
     {
         GameObject yarn = new GameObject("Yarn");
         MeshFilter meshFilter = yarn.AddComponent<MeshFilter>();
@@ -17,7 +17,10 @@ public class Yarn : MonoBehaviour
         Mesh mesh = new Mesh();
         meshFilter.mesh = mesh;
 
-        mesh.vertices = GenerateVertices(nRadialPoints, stitchRes, width, stitchLength);
+        // Generate curve
+        Vector3[] curve = GenerateCurve(stitchLength, stitchRes);
+        
+        mesh.vertices = GenerateVertices(curve, nRadialPoints, stitchRes, width, stitchLength);
         mesh.triangles = GenerateTriangles(nRadialPoints, stitchRes);
         mesh.RecalculateNormals();
 
@@ -111,11 +114,8 @@ public class Yarn : MonoBehaviour
 
         return rotatedCircle;
     }
-    static Vector3[] GenerateVertices(int nRadialPoints, int stitchRes, float width, float length)
+    static Vector3[] GenerateVertices(Vector3[] curve, int nRadialPoints, int stitchRes, float width, float stitchLength)
     {
-        // Generate curve
-        Vector3[] curve = GenerateCurve(length, stitchRes);
-        
         // Generate vertices
         Vector3[] circle = GenerateCircle(width, nRadialPoints);
         Vector3[] vertices = new Vector3[nRadialPoints * (stitchRes + 1)];

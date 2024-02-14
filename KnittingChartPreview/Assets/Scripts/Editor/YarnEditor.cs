@@ -41,7 +41,7 @@ public class YarnEditor : EditorWindow
                 Debug.LogError("Yarn Width needs to be less than 1/8 the stitch length"
                 + $"Please choose a yarn width less than {stitchLength/8.0f}");
                 return;}
-            Yarn.Generate(nRadialPoints, nPoints, yarnWidth, stitchLength);
+            Yarn.GenerateRow(nRadialPoints, nPoints, yarnWidth, stitchLength);
         }
 
     }
