@@ -40,7 +40,9 @@ namespace YarnGenerator
                     return;
                 }
 
-                Yarn.GenerateRow(yarnWidth, stitchLength);
+                StitchType[] stitches = new StitchType[1];
+                stitches[0] = StitchType.KnitStitch;
+                Yarn.GenerateRow(stitches, yarnWidth, stitchLength);
             }
 
         }

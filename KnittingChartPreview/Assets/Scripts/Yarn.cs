@@ -1,7 +1,6 @@
 using System;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
-using YarnGenerator;
 
 namespace YarnGenerator
 {
@@ -10,7 +9,8 @@ namespace YarnGenerator
         public float stitchLength = 1f;
         public float yarnWidth = 0.1f;
 
-        public static void GenerateRow(float yarnWidth, float stitchLength)
+        public static void GenerateRow(
+            StitchType[] stitches, float yarnWidth, float stitchLength)
         {
             // For now, each row only has one stitch in it
 
@@ -21,14 +21,14 @@ namespace YarnGenerator
             Mesh mesh = new Mesh();
             meshFilter.mesh = mesh;
 
-            // Generate curve for the stitch
-            Vector3[] stitchCurve = Stitch.GenerateCurve(StitchType.KnitStitch, stitchLength);
+            // Set up vertices for the row based on the curve
+            Vector3[] rowVertices = GenerateVerticesForRow(
+                stitches, stitchLength, yarnWidth);
             
-            // Set up vertices and triangles for the row based on the curve
-            Vector3[] vertices = GenerateVertices(stitchCurve, yarnWidth);
+            // Set up triangles for the row based on the vertices
             int[] triangles = GenerateTriangles();
 
-            mesh.vertices = vertices;
+            mesh.vertices = rowVertices;
             mesh.triangles = triangles;
             mesh.RecalculateNormals();
 
@@ -43,13 +43,17 @@ namespace YarnGenerator
             {
                 float angle = Mathf.PI * 2 * i / KnitSettings.radialRes;
                 circle[i] = new Vector3(
-                    0.0f, yarnWidth * Mathf.Cos(angle), yarnWidth * Mathf.Sin(angle));
+                    0.0f,
+                    yarnWidth * Mathf.Cos(angle),
+                    yarnWidth * Mathf.Sin(angle)
+                    );
             }
 
             return circle;
         }
 
-        static Vector3[] GenerateRotatedCircle(Vector3[] circle, Vector3[] curve, int j)
+        static Vector3[] GenerateRotatedCircle(
+            Vector3[] circle, Vector3[] curve, int j)
         {
             Vector3[] rotatedCircle = new Vector3[KnitSettings.radialRes];
             float theta = 0.0f;
@@ -73,11 +77,31 @@ namespace YarnGenerator
             return rotatedCircle;
         }
 
-        static Vector3[] GenerateVertices(Vector3[] curve, float yarnWidth)
+        static Vector3[] GenerateVerticesForRow(
+            StitchType[] stitches, float stitchLength, float yarnWidth)
+        {
+            Vector3[] rowVertices = Array.Empty<Vector3>();
+            foreach (StitchType stitch in stitches)
+            {
+                // Generate curve for the stitch
+                Vector3[] stitchCurve = Stitch.GenerateCurve(stitch, stitchLength);
+                
+                // Set up vertices for the stitch based on the stitch curve
+                // and add to the vertices row array
+                rowVertices = rowVertices.Concat(
+                    GenerateVerticesForStitch(stitchCurve, yarnWidth)
+                ).ToArray();
+            }
+            
+            return rowVertices;
+        }
+        static Vector3[] GenerateVerticesForStitch(Vector3[] curve, float yarnWidth)
         {
             // Generate vertices
             Vector3[] circle = GenerateCircle(yarnWidth);
-            Vector3[] vertices = new Vector3[KnitSettings.radialRes * (KnitSettings.stitchRes + 1)];
+            Vector3[] vertices = new Vector3[
+                KnitSettings.radialRes * (KnitSettings.stitchRes + 1)
+            ];
             for (int j = 0; j < KnitSettings.stitchRes + 1; j++)
             {
                 Vector3[] rotatedCircle = GenerateRotatedCircle(circle, curve, j);
