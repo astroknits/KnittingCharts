@@ -31,7 +31,7 @@ namespace YarnGenerator
             for (int j = 0; j < KnitSettings.stitchRes + 1; j++)
             {
                 float x = (float) j / (float) KnitSettings.stitchRes - 0.5f;
-                float verticalOffset = GetVerticalOffset(j);
+                float verticalOffset = GetVerticalOffset(j, x);
                 float depthOffset = GetDepthOffset(j);
                 curve[j] = new Vector3(
                     this.gauge * x, verticalOffset, depthOffset);
@@ -40,13 +40,13 @@ namespace YarnGenerator
             return curve;
         }
 
-        public float GetVerticalOffset(int index)
+        public float GetVerticalOffset(int index, float x)
         {
             float scale = 4.0f; // range goes from -scale to +scale
             float shift = 0.8f;
-            float xPos = scale * (2 * (float) index / (float) KnitSettings.stitchRes - 0.5f);
+            float xPos = scale * (2 * x + 0.5f);
 
-            if (index * 2 > KnitSettings.stitchRes)
+            if (x > 0)
             {
                 xPos = scale - (xPos + shift);
             }
