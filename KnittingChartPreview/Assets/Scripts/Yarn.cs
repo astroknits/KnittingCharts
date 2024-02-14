@@ -38,6 +38,8 @@ namespace YarnGenerator
         
         static Vector3[] GenerateCircle(float yarnWidth)
         {
+            // generates circle of width yarnWidth in y-z plane
+            // for each point in the stitch curve
             Vector3[] circle = new Vector3[KnitSettings.radialRes];
             for (int i = 0; i < KnitSettings.radialRes; i++)
             {
