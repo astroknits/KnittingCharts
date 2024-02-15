@@ -7,7 +7,7 @@ namespace YarnGenerator
     public class YarnEditor : EditorWindow
     {
         // Parameters for yarn
-        float rowLength = 2f;
+        int rowLength = 10;
         float gauge = 2f;
         float yarnWidth = 0.1f;
 
@@ -23,8 +23,8 @@ namespace YarnGenerator
         {
             GUILayout.Label("Yarn Settings", EditorStyles.boldLabel);
 
-            rowLength = EditorGUILayout.Slider(
-                "Row Length", rowLength, 1f, 300f);
+            rowLength = EditorGUILayout.IntSlider(
+                "Row Length", rowLength, 1, 300);
             gauge = EditorGUILayout.Slider(
                 "Stitch Length", gauge, 0.5f, 5f);
             yarnWidth = EditorGUILayout.Slider(
@@ -40,9 +40,11 @@ namespace YarnGenerator
                     return;
                 }
 
-                StitchType[] stitches = new StitchType[2];
-                stitches[0] = StitchType.KnitStitch;
-                stitches[1] = StitchType.KnitStitch;
+                StitchType[] stitches = new StitchType[rowLength];
+                for (int i = 0; i < rowLength; i++)
+                {
+                    stitches[i] = StitchType.KnitStitch;
+                }
                 Yarn.GenerateRow(stitches, yarnWidth, gauge);
             }
 
