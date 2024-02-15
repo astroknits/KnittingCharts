@@ -8,6 +8,7 @@ namespace YarnGenerator
     {
         // Parameters for yarn
         int rowLength = 10;
+        int nRows = 1;
         float gauge = 2f;
         float yarnWidth = 0.1f;
 
@@ -25,6 +26,8 @@ namespace YarnGenerator
 
             rowLength = EditorGUILayout.IntSlider(
                 "Row Length", rowLength, 1, 300);
+            nRows = EditorGUILayout.IntSlider(
+                "# Rows", nRows, 1, 300);
             gauge = EditorGUILayout.Slider(
                 "Stitch Length", gauge, 0.5f, 5f);
             yarnWidth = EditorGUILayout.Slider(
@@ -40,12 +43,15 @@ namespace YarnGenerator
                     return;
                 }
 
-                StitchType[] stitches = new StitchType[rowLength];
-                for (int i = 0; i < rowLength; i++)
+                for (int rowNumber = 0; rowNumber < nRows; rowNumber++)
                 {
-                    stitches[i] = StitchType.KnitStitch;
+                    StitchType[] stitches = new StitchType[rowLength];
+                    for (int i = 0; i < rowLength; i++)
+                    {
+                        stitches[i] = StitchType.KnitStitch;
+                    }
+                    Yarn.GenerateRow(stitches, yarnWidth, gauge, rowNumber);
                 }
-                Yarn.GenerateRow(stitches, yarnWidth, gauge);
             }
 
         }

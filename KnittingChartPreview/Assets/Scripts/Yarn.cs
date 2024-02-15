@@ -10,7 +10,7 @@ namespace YarnGenerator
         public float yarnWidth = 0.1f;
 
         public static void GenerateRow(
-            StitchType[] stitches, float yarnWidth, float gauge)
+            StitchType[] stitches, float yarnWidth, float gauge, int rowNumber)
         {
             // For now, each row only has one stitch in it
 
