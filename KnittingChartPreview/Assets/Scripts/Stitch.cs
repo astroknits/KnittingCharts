@@ -25,18 +25,23 @@ namespace YarnGenerator
             }
         }
 
-        public Vector3[] GenerateCurve(int stitchNo)
+        public Vector3[] GenerateCurve(int stitchNo, bool lastStitch)
         {
-            Vector3[] curve = new Vector3[KnitSettings.stitchRes + 1];
-            for (int j = 0; j < KnitSettings.stitchRes + 1; j++)
+            int segments = KnitSettings.stitchRes;
+            if (lastStitch)
+            {
+                segments += 1;
+            }
+            Vector3[] curve = new Vector3[segments];
+            for (int j = 0; j < segments; j++)
             {
                 // x is defined from -0.5f to 0.5f for a given stitch
                 float x = (float) j / (float) KnitSettings.stitchRes - 0.5f;
+                float horizontalOffset = stitchNo;
                 float verticalOffset = GetVerticalOffset(x);
                 float depthOffset = GetDepthOffset(x);
-                // Debug.Log($"{stitchNo}: {x} {this.gauge * (x + stitchNo)}");
                 curve[j] = new Vector3(
-                    this.gauge * (x + stitchNo), verticalOffset, depthOffset);
+                    this.gauge * (x + horizontalOffset), verticalOffset, depthOffset);
             }
 
             return curve;
