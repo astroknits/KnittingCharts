@@ -11,6 +11,7 @@ namespace YarnGenerator
         public int stitchLength;
         // Length of each individual stitch
         public float gauge;
+        private Vector3[] genericCurve;
 
         public static Stitch GetStitch(StitchType stitchType, float gauge)
         {
@@ -25,26 +26,45 @@ namespace YarnGenerator
             }
         }
 
-        public Vector3[] GenerateCurve(int stitchNo, bool lastStitch)
+        private Vector3[] GenerateGenericCurve(bool lastStitch)
         {
             int segments = KnitSettings.stitchRes;
             if (lastStitch)
             {
                 segments += 1;
             }
-            Vector3[] curve = new Vector3[segments];
+
+            Vector3[] genericCurve1 = new Vector3[segments];
+            if (genericCurve != null && genericCurve.Length == segments)
+            {
+                Array.Copy(genericCurve, genericCurve1, genericCurve.Length);
+                return genericCurve1;
+            }
             for (int j = 0; j < segments; j++)
             {
                 // x is defined from -0.5f to 0.5f for a given stitch
                 float x = (float) j / (float) KnitSettings.stitchRes - 0.5f;
-                float horizontalOffset = stitchNo;
                 float verticalOffset = GetVerticalOffset(x);
                 float depthOffset = GetDepthOffset(x);
-                curve[j] = new Vector3(
-                    this.gauge * (x + horizontalOffset), verticalOffset, depthOffset);
+                genericCurve1[j] = new Vector3(
+                    this.gauge * x, verticalOffset, depthOffset);
             }
 
-            return curve;
+            Array.Copy(genericCurve1, genericCurve, genericCurve1.Length);
+            return genericCurve1;
+        }
+
+        public Vector3[] GenerateCurve(int stitchNo, bool lastStitch)
+        {
+            Vector3[] curveForStitch = GenerateGenericCurve(lastStitch);
+
+            Vector3 horizontalOffset = new Vector3(this.gauge * stitchNo, 0, 0);
+            for (int j = 0; j < curveForStitch.Length; j++)
+            {
+                curveForStitch[j] = curveForStitch[j] + horizontalOffset;
+            }
+
+            return curveForStitch;
         }
 
         public float GetVerticalOffset(float x)

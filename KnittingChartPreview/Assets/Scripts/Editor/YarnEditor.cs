@@ -12,6 +12,8 @@ namespace YarnGenerator
         float gauge = 2f;
         float yarnWidth = 0.1f;
 
+        private YarnCache yarnCache = YarnCache.GetInstance();
+
         // Add menu item named "My Window" to the Window menu
         [MenuItem("Window/Create Yarn")]
         public static void ShowWindow()
@@ -50,7 +52,7 @@ namespace YarnGenerator
                     {
                         stitches[i] = StitchType.KnitStitch;
                     }
-                    Yarn.GenerateRow(stitches, yarnWidth, gauge, rowNumber);
+                    yarnCache.GenerateRow(stitches, yarnWidth, gauge, rowNumber);
                 }
             }
 
