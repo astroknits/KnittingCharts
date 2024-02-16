@@ -40,6 +40,8 @@ namespace YarnGenerator
                 Array.Copy(genericCurve, genericCurve1, genericCurve.Length);
                 return genericCurve1;
             }
+
+            genericCurve = new Vector3[segments];
             for (int j = 0; j < segments; j++)
             {
                 // x is defined from -0.5f to 0.5f for a given stitch
