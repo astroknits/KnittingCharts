@@ -34,11 +34,11 @@ namespace YarnGenerator
                 segments += 1;
             }
 
-            Vector3[] genericCurve1 = new Vector3[segments];
+            Vector3[] genericCurveCopy = new Vector3[segments];
             if (genericCurve != null && genericCurve.Length == segments)
             {
-                Array.Copy(genericCurve, genericCurve1, genericCurve.Length);
-                return genericCurve1;
+                Array.Copy(genericCurve, genericCurveCopy, genericCurve.Length);
+                return genericCurveCopy;
             }
 
             genericCurve = new Vector3[segments];
@@ -46,14 +46,15 @@ namespace YarnGenerator
             {
                 // x is defined from -0.5f to 0.5f for a given stitch
                 float x = (float) j / (float) KnitSettings.stitchRes - 0.5f;
+                float horizontalOffset = GetHorizontalOffset(x);
                 float verticalOffset = GetVerticalOffset(x);
                 float depthOffset = GetDepthOffset(x);
-                genericCurve1[j] = new Vector3(
+                genericCurveCopy[j] = new Vector3(
                     this.gauge * x, verticalOffset, depthOffset);
             }
 
-            Array.Copy(genericCurve1, genericCurve, genericCurve1.Length);
-            return genericCurve1;
+            Array.Copy(genericCurveCopy, genericCurve, genericCurveCopy.Length);
+            return genericCurveCopy;
         }
 
         public Vector3[] GenerateCurve(int stitchNo, bool lastStitch)
@@ -69,22 +70,14 @@ namespace YarnGenerator
             return curveForStitch;
         }
 
+        public float GetHorizontalOffset(float x)
+        {
+            return 1.0f;
+        }
+
         public float GetVerticalOffset(float x)
         {
-            float scale = 4.0f; // range goes from -scale to +scale
-            float shift = 0.8f;
-            float xPos = scale * (2 * x + 0.5f);
-
-            if (x > 0)
-            {
-                xPos = scale - (xPos + shift);
-            }
-            else
-            {
-                xPos = xPos - shift;
-            }
-
-            float res = GetStitchShape(xPos);
+            float res = GetStitchShape(x);
             return res;
         }
         
@@ -112,10 +105,24 @@ namespace YarnGenerator
 
         public override float GetStitchShape(float x)
         {
+            // Use sigmoid function to simulate stitch
+            // (not a great approximation but simple)
+            // x goes from -1 to 1
             float kappa = 0.25f;
-            return sigmoid(kappa, x);
+            float scale = 4.0f; // range goes from -scale to +scale
+            float shift = 0.8f;
+            float xPos = scale * (2 * x + 0.5f);
+
+            if (x > 0)
+            {
+                xPos = scale - (xPos + shift);
+            }
+            else
+            {
+                xPos = xPos - shift;
+            }
+            return sigmoid(kappa, xPos);
         }
-        
     }
     
 }
