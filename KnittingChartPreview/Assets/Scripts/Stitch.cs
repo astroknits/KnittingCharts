@@ -104,7 +104,16 @@ namespace YarnGenerator
             float kappa = 0.25f;
             float scale = 4.0f; // range goes from -scale to +scale
             float shift = 0.8f;
+            // float xPos = scale * (2 * x + 0.5f);
             float xPos = 2.0f * scale * j / KnitSettings.stitchRes;
+            // xPos / scale = 2 * x + 0.5f
+            // xPos / scale - 0.5f = 2 * x
+            // x = 1/2 * (xPos / scale - 0.5f)
+            
+            // 1/2 * (xPos / scale - 0.5f) = j / stitchRes - 0.5f
+            // xPos / scale - 0.5f = 2 * j / stitchRes - 1 
+            // xPos / scale = 2 * j / stitchRes - 0.5
+            // xPos = 2 * scale * j / stitchRes
 
             if (x > 0)
             {
