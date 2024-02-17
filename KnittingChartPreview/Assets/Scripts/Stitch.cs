@@ -93,6 +93,36 @@ namespace YarnGenerator
 
             return new Vector3(xVal,yVal,zVal);
         }
+        
+        public override float GetFullStitchShape(int j)
+        {
+            // x goes from -0.5 to 0.5
+            float x = (float) j / (float) KnitSettings.stitchRes - 0.5f;
+
+            // Use sigmoid function to simulate stitch
+            // (not a great approximation but simple)
+            float kappa = 0.25f;
+            float scale = 4.0f; // range goes from -scale to +scale
+            float shift = 0.8f;
+            float xPos = 2.0f * scale * j / KnitSettings.stitchRes;
+
+            if (x > 0)
+            {
+                xPos = scale - (xPos + shift);
+            }
+            else
+            {
+                xPos = xPos - shift;
+            }
+            return sigmoid(kappa, xPos);
+        }
+        
+        public override Vector3 GetKnittedStitchShape(int j)
+        {
+            // frac goes from 0 to 1
+            float angle = (float) j / (float) KnitSettings.stitchRes * 2 * (float) Math.PI;
+            return new Vector3(0,0,0);
+        }
     }
     
 }
