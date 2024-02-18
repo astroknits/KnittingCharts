@@ -94,19 +94,7 @@ namespace YarnGenerator
             return new Vector3(xVal,yVal,zVal);
         }
         
-        public override Vector3 GetFullStitchShape(int j)
-        {
-            // x goes from -0.5 to 0.5
-            float x = (float) j / (float) KnitSettings.stitchRes - 0.5f;
-
-            float xVal = this.gauge * x;
-            float yVal = GetSigmoidShape(x);
-            float zVal = GetDepthOffset(x);
-
-            return new Vector3(xVal, yVal, zVal);
-        }
-        
-        public override Vector3 GetKnittedStitchShape(int j)
+        public override Vector3 GetLoop(int j)
         {
             float h = 1.0f; // height of stitches
             float a = 1.6f; // width of stitch
