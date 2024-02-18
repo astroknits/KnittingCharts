@@ -11,12 +11,12 @@ namespace YarnGenerator
         private StitchCache stitchCache = StitchCache.GetInstance();
 
         public GameObject GenerateRow(
-            StitchType[] stitches, float yarnWidth, float gauge, int rowNumber, Material material)
+            StitchType[] stitches, float yarnWidth, int rowNumber, Material material)
         {
             // For now, each row only has one stitch in it
 
             // Create the mesh for the yarn in this row
-            GameObject yarn = new GameObject($"Row {rowNumber} for {yarnWidth}/{gauge}");
+            GameObject yarn = new GameObject($"Row {rowNumber} for {yarnWidth}/1.0f");
             MeshFilter meshFilter = yarn.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = yarn.AddComponent<MeshRenderer>();
             Mesh mesh = new Mesh();
@@ -24,7 +24,7 @@ namespace YarnGenerator
 
             // Set up vertices for the row based on the curve
             Vector3[] rowVertices = GenerateVerticesForRow(
-                stitches, gauge, yarnWidth, rowNumber);
+                stitches, yarnWidth, rowNumber);
             
             // Set up triangles for the row based on the vertices
             int[] triangles = GenerateTriangles(rowVertices);
@@ -83,14 +83,14 @@ namespace YarnGenerator
         }
 
         internal Vector3[] GenerateVerticesForRow(
-            StitchType[] stitches, float gauge, float yarnWidth, int rowNumber)
+            StitchType[] stitches, float yarnWidth, int rowNumber)
         {
             Vector3[] rowCurve = Array.Empty<Vector3>();
             for (int k = 0; k < stitches.Length; k++)
             {
                 StitchType stitchType = stitches[k];
                 // Generate curve for the stitch
-                Stitch stitch = stitchCache.GetStitch(stitchType, gauge, false);
+                Stitch stitch = stitchCache.GetStitch(stitchType, false);
                 Vector3[] rowCurve1 = stitch.GenerateCurve(k, yarnWidth, (k == stitches.Length - 1), stitch.isPurlStitch);
                 // and add to the vertices row array
                 rowCurve = rowCurve.Concat(rowCurve1).ToArray();

@@ -10,22 +10,20 @@ namespace YarnGenerator
         public StitchType stitchType;
         // # of stitches from previous row used by this stitch definition
         public int stitchLength;
-        // Length of each individual stitch
-        public float gauge;
         // Whether the stitch is knit or purl (indicates loop direction)
         public bool isPurlStitch;
         private Vector3[] genericCurve;
 
-        public static Stitch GetStitch(StitchType stitchType, float gauge)
+        public static Stitch GetStitch(StitchType stitchType)
         {
             switch (stitchType)
             {
                 case StitchType.KnitStitch:
-                    return new KnitStitch(gauge);
+                    return new KnitStitch();
                 case StitchType.PurlStitch:
-                    return new PurlStitch(gauge);
+                    return new PurlStitch();
                 default:
-                    return new KnitStitch(gauge);
+                    return new KnitStitch();
             }
         }
 
@@ -58,7 +56,9 @@ namespace YarnGenerator
         {
             Vector3[] curveForStitch = GenerateGenericCurve(yarnWidth, lastStitch, isPurlStitch);
 
-            Vector3 horizontalOffset = new Vector3(this.gauge * stitchNo, 0, 0);
+            // Each stitch takes up 2 natural units.  Therefore, the next stitch
+            // needs an offset of 2.0f from the previous stitch
+            Vector3 horizontalOffset = new Vector3(2.0f * stitchNo, 0, 0);
             for (int j = 0; j < curveForStitch.Length; j++)
             {
                 curveForStitch[j] = curveForStitch[j] + horizontalOffset;
@@ -95,20 +95,18 @@ namespace YarnGenerator
 
     public class KnitStitch : Stitch
     {
-        public KnitStitch(float gauge)
+        public KnitStitch()
         {
             this.stitchLength = 1;
-            this.gauge = gauge;
             this.isPurlStitch = false;
         }
     }
     
     public class PurlStitch : Stitch
     {
-        public PurlStitch(float gauge)
+        public PurlStitch()
         {
             this.stitchLength = 1;
-            this.gauge = gauge;
             this.isPurlStitch = true;
         }
     }
