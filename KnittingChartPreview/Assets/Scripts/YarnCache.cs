@@ -23,7 +23,7 @@ namespace YarnGenerator
             return instance;
         }
 
-        public void GeneratePattern(StitchType[,] pattern, float yarnWidth, float gauge)
+        public void GeneratePattern(StitchType[,] pattern, float yarnWidth, float gauge, Material material)
         {
             GameObject parent = new GameObject($"Pattern {yarnWidth} {gauge}");
             for (int rowNumber = 0; rowNumber < pattern.GetLength(0); rowNumber++)
@@ -33,14 +33,14 @@ namespace YarnGenerator
                 {
                     stitches[i] = pattern[rowNumber, i];
                 }
-                GameObject row = yarn.GenerateRow(stitches, yarnWidth, gauge, rowNumber);
+                GameObject row = yarn.GenerateRow(stitches, yarnWidth, gauge, rowNumber, material);
                 row.transform.SetParent(parent.transform);
             }
         }
 
-        public void GenerateRow(StitchType[] stitches, float yarnWidth, float gauge, int rowNumber)
+        public void GenerateRow(StitchType[] stitches, float yarnWidth, float gauge, int rowNumber, Material material)
         {
-            yarn.GenerateRow(stitches, yarnWidth, gauge, rowNumber);
+            yarn.GenerateRow(stitches, yarnWidth, gauge, rowNumber, material);
         }
         
         public Stitch GetStitch(StitchType stitchType, float gauge, bool forceUpdate)
