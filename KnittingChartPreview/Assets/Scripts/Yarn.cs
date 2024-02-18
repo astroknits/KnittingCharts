@@ -10,13 +10,13 @@ namespace YarnGenerator
         public float yarnWidth = 0.1f;
         private StitchCache stitchCache = StitchCache.GetInstance();
 
-        public void GenerateRow(
+        public GameObject GenerateRow(
             StitchType[] stitches, float yarnWidth, float gauge, int rowNumber)
         {
             // For now, each row only has one stitch in it
 
             // Create the mesh for the yarn in this row
-            GameObject yarn = new GameObject("Yarn");
+            GameObject yarn = new GameObject($"Row {rowNumber} for {yarnWidth}/{gauge}");
             MeshFilter meshFilter = yarn.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = yarn.AddComponent<MeshRenderer>();
             Mesh mesh = new Mesh();
@@ -24,8 +24,7 @@ namespace YarnGenerator
 
             // Set up vertices for the row based on the curve
             Vector3[] rowVertices = GenerateVerticesForRow(
-                stitches, gauge, yarnWidth);
-            
+                stitches, gauge, yarnWidth, rowNumber);
             
             // Set up triangles for the row based on the vertices
             int[] triangles = GenerateTriangles(rowVertices);
@@ -36,6 +35,7 @@ namespace YarnGenerator
 
             // Assign a default material
             meshRenderer.material = new Material(Shader.Find("Standard"));
+            return yarn;
         }
         
         internal Vector3[] GenerateCircle(float yarnWidth)
@@ -82,7 +82,7 @@ namespace YarnGenerator
         }
 
         internal Vector3[] GenerateVerticesForRow(
-            StitchType[] stitches, float gauge, float yarnWidth)
+            StitchType[] stitches, float gauge, float yarnWidth, int rowNumber)
         {
             Vector3[] rowCurve = Array.Empty<Vector3>();
             for (int k = 0; k < stitches.Length; k++)
@@ -90,13 +90,17 @@ namespace YarnGenerator
                 StitchType stitchType = stitches[k];
                 // Generate curve for the stitch
                 Stitch stitch = stitchCache.GetStitch(stitchType, gauge, false);
-                Vector3[] rowCurve1 = stitch.GenerateCurve(k, (k == stitches.Length - 1));
+                Vector3[] rowCurve1 = stitch.GenerateCurve(k, yarnWidth, (k == stitches.Length - 1), stitch.isPurlStitch);
                 // and add to the vertices row array
                 rowCurve = rowCurve.Concat(rowCurve1).ToArray();
             }
 
             // Set up vertices for the stitch based on the stitch curve
             Vector3[] rowVertices = GenerateVerticesForCurve(rowCurve, yarnWidth);
+            for (int j = 0; j < rowVertices.Length; j++)
+            {
+                rowVertices[j].y += rowNumber * (1 + 1.0f - 3.0f * yarnWidth);
+            }
             return rowVertices;
         }
         internal Vector3[] GenerateVerticesForCurve(Vector3[] curve, float yarnWidth)
@@ -132,14 +136,13 @@ namespace YarnGenerator
                     {
                         int index = j * KnitSettings.radialRes + i;
                         int nextIndex = j * KnitSettings.radialRes + (i + 1) % KnitSettings.radialRes;
-                        // int triangleIndex = j * KnitSettings.radialRes * 6 + i;
                         // Side triangles
-                        triangles[triangleIndex] = nextIndex;
+                        triangles[triangleIndex] = index;
                         triangles[triangleIndex + 1] = index + KnitSettings.radialRes;
-                        triangles[triangleIndex + 2] = index;
-                        triangles[triangleIndex + 3] = nextIndex + KnitSettings.radialRes;
+                        triangles[triangleIndex + 2] = nextIndex;
+                        triangles[triangleIndex + 3] = nextIndex;
                         triangles[triangleIndex + 4] = index + KnitSettings.radialRes;
-                        triangles[triangleIndex + 5] = nextIndex;
+                        triangles[triangleIndex + 5] = nextIndex + KnitSettings.radialRes;
                     }
                     triangleIndex += 6;
                 }

@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using YarnGenerator;
@@ -38,22 +39,30 @@ namespace YarnGenerator
 
             if (GUILayout.Button("Generate Yarn"))
             {
-                if (yarnWidth > gauge / 8.0f)
+                if (yarnWidth > gauge / 6.0f)
                 {
-                    Debug.LogError("Yarn Width needs to be less than 1/8 the stitch length"
-                                   + $"Please choose a yarn width less than {gauge / 8.0f}");
+                    Debug.LogError("Yarn Width needs to be less than 1/6 the stitch length"
+                                   + $"Please choose a yarn width less than {gauge / 6.0f}");
                     return;
                 }
 
+                StitchType[,] pattern = new StitchType[nRows, rowLength];
                 for (int rowNumber = 0; rowNumber < nRows; rowNumber++)
                 {
                     StitchType[] stitches = new StitchType[rowLength];
                     for (int i = 0; i < rowLength; i++)
                     {
-                        stitches[i] = StitchType.KnitStitch;
+                        if (i % 4 < 2)
+                        {
+                            pattern[rowNumber, i] = StitchType.KnitStitch;
+                        }
+                        else
+                        {
+                            pattern[rowNumber, i] = StitchType.PurlStitch;
+                        }
                     }
-                    yarnCache.GenerateRow(stitches, yarnWidth, gauge, rowNumber);
                 }
+                yarnCache.GeneratePattern(pattern, yarnWidth, gauge);
             }
 
         }
