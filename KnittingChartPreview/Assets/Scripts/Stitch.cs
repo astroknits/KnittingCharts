@@ -72,7 +72,7 @@ namespace YarnGenerator
             float h = 1.0f; // height of stitches
             float a = 1.6f; // width of stitch
             float d = 0.3f; // depth curve factor for stitch
-            float d2 = 2 * yarnWidth; // depth offset for stitch
+            float d2 = 2.1f * yarnWidth; // depth offset for stitch
 
             if (isPurlStitch)
             {
