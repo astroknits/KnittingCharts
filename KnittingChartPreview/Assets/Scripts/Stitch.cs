@@ -142,9 +142,6 @@ namespace YarnGenerator
             float shift = 0.8f;
             // float xPos = scale * (2 * x + 0.5f);
             float xPos = 2.0f * scale * j / KnitSettings.stitchRes;
-            // xPos / scale = 2 * x + 0.5f
-            // xPos / scale - 0.5f = 2 * x
-            // x = 1/2 * (xPos / scale - 0.5f)
             
             // 1/2 * (xPos / scale - 0.5f) = j / stitchRes - 0.5f
             // xPos / scale - 0.5f = 2 * j / stitchRes - 1 
