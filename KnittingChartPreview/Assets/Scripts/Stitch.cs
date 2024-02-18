@@ -44,8 +44,7 @@ namespace YarnGenerator
             genericCurve = new Vector3[segments];
             for (int j = 0; j < segments; j++)
             {
-                // genericCurveCopy[j] = GetFullStitchShape(j);
-                genericCurveCopy[j] = GetKnittedStitchShape(j);
+                genericCurveCopy[j] = GetLoop(j);
             }
 
             Array.Copy(genericCurveCopy, genericCurve, genericCurveCopy.Length);
@@ -65,19 +64,8 @@ namespace YarnGenerator
             return curveForStitch;
         }
         
-        public float GetDepthOffset(float x)
-        {
-            return 0.0f;
-        }
-        public abstract Vector3 GetFullStitchShape(int j);
+        public abstract Vector3 GetLoop(int i);
 
-        public abstract Vector3 GetKnittedStitchShape(int i);
-
-        protected static float sigmoid(float kappa, float x)
-        {
-            // sigmoid(x) = 1 / (1 + exp(-x))
-            return 1.0f / (1.0f + (float) Math.Exp(-1.0f * x / kappa));
-        }
     }
 
     public class KnitStitch : Stitch
@@ -87,42 +75,8 @@ namespace YarnGenerator
             this.stitchLength = 1;
             this.gauge = gauge;
         }
-
-        private float GetSigmoidShape(float x)
-        {
-            // Use sigmoid function to simulate stitch
-            // (not a great approximation but simple)
-            float kappa = 0.25f;
-            float scale = 4.0f; // range goes from -scale to +scale
-            float shift = 0.8f;
-
-            float xPos = scale * (2 * x + 0.5f);
-
-            if (x > 0)
-            {
-                xPos = scale - (xPos + shift);
-            }
-            else
-            {
-                xPos = xPos - shift;
-            }
-
-            return sigmoid(kappa, xPos);
-        }
         
-        public override Vector3 GetFullStitchShape(int j)
-        {
-            // x goes from -0.5 to 0.5
-            float x = (float) j / (float) KnitSettings.stitchRes - 0.5f;
-
-            float xVal = this.gauge * x;
-            float yVal = GetSigmoidShape(x);
-            float zVal = GetDepthOffset(x);
-
-            return new Vector3(xVal, yVal, zVal);
-        }
-        
-        public override Vector3 GetKnittedStitchShape(int j)
+        public override Vector3 GetLoop(int j)
         {
             float h = 1.0f; // height of stitches
             float a = 1.6f; // width of stitch
