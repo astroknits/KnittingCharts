@@ -1,3 +1,6 @@
+using System.Linq;
+using UnityEngine.SocialPlatforms;
+
 namespace YarnGenerator
 {
     public class YarnCache
@@ -17,6 +20,19 @@ namespace YarnGenerator
                 instance = new YarnCache();
             }
             return instance;
+        }
+
+        public void GeneratePattern(StitchType[,] pattern, float yarnWidth, float gauge)
+        {
+            for (int rowNumber = 0; rowNumber < pattern.GetLength(0); rowNumber++)
+            {
+                StitchType[] stitches = new StitchType[pattern.GetLength(1)];
+                for (int i = 0; i < pattern.GetLength(1); i++)
+                {
+                    stitches[i] = pattern[rowNumber, i];
+                }
+                yarn.GenerateRow(stitches, yarnWidth, gauge, rowNumber);
+            }
         }
 
         public void GenerateRow(StitchType[] stitches, float yarnWidth, float gauge, int rowNumber)

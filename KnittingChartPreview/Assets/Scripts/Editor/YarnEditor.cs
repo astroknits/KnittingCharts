@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using YarnGenerator;
@@ -45,6 +46,7 @@ namespace YarnGenerator
                     return;
                 }
 
+                StitchType[,] pattern = new StitchType[nRows, rowLength];
                 for (int rowNumber = 0; rowNumber < nRows; rowNumber++)
                 {
                     StitchType[] stitches = new StitchType[rowLength];
@@ -52,15 +54,15 @@ namespace YarnGenerator
                     {
                         if (i % 4 < 2)
                         {
-                            stitches[i] = StitchType.KnitStitch;
+                            pattern[rowNumber, i] = StitchType.KnitStitch;
                         }
                         else
                         {
-                            stitches[i] = StitchType.PurlStitch;
+                            pattern[rowNumber, i] = StitchType.PurlStitch;
                         }
                     }
-                    yarnCache.GenerateRow(stitches, yarnWidth, gauge, rowNumber);
                 }
+                yarnCache.GeneratePattern(pattern, yarnWidth, gauge);
             }
 
         }
