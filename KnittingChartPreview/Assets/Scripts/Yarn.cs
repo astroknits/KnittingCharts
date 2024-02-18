@@ -24,8 +24,7 @@ namespace YarnGenerator
 
             // Set up vertices for the row based on the curve
             Vector3[] rowVertices = GenerateVerticesForRow(
-                stitches, gauge, yarnWidth);
-            
+                stitches, gauge, yarnWidth, rowNumber);
             
             // Set up triangles for the row based on the vertices
             int[] triangles = GenerateTriangles(rowVertices);
@@ -82,7 +81,7 @@ namespace YarnGenerator
         }
 
         internal Vector3[] GenerateVerticesForRow(
-            StitchType[] stitches, float gauge, float yarnWidth)
+            StitchType[] stitches, float gauge, float yarnWidth, int rowNumber)
         {
             Vector3[] rowCurve = Array.Empty<Vector3>();
             for (int k = 0; k < stitches.Length; k++)
@@ -97,6 +96,10 @@ namespace YarnGenerator
 
             // Set up vertices for the stitch based on the stitch curve
             Vector3[] rowVertices = GenerateVerticesForCurve(rowCurve, yarnWidth);
+            for (int j = 0; j < rowVertices.Length; j++)
+            {
+                rowVertices[j].y += rowNumber;
+            }
             return rowVertices;
         }
         internal Vector3[] GenerateVerticesForCurve(Vector3[] curve, float yarnWidth)
