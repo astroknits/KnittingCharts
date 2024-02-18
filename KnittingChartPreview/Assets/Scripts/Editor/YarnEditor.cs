@@ -10,7 +10,6 @@ namespace YarnGenerator
         // Parameters for yarn
         int rowLength = 10;
         int nRows = 1;
-        float gauge = 2f;
         float yarnWidth = 0.1f;
         Material material;
 
@@ -32,19 +31,17 @@ namespace YarnGenerator
                 "Row Length", rowLength, 1, 300);
             nRows = EditorGUILayout.IntSlider(
                 "# Rows", nRows, 1, 300);
-            gauge = EditorGUILayout.Slider(
-                "Stitch Length", gauge, 0.5f, 5f);
             yarnWidth = EditorGUILayout.Slider(
-                "Width", yarnWidth, 0.0001f, 0.5f);
+                "Width", yarnWidth, 0.0001f, 0.33f);
             material = (Material) EditorGUILayout.ObjectField(material, typeof(Material));
 
 
             if (GUILayout.Button("Generate Yarn"))
             {
-                if (yarnWidth > gauge / 6.0f)
+                if (yarnWidth > 1.0f / 3.0f)
                 {
                     Debug.LogError("Yarn Width needs to be less than 1/6 the stitch length"
-                                   + $"Please choose a yarn width less than {gauge / 6.0f}");
+                                   + $"Please choose a yarn width less than {2.0f / 6.0f}");
                     return;
                 }
 
@@ -64,7 +61,7 @@ namespace YarnGenerator
                         }
                     }
                 }
-                yarnCache.GeneratePattern(pattern, yarnWidth, gauge, material);
+                yarnCache.GeneratePattern(pattern, yarnWidth, material);
             }
 
         }
