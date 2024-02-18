@@ -38,10 +38,10 @@ namespace YarnGenerator
 
             if (GUILayout.Button("Generate Yarn"))
             {
-                if (yarnWidth > gauge / 8.0f)
+                if (yarnWidth > gauge / 6.0f)
                 {
-                    Debug.LogError("Yarn Width needs to be less than 1/8 the stitch length"
-                                   + $"Please choose a yarn width less than {gauge / 8.0f}");
+                    Debug.LogError("Yarn Width needs to be less than 1/6 the stitch length"
+                                   + $"Please choose a yarn width less than {gauge / 6.0f}");
                     return;
                 }
 
