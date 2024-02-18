@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace YarnGenerator
 
@@ -11,6 +12,8 @@ namespace YarnGenerator
         public int stitchLength;
         // Length of each individual stitch
         public float gauge;
+        // Whether the stitch is knit or purl (indicates loop direction)
+        public bool isPurlStitch;
         private Vector3[] genericCurve;
 
         public static Stitch GetStitch(StitchType stitchType, float gauge)
@@ -20,13 +23,13 @@ namespace YarnGenerator
                 case StitchType.KnitStitch:
                     return new KnitStitch(gauge);
                 case StitchType.PurlStitch:
-                    return new KnitStitch(gauge);
+                    return new PurlStitch(gauge);
                 default:
                     return new KnitStitch(gauge);
             }
         }
 
-        private Vector3[] GenerateGenericCurve(bool lastStitch)
+        private Vector3[] GenerateGenericCurve(bool lastStitch, bool isPurlStitch)
         {
             int segments = KnitSettings.stitchRes;
             if (lastStitch)
@@ -44,16 +47,16 @@ namespace YarnGenerator
             genericCurve = new Vector3[segments];
             for (int j = 0; j < segments; j++)
             {
-                genericCurveCopy[j] = GetLoop(j);
+                genericCurveCopy[j] = GetLoop(j, isPurlStitch);
             }
 
             Array.Copy(genericCurveCopy, genericCurve, genericCurveCopy.Length);
             return genericCurveCopy;
         }
 
-        public Vector3[] GenerateCurve(int stitchNo, bool lastStitch)
+        public Vector3[] GenerateCurve(int stitchNo, bool lastStitch, bool isPurlStitch)
         {
-            Vector3[] curveForStitch = GenerateGenericCurve(lastStitch);
+            Vector3[] curveForStitch = GenerateGenericCurve(lastStitch, isPurlStitch);
 
             Vector3 horizontalOffset = new Vector3(this.gauge * stitchNo, 0, 0);
             for (int j = 0; j < curveForStitch.Length; j++)
@@ -64,23 +67,16 @@ namespace YarnGenerator
             return curveForStitch;
         }
         
-        public abstract Vector3 GetLoop(int i);
-
-    }
-
-    public class KnitStitch : Stitch
-    {
-        public KnitStitch(float gauge)
-        {
-            this.stitchLength = 1;
-            this.gauge = gauge;
-        }
-        
-        public override Vector3 GetLoop(int j)
+        public Vector3 GetLoop(int j, bool isPurlStitch)
         {
             float h = 1.0f; // height of stitches
             float a = 1.6f; // width of stitch
             float d = 0.3f; // depth offset for stitch
+
+            if (isPurlStitch)
+            {
+                d *= -1.0f;
+            }
 
             // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
             float angle = (float) j / (float) KnitSettings.stitchRes * 2 * (float) Math.PI;
@@ -94,5 +90,24 @@ namespace YarnGenerator
             return new Vector3(xVal,yVal,zVal);
         }
     }
+
+    public class KnitStitch : Stitch
+    {
+        public KnitStitch(float gauge)
+        {
+            this.stitchLength = 1;
+            this.gauge = gauge;
+            this.isPurlStitch = false;
+        }
+    }
     
+    public class PurlStitch : Stitch
+    {
+        public PurlStitch(float gauge)
+        {
+            this.stitchLength = 1;
+            this.gauge = gauge;
+            this.isPurlStitch = true;
+        }
+    }
 }
