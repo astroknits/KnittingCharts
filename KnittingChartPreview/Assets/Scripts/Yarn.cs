@@ -98,7 +98,7 @@ namespace YarnGenerator
             Vector3[] rowVertices = GenerateVerticesForCurve(rowCurve, yarnWidth);
             for (int j = 0; j < rowVertices.Length; j++)
             {
-                rowVertices[j].y += rowNumber;
+                rowVertices[j].y += rowNumber * (1 + 1.0f - 3.0f * yarnWidth);
             }
             return rowVertices;
         }
