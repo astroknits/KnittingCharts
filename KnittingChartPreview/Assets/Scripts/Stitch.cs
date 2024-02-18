@@ -29,7 +29,7 @@ namespace YarnGenerator
             }
         }
 
-        private Vector3[] GenerateGenericCurve(bool lastStitch, bool isPurlStitch)
+        private Vector3[] GenerateGenericCurve(float yarnWidth, bool lastStitch, bool isPurlStitch)
         {
             int segments = KnitSettings.stitchRes;
             if (lastStitch)
@@ -47,16 +47,16 @@ namespace YarnGenerator
             genericCurve = new Vector3[segments];
             for (int j = 0; j < segments; j++)
             {
-                genericCurveCopy[j] = GetLoop(j, isPurlStitch);
+                genericCurveCopy[j] = GetLoop(j, yarnWidth, isPurlStitch);
             }
 
             Array.Copy(genericCurveCopy, genericCurve, genericCurveCopy.Length);
             return genericCurveCopy;
         }
 
-        public Vector3[] GenerateCurve(int stitchNo, bool lastStitch, bool isPurlStitch)
+        public Vector3[] GenerateCurve(int stitchNo, float yarnWidth,  bool lastStitch, bool isPurlStitch)
         {
-            Vector3[] curveForStitch = GenerateGenericCurve(lastStitch, isPurlStitch);
+            Vector3[] curveForStitch = GenerateGenericCurve(yarnWidth, lastStitch, isPurlStitch);
 
             Vector3 horizontalOffset = new Vector3(this.gauge * stitchNo, 0, 0);
             for (int j = 0; j < curveForStitch.Length; j++)
@@ -67,15 +67,17 @@ namespace YarnGenerator
             return curveForStitch;
         }
         
-        public Vector3 GetLoop(int j, bool isPurlStitch)
+        public Vector3 GetLoop(int j, float yarnWidth, bool isPurlStitch)
         {
             float h = 1.0f; // height of stitches
             float a = 1.6f; // width of stitch
-            float d = 0.3f; // depth offset for stitch
+            float d = 0.3f; // depth curve factor for stitch
+            float d2 = 2 * yarnWidth; // depth offset for stitch
 
             if (isPurlStitch)
             {
                 d *= -1.0f;
+                d2 *= -1.0f;
             }
 
             // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
@@ -85,7 +87,7 @@ namespace YarnGenerator
             // eg from https://www.cs.cmu.edu/~kmcrane/Projects/Other/YarnCurve.pdf
             float xVal = (angle + a * (float) Math.Sin(2.0f * angle)) / (float)Math.PI;
             float yVal = h * (float)Math.Cos(angle + (float)Math.PI);
-            float zVal = d * (float)Math.Cos(2.0f * angle);
+            float zVal = d * (float)Math.Cos(2.0f * angle) - d2;
 
             return new Vector3(xVal,yVal,zVal);
         }

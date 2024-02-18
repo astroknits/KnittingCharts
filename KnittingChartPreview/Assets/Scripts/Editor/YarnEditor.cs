@@ -50,7 +50,7 @@ namespace YarnGenerator
                     StitchType[] stitches = new StitchType[rowLength];
                     for (int i = 0; i < rowLength; i++)
                     {
-                        if (i % 2 == 0)
+                        if (i % 4 < 2)
                         {
                             stitches[i] = StitchType.KnitStitch;
                         }
