@@ -8,8 +8,10 @@ namespace YarnGenerator
     public abstract class Stitch
     {
         public StitchType stitchType;
-        // # of stitches from previous row used by this stitch definition
-        public int stitchLength;
+        // # of loops from previous row used by this stitch
+        public int loopsConsumed;
+        // # of loops left on the needle at the end of this stitch
+        public int loopsProduced;
         // Whether the stitch is knit or purl (indicates loop direction)
         public bool isPurlStitch;
         private Vector3[] genericCurve;
@@ -97,7 +99,8 @@ namespace YarnGenerator
     {
         public KnitStitch()
         {
-            this.stitchLength = 1;
+            this.loopsConsumed = 1;
+            this.loopsProduced = 1;
             this.isPurlStitch = false;
         }
     }
@@ -106,7 +109,8 @@ namespace YarnGenerator
     {
         public PurlStitch()
         {
-            this.stitchLength = 1;
+            this.loopsConsumed = 1;
+            this.loopsProduced = 1;
             this.isPurlStitch = true;
         }
     }
