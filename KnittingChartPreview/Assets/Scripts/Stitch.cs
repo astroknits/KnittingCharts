@@ -94,40 +94,34 @@ namespace YarnGenerator
             return new Vector3(xVal,yVal,zVal);
         }
         
-        public override float GetFullStitchShape(int j)
+        public override Vector3 GetFullStitchShape(int j)
         {
             // x goes from -0.5 to 0.5
             float x = (float) j / (float) KnitSettings.stitchRes - 0.5f;
 
-            // Use sigmoid function to simulate stitch
-            // (not a great approximation but simple)
-            float kappa = 0.25f;
-            float scale = 4.0f; // range goes from -scale to +scale
-            float shift = 0.8f;
-            // float xPos = scale * (2 * x + 0.5f);
-            float xPos = 2.0f * scale * j / KnitSettings.stitchRes;
-            
-            // 1/2 * (xPos / scale - 0.5f) = j / stitchRes - 0.5f
-            // xPos / scale - 0.5f = 2 * j / stitchRes - 1 
-            // xPos / scale = 2 * j / stitchRes - 0.5
-            // xPos = 2 * scale * j / stitchRes
+            float xVal = this.gauge * x;
+            float yVal = GetSigmoidShape(x);
+            float zVal = GetDepthOffset(x);
 
-            if (x > 0)
-            {
-                xPos = scale - (xPos + shift);
-            }
-            else
-            {
-                xPos = xPos - shift;
-            }
-            return sigmoid(kappa, xPos);
+            return new Vector3(xVal, yVal, zVal);
         }
         
         public override Vector3 GetKnittedStitchShape(int j)
         {
-            // frac goes from 0 to 1
+            float h = 1.0f; // height of stitches
+            float a = 1.6f; // width of stitch
+            float d = 0.3f; // depth offset for stitch
+
+            // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
             float angle = (float) j / (float) KnitSettings.stitchRes * 2 * (float) Math.PI;
-            return new Vector3(0,0,0);
+
+            // parametric equation for stitch
+            // eg from https://www.cs.cmu.edu/~kmcrane/Projects/Other/YarnCurve.pdf
+            float xVal = (angle + a * (float) Math.Sin(2.0f * angle)) / (float)Math.PI;
+            float yVal = h * (float)Math.Cos(angle + (float)Math.PI);
+            float zVal = d * (float)Math.Cos(2.0f * angle);
+
+            return new Vector3(xVal,yVal,zVal);
         }
     }
     
