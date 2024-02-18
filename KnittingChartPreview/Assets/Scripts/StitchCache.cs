@@ -35,7 +35,7 @@ namespace YarnGenerator
             {
                 Stitch stitch = Stitch.GetStitch(stitchType, gauge);
                 gauges[gauge] = stitch;
-                stitches.Add(stitchType, gauges);
+                stitches[stitchType] = gauges;
                 return stitch;
             }
             return stitches.GetValueOrDefault(stitchType).GetValueOrDefault(gauge);
