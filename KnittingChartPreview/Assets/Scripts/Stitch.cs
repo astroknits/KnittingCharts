@@ -11,6 +11,7 @@ namespace YarnGenerator
         public int stitchLength;
         // Length of each individual stitch
         public float gauge;
+        private Vector3[] genericCurve;
 
         public static Stitch GetStitch(StitchType stitchType, float gauge)
         {
@@ -25,59 +26,46 @@ namespace YarnGenerator
             }
         }
 
-        public Vector3[] GenerateCurve(int stitchNo, bool lastStitch)
+        private Vector3[] GenerateGenericCurve(bool lastStitch)
         {
             int segments = KnitSettings.stitchRes;
             if (lastStitch)
             {
                 segments += 1;
             }
-            Vector3[] curve = new Vector3[segments];
+
+            Vector3[] genericCurveCopy = new Vector3[segments];
+            if (genericCurve != null && genericCurve.Length == segments)
+            {
+                Array.Copy(genericCurve, genericCurveCopy, genericCurve.Length);
+                return genericCurveCopy;
+            }
+
+            genericCurve = new Vector3[segments];
             for (int j = 0; j < segments; j++)
             {
-                // x is defined from -0.5f to 0.5f for a given stitch
-                float x = (float) j / (float) KnitSettings.stitchRes - 0.5f;
-                float horizontalOffset = stitchNo;
-                float verticalOffset = GetVerticalOffset(x);
-                float depthOffset = GetDepthOffset(x);
-                curve[j] = new Vector3(
-                    this.gauge * (x + horizontalOffset), verticalOffset, depthOffset);
+                genericCurveCopy[j] = GetLoop(j);
             }
 
-            return curve;
+            Array.Copy(genericCurveCopy, genericCurve, genericCurveCopy.Length);
+            return genericCurveCopy;
         }
 
-        public float GetVerticalOffset(float x)
+        public Vector3[] GenerateCurve(int stitchNo, bool lastStitch)
         {
-            float scale = 4.0f; // range goes from -scale to +scale
-            float shift = 0.8f;
-            float xPos = scale * (2 * x + 0.5f);
+            Vector3[] curveForStitch = GenerateGenericCurve(lastStitch);
 
-            if (x > 0)
+            Vector3 horizontalOffset = new Vector3(this.gauge * stitchNo, 0, 0);
+            for (int j = 0; j < curveForStitch.Length; j++)
             {
-                xPos = scale - (xPos + shift);
-            }
-            else
-            {
-                xPos = xPos - shift;
+                curveForStitch[j] = curveForStitch[j] + horizontalOffset;
             }
 
-            float res = GetStitchShape(xPos);
-            return res;
+            return curveForStitch;
         }
         
-        public float GetDepthOffset(float x)
-        {
-            return 0.0f;
-        }
-        
-        public abstract float GetStitchShape(float x);
+        public abstract Vector3 GetLoop(int i);
 
-        protected static float sigmoid(float kappa, float x)
-        {
-            // sigmoid(x) = 1 / (1 + exp(-x))
-            return 1.0f / (1.0f + (float) Math.Exp(-1.0f * x / kappa));
-        }
     }
 
     public class KnitStitch : Stitch
@@ -87,13 +75,24 @@ namespace YarnGenerator
             this.stitchLength = 1;
             this.gauge = gauge;
         }
-
-        public override float GetStitchShape(float x)
-        {
-            float kappa = 0.25f;
-            return sigmoid(kappa, x);
-        }
         
+        public override Vector3 GetLoop(int j)
+        {
+            float h = 1.0f; // height of stitches
+            float a = 1.6f; // width of stitch
+            float d = 0.3f; // depth offset for stitch
+
+            // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
+            float angle = (float) j / (float) KnitSettings.stitchRes * 2 * (float) Math.PI;
+
+            // parametric equation for stitch
+            // eg from https://www.cs.cmu.edu/~kmcrane/Projects/Other/YarnCurve.pdf
+            float xVal = (angle + a * (float) Math.Sin(2.0f * angle)) / (float)Math.PI;
+            float yVal = h * (float)Math.Cos(angle + (float)Math.PI);
+            float zVal = d * (float)Math.Cos(2.0f * angle);
+
+            return new Vector3(xVal,yVal,zVal);
+        }
     }
     
 }

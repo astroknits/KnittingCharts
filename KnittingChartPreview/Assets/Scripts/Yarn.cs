@@ -4,13 +4,14 @@ using UnityEngine;
 
 namespace YarnGenerator
 {
-    public class Yarn : MonoBehaviour
+    public class Yarn
     {
         public float gauge = 1f;
         public float yarnWidth = 0.1f;
+        private StitchCache stitchCache = StitchCache.GetInstance();
 
-        public static void GenerateRow(
-            StitchType[] stitches, float yarnWidth, float gauge)
+        public void GenerateRow(
+            StitchType[] stitches, float yarnWidth, float gauge, int rowNumber)
         {
             // For now, each row only has one stitch in it
 
@@ -37,7 +38,7 @@ namespace YarnGenerator
             meshRenderer.material = new Material(Shader.Find("Standard"));
         }
         
-        static Vector3[] GenerateCircle(float yarnWidth)
+        internal Vector3[] GenerateCircle(float yarnWidth)
         {
             // generates circle of width yarnWidth in y-z plane
             // for each point in the stitch curve
@@ -55,7 +56,7 @@ namespace YarnGenerator
             return circle;
         }
 
-        static Vector3[] RotateCircleAboutZAxis(
+        internal Vector3[] RotateCircleAboutZAxis(
             Vector3[] circle, Vector3[] curve, int j)
         {
             Vector3[] rotatedCircle = new Vector3[KnitSettings.radialRes];
@@ -80,7 +81,7 @@ namespace YarnGenerator
             return rotatedCircle;
         }
 
-        static Vector3[] GenerateVerticesForRow(
+        internal Vector3[] GenerateVerticesForRow(
             StitchType[] stitches, float gauge, float yarnWidth)
         {
             Vector3[] rowCurve = Array.Empty<Vector3>();
@@ -88,19 +89,17 @@ namespace YarnGenerator
             {
                 StitchType stitchType = stitches[k];
                 // Generate curve for the stitch
-                Stitch stitch = Stitch.GetStitch(stitchType, gauge);
-                
+                Stitch stitch = stitchCache.GetStitch(stitchType, gauge, false);
+                Vector3[] rowCurve1 = stitch.GenerateCurve(k, (k == stitches.Length - 1));
                 // and add to the vertices row array
-                rowCurve = rowCurve.Concat(
-                    stitch.GenerateCurve(k, (k == stitches.Length - 1))
-                ).ToArray();
+                rowCurve = rowCurve.Concat(rowCurve1).ToArray();
             }
 
             // Set up vertices for the stitch based on the stitch curve
             Vector3[] rowVertices = GenerateVerticesForCurve(rowCurve, yarnWidth);
             return rowVertices;
         }
-        static Vector3[] GenerateVerticesForCurve(Vector3[] curve, float yarnWidth)
+        internal Vector3[] GenerateVerticesForCurve(Vector3[] curve, float yarnWidth)
         {
             // Generate vertices
             Vector3[] circle = GenerateCircle(yarnWidth);
@@ -119,12 +118,10 @@ namespace YarnGenerator
             return vertices;
         }
 
-        static int[] GenerateTriangles(Vector3[] rowVertices)
+        internal int[] GenerateTriangles(Vector3[] rowVertices)
         {
             int xSegments = (int) rowVertices.Length / KnitSettings.radialRes;
-            Debug.Log($"rowVertices.Length: {rowVertices.Length}, xSegments {xSegments}");
             int[] triangles = new int[rowVertices.Length * 6];
-            Debug.Log($"triangles.Length: {triangles.Length} ({triangles.Length/6})");
 
             int triangleIndex = 0;
             for (int i = 0; i < KnitSettings.radialRes; i++)
@@ -137,8 +134,6 @@ namespace YarnGenerator
                         int nextIndex = j * KnitSettings.radialRes + (i + 1) % KnitSettings.radialRes;
                         // int triangleIndex = j * KnitSettings.radialRes * 6 + i;
                         // Side triangles
-                        Debug.Log(
-                            $"rowVertices.Length {rowVertices.Length} / i j {i} {j} nextIndex = {nextIndex}, index = {index} triangleIndex {triangleIndex}");
                         triangles[triangleIndex] = nextIndex;
                         triangles[triangleIndex + 1] = index + KnitSettings.radialRes;
                         triangles[triangleIndex + 2] = index;
