@@ -11,7 +11,7 @@ namespace YarnGenerator
         private StitchCache stitchCache = StitchCache.GetInstance();
 
         public GameObject GenerateRow(
-            StitchType[] stitches, float yarnWidth, float gauge, int rowNumber)
+            StitchType[] stitches, float yarnWidth, float gauge, int rowNumber, Material material)
         {
             // For now, each row only has one stitch in it
 
@@ -34,7 +34,8 @@ namespace YarnGenerator
             mesh.RecalculateNormals();
 
             // Assign a default material
-            meshRenderer.material = new Material(Shader.Find("Standard"));
+
+            meshRenderer.material = material; 
             return yarn;
         }
         

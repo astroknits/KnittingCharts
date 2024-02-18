@@ -12,6 +12,7 @@ namespace YarnGenerator
         int nRows = 1;
         float gauge = 2f;
         float yarnWidth = 0.1f;
+        Material material;
 
         private YarnCache yarnCache = YarnCache.GetInstance();
 
@@ -35,6 +36,7 @@ namespace YarnGenerator
                 "Stitch Length", gauge, 0.5f, 5f);
             yarnWidth = EditorGUILayout.Slider(
                 "Width", yarnWidth, 0.0001f, 0.5f);
+            material = (Material) EditorGUILayout.ObjectField(material, typeof(Material));
 
 
             if (GUILayout.Button("Generate Yarn"))
@@ -62,7 +64,7 @@ namespace YarnGenerator
                         }
                     }
                 }
-                yarnCache.GeneratePattern(pattern, yarnWidth, gauge);
+                yarnCache.GeneratePattern(pattern, yarnWidth, gauge, material);
             }
 
         }
