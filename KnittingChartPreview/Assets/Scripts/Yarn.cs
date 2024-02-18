@@ -10,13 +10,13 @@ namespace YarnGenerator
         public float yarnWidth = 0.1f;
         private StitchCache stitchCache = StitchCache.GetInstance();
 
-        public void GenerateRow(
+        public GameObject GenerateRow(
             StitchType[] stitches, float yarnWidth, float gauge, int rowNumber)
         {
             // For now, each row only has one stitch in it
 
             // Create the mesh for the yarn in this row
-            GameObject yarn = new GameObject("Yarn");
+            GameObject yarn = new GameObject($"Row {rowNumber} for {yarnWidth}/{gauge}");
             MeshFilter meshFilter = yarn.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = yarn.AddComponent<MeshRenderer>();
             Mesh mesh = new Mesh();
@@ -35,6 +35,7 @@ namespace YarnGenerator
 
             // Assign a default material
             meshRenderer.material = new Material(Shader.Find("Standard"));
+            return yarn;
         }
         
         internal Vector3[] GenerateCircle(float yarnWidth)
@@ -135,14 +136,13 @@ namespace YarnGenerator
                     {
                         int index = j * KnitSettings.radialRes + i;
                         int nextIndex = j * KnitSettings.radialRes + (i + 1) % KnitSettings.radialRes;
-                        // int triangleIndex = j * KnitSettings.radialRes * 6 + i;
                         // Side triangles
-                        triangles[triangleIndex] = nextIndex;
+                        triangles[triangleIndex] = index;
                         triangles[triangleIndex + 1] = index + KnitSettings.radialRes;
-                        triangles[triangleIndex + 2] = index;
-                        triangles[triangleIndex + 3] = nextIndex + KnitSettings.radialRes;
+                        triangles[triangleIndex + 2] = nextIndex;
+                        triangles[triangleIndex + 3] = nextIndex;
                         triangles[triangleIndex + 4] = index + KnitSettings.radialRes;
-                        triangles[triangleIndex + 5] = nextIndex;
+                        triangles[triangleIndex + 5] = nextIndex + KnitSettings.radialRes;
                     }
                     triangleIndex += 6;
                 }
