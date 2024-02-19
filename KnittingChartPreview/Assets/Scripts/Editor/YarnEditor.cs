@@ -59,7 +59,14 @@ namespace YarnGenerator
                         }
                         else
                         {
-                            pattern[rowNumber, i] = StitchType.Cable1Lo1RStitch;
+                            if (rowNumber % 2 == 0)
+                            {
+                                pattern[rowNumber, i] = StitchType.Cable1Lo1RStitch;
+                            }
+                            else
+                            {
+                                pattern[rowNumber, i] = StitchType.CableKnitStitch;
+                            }
                         }
                     }
                     pattern[rowNumber, stitchesPerRow - 2] = StitchType.PurlStitch;

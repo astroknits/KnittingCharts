@@ -94,6 +94,7 @@ namespace YarnGenerator
                 // instantiate the stitch
                 Stitch stitch = Stitch.GetStitch(stitchType);
 
+                Debug.Log($"loopNo: {loopNo}, k={k}");
                 // Get the curve for the stitch
                 Vector3[] rowCurve1 = stitch.GenerateCurve(loopNo, yarnWidth, (k == stitches.Length - 1));
 
