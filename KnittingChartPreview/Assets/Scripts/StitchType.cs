@@ -5,6 +5,8 @@ namespace YarnGenerator
         KnitStitch,
         PurlStitch,
         Cable1Lo1RStitch,
-        CableKnitStitch
+        Cable2Lo2RStitch,
+        CableKnitStitch,
+        CableKnitStitch4,
     }
 }

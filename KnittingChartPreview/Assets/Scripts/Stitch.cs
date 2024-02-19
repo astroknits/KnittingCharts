@@ -26,8 +26,12 @@ namespace YarnGenerator
                     return new PurlStitch();
                 case StitchType.Cable1Lo1RStitch:
                     return new Cable1Lo1RStitch();
+                case StitchType.Cable2Lo2RStitch:
+                    return new Cable2Lo2RStitch();
                 case StitchType.CableKnitStitch:
                     return new CableKnitStitch();
+                case StitchType.CableKnitStitch4:
+                    return new CableKnitStitch4();
                 default:
                     return new KnitStitch();
             }
@@ -50,13 +54,11 @@ namespace YarnGenerator
             float d = 0.3f; // depth curve factor for stitch
             float d2 = 2.1f * yarnWidth; // depth offset for stitch
 
-            /*
             if (cableFront)
             {
-                d = 0.45f;
+                d = 0.55f;
                 d2 = 2.2f * yarnWidth;
             }
-            */
 
             if (this.isPurlStitch)
             {
@@ -248,6 +250,22 @@ namespace YarnGenerator
         }
     }
     
+    public class Cable2Lo2RStitch : CableStitch
+    {
+        public Cable2Lo2RStitch()
+        {
+            this.loopsConsumed = 4;
+            this.loopsProduced = 4;
+            this.held = 2;
+            this.front = false;
+            this.stitchTypeList = new StitchType[4];
+            this.stitchTypeList[0] = StitchType.KnitStitch;
+            this.stitchTypeList[1] = StitchType.KnitStitch;
+            this.stitchTypeList[2] = StitchType.KnitStitch;
+            this.stitchTypeList[3] = StitchType.KnitStitch;
+        }
+    }
+    
     public class CableKnitStitch : CableStitch
     {
         public CableKnitStitch()
@@ -259,6 +277,23 @@ namespace YarnGenerator
             this.stitchTypeList = new StitchType[2];
             this.stitchTypeList[0] = StitchType.KnitStitch;
             this.stitchTypeList[1] = StitchType.KnitStitch;
+
+        }
+    }
+    
+    public class CableKnitStitch4 : CableStitch
+    {
+        public CableKnitStitch4()
+        {
+            this.loopsConsumed = 4;
+            this.loopsProduced = 4;
+            this.held = 0;
+            this.front = false;
+            this.stitchTypeList = new StitchType[4];
+            this.stitchTypeList[0] = StitchType.KnitStitch;
+            this.stitchTypeList[1] = StitchType.KnitStitch;
+            this.stitchTypeList[2] = StitchType.KnitStitch;
+            this.stitchTypeList[3] = StitchType.KnitStitch;
 
         }
     }
