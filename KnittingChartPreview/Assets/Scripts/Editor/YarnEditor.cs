@@ -8,7 +8,7 @@ namespace YarnGenerator
     public class YarnEditor : EditorWindow
     {
         // Parameters for yarn
-        int rowLength = 10;
+        int stitchesPerRow = 10;
         int nRows = 1;
         float yarnWidth = 0.1f;
         Material material;
@@ -27,8 +27,8 @@ namespace YarnGenerator
         {
             GUILayout.Label("Yarn Settings", EditorStyles.boldLabel);
 
-            rowLength = EditorGUILayout.IntSlider(
-                "Row Length", rowLength, 1, 300);
+            stitchesPerRow = EditorGUILayout.IntSlider(
+                "Stitches Per Row", stitchesPerRow, 1, 300);
             nRows = EditorGUILayout.IntSlider(
                 "# Rows", nRows, 1, 300);
             yarnWidth = EditorGUILayout.Slider(
@@ -45,21 +45,39 @@ namespace YarnGenerator
                     return;
                 }
 
-                StitchType[,] pattern = new StitchType[nRows, rowLength];
+                StitchType[,] pattern = new StitchType[nRows, stitchesPerRow];
                 for (int rowNumber = 0; rowNumber < nRows; rowNumber++)
                 {
-                    StitchType[] stitches = new StitchType[rowLength];
-                    for (int i = 0; i < rowLength; i++)
+                    StitchType[] stitches = new StitchType[stitchesPerRow];
+                    pattern[rowNumber, 0] = StitchType.PurlStitch;
+                    pattern[rowNumber, 1] = StitchType.PurlStitch;
+                    for (int i = 2; i < stitchesPerRow - 2; i++)
+                    {
+                        if (i % 2 == 1)
+                        {
+                            pattern[rowNumber, i] = StitchType.PurlStitch;
+                        }
+                        else
+                        {
+                            pattern[rowNumber, i] = StitchType.Cable1Lo1RStitch;
+                        }
+                    }
+                    pattern[rowNumber, stitchesPerRow - 2] = StitchType.PurlStitch;
+                    pattern[rowNumber, stitchesPerRow - 1] = StitchType.PurlStitch;
+
+                    /* Knit 2 Purl 2
+                    for (int i = 0; i < stitchesPerRow; i++)
                     {
                         if (i % 4 < 2)
                         {
-                            pattern[rowNumber, i] = StitchType.Cable1Lo1RStitch;
+                            pattern[rowNumber, i] = StitchType.KnitStitch;
                         }
                         else
                         {
                             pattern[rowNumber, i] = StitchType.PurlStitch;
                         }
                     }
+                    */
                 }
                 yarnCache.GeneratePattern(pattern, yarnWidth, material);
             }
