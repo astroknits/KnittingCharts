@@ -3,6 +3,7 @@ namespace YarnGenerator
     public enum StitchType
     {
         KnitStitch,
-        PurlStitch
+        PurlStitch,
+        Cable1Lo1RStitch
     }
 }

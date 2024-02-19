@@ -53,7 +53,7 @@ namespace YarnGenerator
                     {
                         if (i % 4 < 2)
                         {
-                            pattern[rowNumber, i] = StitchType.KnitStitch;
+                            pattern[rowNumber, i] = StitchType.Cable1Lo1RStitch;
                         }
                         else
                         {

@@ -91,7 +91,7 @@ namespace YarnGenerator
                 StitchType stitchType = stitches[k];
                 // Generate curve for the stitch
                 Stitch stitch = stitchCache.GetStitch(stitchType, false);
-                Vector3[] rowCurve1 = stitch.GenerateCurve(k, yarnWidth, (k == stitches.Length - 1), stitch.isPurlStitch);
+                Vector3[] rowCurve1 = stitch.GenerateCurve(k, yarnWidth, (k == stitches.Length - 1));
                 // and add to the vertices row array
                 rowCurve = rowCurve.Concat(rowCurve1).ToArray();
             }
