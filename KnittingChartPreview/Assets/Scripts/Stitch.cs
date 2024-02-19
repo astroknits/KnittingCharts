@@ -30,7 +30,7 @@ namespace YarnGenerator
             }
         }
 
-        public abstract Vector3[] GenerateCurve(int stitchNo, float yarnWidth, bool lastStitch);
+        public abstract Vector3[] GenerateCurve(int loopNo, float yarnWidth, bool lastStitch);
         
     }
     
@@ -64,13 +64,13 @@ namespace YarnGenerator
             return new Vector3(xVal,yVal,zVal);
         }
         
-        public override Vector3[] GenerateCurve(int stitchNo, float yarnWidth,  bool lastStitch)
+        public override Vector3[] GenerateCurve(int loopNo, float yarnWidth,  bool lastStitch)
         {
             Vector3[] curveForStitch = GenerateGenericCurve(yarnWidth, lastStitch);
 
             // Each stitch takes up 2 natural units.  Therefore, the next stitch
             // needs an offset of 2.0f from the previous stitch
-            Vector3 horizontalOffset = new Vector3(2.0f * stitchNo, 0, 0);
+            Vector3 horizontalOffset = new Vector3(2.0f * loopNo, 0, 0);
             for (int j = 0; j < curveForStitch.Length; j++)
             {
                 curveForStitch[j] = curveForStitch[j] + horizontalOffset;
@@ -145,21 +145,19 @@ namespace YarnGenerator
         public StitchType[] stitchTypeList;
         private YarnCache yarnCache = YarnCache.GetInstance();
         
-        public override Vector3[] GenerateCurve(int stitchNo, float yarnWidth,  bool lastStitch)
+        public override Vector3[] GenerateCurve(int loopNo, float yarnWidth,  bool lastStitch)
         {
+            // loopNo = the index of the loop this stitch starts on
+            // Create a curve for the whole cable stitch
             Vector3[] curveForStitch = Array.Empty<Vector3>();;
+
+            // Work through each of the loops produced in the stitchTypeList
             for (int i = 0; i < this.loopsProduced; i++)
             {
-                Stitch stitch = yarnCache.GetStitch(stitchTypeList[i], false);
+                int offset = loopNo + i;
+                Stitch stitch = Stitch.GetStitch(stitchTypeList[i]);
                 curveForStitch = curveForStitch.Concat(
-                    stitch.GenerateCurve(i, yarnWidth, lastStitch)).ToArray();
-                // Each stitch takes up 2 natural units.  Therefore, the next stitch
-                // needs an offset of 2.0f from the previous stitch
-                Vector3 horizontalOffset = new Vector3(2.0f * (stitchNo + i), 0, 0);
-                for (int j = 0; j < curveForStitch.Length; j++)
-                {
-                    curveForStitch[j] = curveForStitch[j] + horizontalOffset;
-                }
+                    stitch.GenerateCurve(offset, yarnWidth, lastStitch)).ToArray();
             }
 
             return curveForStitch;
