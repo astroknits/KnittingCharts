@@ -56,8 +56,7 @@ namespace YarnGenerator
 
             if (cableFront)
             {
-                d = 0.55f;
-                d2 = 2.2f * yarnWidth;
+                d = 0.90f;
             }
 
             if (this.isPurlStitch)
@@ -273,7 +272,7 @@ namespace YarnGenerator
             this.loopsConsumed = 2;
             this.loopsProduced = 2;
             this.held = 0;
-            this.front = false;
+            this.front = true;
             this.stitchTypeList = new StitchType[2];
             this.stitchTypeList[0] = StitchType.KnitStitch;
             this.stitchTypeList[1] = StitchType.KnitStitch;
@@ -288,7 +287,7 @@ namespace YarnGenerator
             this.loopsConsumed = 4;
             this.loopsProduced = 4;
             this.held = 0;
-            this.front = false;
+            this.front = true;
             this.stitchTypeList = new StitchType[4];
             this.stitchTypeList[0] = StitchType.KnitStitch;
             this.stitchTypeList[1] = StitchType.KnitStitch;

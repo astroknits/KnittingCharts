@@ -59,7 +59,7 @@ namespace YarnGenerator
                         }
                         else
                         {
-                            if (rowNumber % 2 == 0)
+                            if (rowNumber % 4 == 0)
                             {
                                 pattern[rowNumber, i] = StitchType.Cable2Lo2RStitch;
                             }
