@@ -86,14 +86,21 @@ namespace YarnGenerator
             StitchType[] stitches, float yarnWidth, int rowNumber)
         {
             Vector3[] rowCurve = Array.Empty<Vector3>();
+            int loopNo = 0;
             for (int k = 0; k < stitches.Length; k++)
             {
                 StitchType stitchType = stitches[k];
-                // Generate curve for the stitch
-                Stitch stitch = stitchCache.GetStitch(stitchType, false);
-                Vector3[] rowCurve1 = stitch.GenerateCurve(k, yarnWidth, (k == stitches.Length - 1), stitch.isPurlStitch);
+
+                // instantiate the stitch
+                Stitch stitch = Stitch.GetStitch(stitchType);
+
+                Debug.Log($"loopNo: {loopNo}, k={k}");
+                // Get the curve for the stitch
+                Vector3[] rowCurve1 = stitch.GenerateCurve(loopNo, yarnWidth, (k == stitches.Length - 1));
+
                 // and add to the vertices row array
                 rowCurve = rowCurve.Concat(rowCurve1).ToArray();
+                loopNo += stitch.loopsProduced;
             }
 
             // Set up vertices for the stitch based on the stitch curve
