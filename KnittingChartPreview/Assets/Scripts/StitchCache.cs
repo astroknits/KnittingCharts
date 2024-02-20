@@ -14,31 +14,19 @@ namespace YarnGenerator
             return instance;
         }
         
-        private Dictionary<StitchType, Dictionary<float, Stitch>> stitches = new
-            Dictionary<StitchType, Dictionary<float, Stitch>>();
+        private Dictionary<StitchType, Stitch> stitches = new
+            Dictionary<StitchType, Stitch>();
 
-        public Stitch GetStitch(StitchType stitchType, float gauge, bool forceUpdate)
+        public Stitch GetStitch(StitchType stitchType, bool forceUpdate)
         {
-            Dictionary<float, Stitch> gauges;
-            if (! stitches.ContainsKey(stitchType))
+            if (! stitches.ContainsKey(stitchType) || forceUpdate)
             {
-                // Instantiate new dictionary for this stitch type
-                gauges = new Dictionary<float, Stitch>();
-                Stitch stitch = Stitch.GetStitch(stitchType, gauge);
-                gauges.Add(gauge, stitch);
-                stitches.Add(stitchType, gauges);
+                Stitch stitch = Stitch.GetStitch(stitchType);
+                stitches[stitchType] = stitch;
                 return stitch;
             }
 
-            gauges = stitches.GetValueOrDefault(stitchType);
-            if (! gauges.ContainsKey(gauge) || forceUpdate)
-            {
-                Stitch stitch = Stitch.GetStitch(stitchType, gauge);
-                gauges[gauge] = stitch;
-                stitches.Add(stitchType, gauges);
-                return stitch;
-            }
-            return stitches.GetValueOrDefault(stitchType).GetValueOrDefault(gauge);
+            return stitches.GetValueOrDefault(stitchType);
         }
         
     }

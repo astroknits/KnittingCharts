@@ -1,3 +1,7 @@
+using System.Linq;
+using UnityEngine;
+using UnityEngine.SocialPlatforms;
+
 namespace YarnGenerator
 {
     public class YarnCache
@@ -18,15 +22,30 @@ namespace YarnGenerator
             }
             return instance;
         }
-
-        public void GenerateRow(StitchType[] stitches, float yarnWidth, float gauge, int rowNumber)
+        
+        public void GeneratePattern(StitchType[,] pattern, float yarnWidth, Material material)
         {
-            yarn.GenerateRow(stitches, yarnWidth, gauge, rowNumber);
+            GameObject parent = new GameObject($"Pattern {yarnWidth}");
+            for (int rowNumber = 0; rowNumber < pattern.GetLength(0); rowNumber++)
+            {
+                StitchType[] stitches = new StitchType[pattern.GetLength(1)];
+                for (int i = 0; i < pattern.GetLength(1); i++)
+                {
+                    stitches[i] = pattern[rowNumber, i];
+                }
+                GameObject row = yarn.GenerateRow(stitches, yarnWidth, rowNumber, material);
+                row.transform.SetParent(parent.transform);
+            }
+        }
+
+        public void GenerateRow(StitchType[] stitches, float yarnWidth, int rowNumber, Material material)
+        {
+            yarn.GenerateRow(stitches, yarnWidth, rowNumber, material);
         }
         
-        public Stitch GetStitch(StitchType stitchType, float gauge, bool forceUpdate)
+        public Stitch GetStitch(StitchType stitchType, bool forceUpdate)
         {
-            return stitchCache.GetStitch(stitchType, gauge, forceUpdate);
+            return stitchCache.GetStitch(stitchType, forceUpdate);
         }
     }
 }
