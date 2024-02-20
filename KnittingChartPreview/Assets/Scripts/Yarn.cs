@@ -57,25 +57,45 @@ namespace YarnGenerator
             return circle;
         }
 
-        internal Vector3[] RotateCircleAboutZAxis(
+        internal Vector3[] RotateCircle(
             Vector3[] circle, Vector3[] curve, int j)
         {
             Vector3[] rotatedCircle = new Vector3[KnitSettings.radialRes];
             float theta = 0.0f;
+            float phi = 0.0f;
+            float cosTheta = 1.0f;
+            float sinTheta = 0.0f;
+            float cosPhi = 1.0f;
+            float sinPhi = 0.0f;
 
             if (j < curve.Length - 1)
             {
                 Vector3 diff = curve[j + 1] - curve[j];
-                float length = (float) (Math.Sqrt(Math.Pow(diff.x, 2) + Math.Pow(diff.y, 2)));
+                float length = (float) (Math.Sqrt(Math.Pow(diff.x, 2) + Math.Pow(diff.y, 2) + Math.Pow(diff.z, 2)));
                 theta = (float) Math.Asin(diff.y / length);
+                phi = (float) Math.Asin(diff.z / length / Math.Cos(theta));
+                cosTheta = (float)Math.Cos(theta);
+                sinTheta = (float)Math.Sin(theta);
+                cosPhi = (float)Math.Cos(phi);
+                sinPhi = (float)Math.Sin(phi);
             }
 
             for (int i = 0; i < KnitSettings.radialRes; i++)
             {
+                // Calculate 3d rotations
+                // https://stackoverflow.com/questions/14607640/rotating-a-vector-in-3d-space
+                // rotate around the z axis first (theta)
+                float dx = circle[i].x * cosTheta - circle[i].y * sinTheta;
+                float dy = circle[i].x * sinTheta + circle[i].y * cosTheta;
+                float dz = circle[i].z;
+                // rotate around the y axis second (phi)
+                dx = dx * cosPhi + dz * sinPhi;
+                dz = -1.0f * dx * sinPhi + dz * cosPhi;
+
                 rotatedCircle[i] = new Vector3(
-                    curve[j].x + circle[i].y * (float) Math.Sin(theta),
-                    curve[j].y - circle[i].y * (float) Math.Cos(theta),
-                    curve[j].z + circle[i].z
+                    curve[j].x + dx,
+                    curve[j].y - dy,
+                    curve[j].z + dz
                 );
             }
 
@@ -96,7 +116,8 @@ namespace YarnGenerator
 
                 Debug.Log($"loopNo: {loopNo}, k={k}");
                 // Get the curve for the stitch
-                Vector3[] rowCurve1 = stitch.GenerateCurve(loopNo, yarnWidth, (k == stitches.Length - 1));
+                Vector3[] rowCurve1 = stitch.GenerateCurve(
+                    loopNo, yarnWidth, (k == stitches.Length - 1));
 
                 // and add to the vertices row array
                 rowCurve = rowCurve.Concat(rowCurve1).ToArray();
@@ -120,7 +141,7 @@ namespace YarnGenerator
             ];
             for (int j = 0; j < curve.Length; j++)
             {
-                Vector3[] rotatedCircle = RotateCircleAboutZAxis(circle, curve, j);
+                Vector3[] rotatedCircle = RotateCircle(circle, curve, j);
                 for (int i = 0; i < KnitSettings.radialRes; i++)
                 {
                     vertices[j * KnitSettings.radialRes + i] = rotatedCircle[i];
