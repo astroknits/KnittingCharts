@@ -38,27 +38,8 @@ namespace YarnGenerator
             meshRenderer.material = material; 
             return yarn;
         }
-        
-        internal Vector3[] GenerateCircle(float yarnWidth)
-        {
-            // generates circle of width yarnWidth in y-z plane
-            // for each point in the stitch curve
-            Vector3[] circle = new Vector3[KnitSettings.radialRes];
-            for (int i = 0; i < KnitSettings.radialRes; i++)
-            {
-                float angle = Mathf.PI * 2 * i / KnitSettings.radialRes;
-                circle[i] = new Vector3(
-                    0.0f,
-                    yarnWidth * Mathf.Cos(angle),
-                    yarnWidth * Mathf.Sin(angle)
-                    );
-            }
 
-            return circle;
-        }
-
-        internal Vector3[] RotateCircle(
-            Vector3[] circle, Vector3[] curve, int j)
+        internal Vector3[] RotateCircle(float yarnWidth, Vector3[] curve, int j)
         {
             Vector3[] rotatedCircle = new Vector3[KnitSettings.radialRes];
             float theta = 0.0f;
@@ -80,14 +61,22 @@ namespace YarnGenerator
                 sinPhi = (float)Math.Sin(phi);
             }
 
+            // generates circle of width yarnWidth in y-z plane
+            // for each point in the stitch curve
+
             for (int i = 0; i < KnitSettings.radialRes; i++)
             {
+                float angle = Mathf.PI * 2 * i / KnitSettings.radialRes;
+                float cx = 0.0f;
+                float cy = yarnWidth * Mathf.Cos(angle);
+                float cz = yarnWidth * Mathf.Sin(angle);
+
                 // Calculate 3d rotations
                 // https://stackoverflow.com/questions/14607640/rotating-a-vector-in-3d-space
                 // rotate around the z axis first (theta)
-                float dx = circle[i].x * cosTheta - circle[i].y * sinTheta;
-                float dy = circle[i].x * sinTheta + circle[i].y * cosTheta;
-                float dz = circle[i].z;
+                float dx = cx * cosTheta - cy * sinTheta;
+                float dy = cx * sinTheta + cy * cosTheta;
+                float dz = cz;
                 // rotate around the y axis second (phi)
                 dx = dx * cosPhi + dz * sinPhi;
                 dz = -1.0f * dx * sinPhi + dz * cosPhi;
@@ -135,13 +124,12 @@ namespace YarnGenerator
         internal Vector3[] GenerateVerticesForCurve(Vector3[] curve, float yarnWidth)
         {
             // Generate vertices
-            Vector3[] circle = GenerateCircle(yarnWidth);
             Vector3[] vertices = new Vector3[
                 KnitSettings.radialRes * curve.Length
             ];
             for (int j = 0; j < curve.Length; j++)
             {
-                Vector3[] rotatedCircle = RotateCircle(circle, curve, j);
+                Vector3[] rotatedCircle = RotateCircle(yarnWidth, curve, j);
                 for (int i = 0; i < KnitSettings.radialRes; i++)
                 {
                     vertices[j * KnitSettings.radialRes + i] = rotatedCircle[i];
@@ -166,12 +154,12 @@ namespace YarnGenerator
                         int index = j * KnitSettings.radialRes + i;
                         int nextIndex = j * KnitSettings.radialRes + (i + 1) % KnitSettings.radialRes;
                         // Side triangles
-                        triangles[triangleIndex] = index;
+                        triangles[triangleIndex] = nextIndex;
                         triangles[triangleIndex + 1] = index + KnitSettings.radialRes;
-                        triangles[triangleIndex + 2] = nextIndex;
-                        triangles[triangleIndex + 3] = nextIndex;
+                        triangles[triangleIndex + 2] = index;
+                        triangles[triangleIndex + 3] = nextIndex + KnitSettings.radialRes;
                         triangles[triangleIndex + 4] = index + KnitSettings.radialRes;
-                        triangles[triangleIndex + 5] = nextIndex + KnitSettings.radialRes;
+                        triangles[triangleIndex + 5] = nextIndex;
                     }
                     triangleIndex += 6;
                 }
