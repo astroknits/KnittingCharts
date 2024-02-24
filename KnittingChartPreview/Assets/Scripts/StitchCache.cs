@@ -17,11 +17,11 @@ namespace YarnGenerator
         private Dictionary<StitchType, Stitch> stitches = new
             Dictionary<StitchType, Stitch>();
 
-        public Stitch GetStitch(StitchType stitchType, bool forceUpdate)
+        public Stitch GetStitch(StitchType stitchType, int stitchNo, bool forceUpdate)
         {
             if (! stitches.ContainsKey(stitchType) || forceUpdate)
             {
-                Stitch stitch = Stitch.GetStitch(stitchType);
+                Stitch stitch = Stitch.GetStitch(stitchType, stitchNo);
                 stitches[stitchType] = stitch;
                 return stitch;
             }

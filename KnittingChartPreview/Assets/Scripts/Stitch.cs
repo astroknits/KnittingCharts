@@ -10,30 +10,37 @@ namespace YarnGenerator
     public abstract class Stitch
     {
         public StitchType stitchType;
+        // stitch number for the given row
+        public int index;
         // # of loops from previous row used by this stitch
         public int loopsConsumed;
         // # of loops left on the needle at the end of this stitch
         public int loopsProduced;
         protected Vector3[] genericCurve;
 
-        public static Stitch GetStitch(StitchType stitchType)
+        public Stitch(int index)
+        {
+            this.index = index;
+        }
+
+        public static Stitch GetStitch(StitchType stitchType, int index)
         {
             switch (stitchType)
             {
                 case StitchType.KnitStitch:
-                    return new KnitStitch();
+                    return new KnitStitch(index);
                 case StitchType.PurlStitch:
-                    return new PurlStitch();
+                    return new PurlStitch(index);
                 case StitchType.Cable1Lo1RStitch:
-                    return new Cable1Lo1RStitch();
+                    return new Cable1Lo1RStitch(index);
                 case StitchType.Cable2Lo2RStitch:
-                    return new Cable2Lo2RStitch();
+                    return new Cable2Lo2RStitch(index);
                 case StitchType.CableKnitStitch:
-                    return new CableKnitStitch();
+                    return new CableKnitStitch(index);
                 case StitchType.CableKnitStitch4:
-                    return new CableKnitStitch4();
+                    return new CableKnitStitch4(index);
                 default:
-                    return new KnitStitch();
+                    return new KnitStitch(index);
             }
         }
 
@@ -47,6 +54,10 @@ namespace YarnGenerator
         // Whether the stitch is knit or purl (indicates loop direction)
         public bool isPurlStitch;
         
+        protected BasicStitch(int index) : base(index)
+        {
+        }
+
         public Vector3 GetLoop(int j, float yarnWidth, bool cableFront)
         {
             float h = 1.0f; // height of stitches
@@ -156,8 +167,9 @@ namespace YarnGenerator
 
     public class KnitStitch : BasicStitch
     {
-        public KnitStitch()
+        public KnitStitch(int index) : base(index)
         {
+            this.index = index;
             this.loopsConsumed = 1;
             this.loopsProduced = 1;
             this.isPurlStitch = false;
@@ -166,8 +178,9 @@ namespace YarnGenerator
     
     public class PurlStitch : BasicStitch
     {
-        public PurlStitch()
+        public PurlStitch(int index) : base(index)
         {
+            this.index = index;
             this.loopsConsumed = 1;
             this.loopsProduced = 1;
             this.isPurlStitch = true;
@@ -192,6 +205,10 @@ namespace YarnGenerator
         // List of stitches to perform in order, once the held stitches
         // have been moved to the stitch holder
         public StitchType[] stitchTypeList;
+        
+        protected CableStitch(int index) : base(index)
+        {
+        }
         
         public override Vector3[] GenerateCurve(int loopNo, float yarnWidth,  bool lastStitch)
         {
@@ -221,7 +238,7 @@ namespace YarnGenerator
                 
                 Debug.Log($"in CableStitch.GenerateCurve: {i} xStart {xStart} xEnd {xEnd}");
                 
-                Stitch stitch = Stitch.GetStitch(stitchTypeList[i]);
+                Stitch stitch = Stitch.GetStitch(stitchTypeList[i], i);
                 Vector3[] curve = stitch.GenerateCurve(xStart, xEnd, yarnWidth, lastStitch, front);
                 curveForStitch = curveForStitch.Concat(curve).ToArray();
             }
@@ -236,8 +253,9 @@ namespace YarnGenerator
 
     public class Cable1Lo1RStitch : CableStitch
     {
-        public Cable1Lo1RStitch()
+        public Cable1Lo1RStitch(int index) : base(index)
         {
+            this.index = index;
             this.loopsConsumed = 2;
             this.loopsProduced = 2;
             this.held = 1;
@@ -251,8 +269,9 @@ namespace YarnGenerator
     
     public class Cable2Lo2RStitch : CableStitch
     {
-        public Cable2Lo2RStitch()
+        public Cable2Lo2RStitch(int index) : base(index)
         {
+            this.index = index;
             this.loopsConsumed = 4;
             this.loopsProduced = 4;
             this.held = 2;
@@ -267,8 +286,9 @@ namespace YarnGenerator
     
     public class CableKnitStitch : CableStitch
     {
-        public CableKnitStitch()
+        public CableKnitStitch(int index) : base(index)
         {
+            this.index = index;
             this.loopsConsumed = 2;
             this.loopsProduced = 2;
             this.held = 0;
@@ -282,8 +302,9 @@ namespace YarnGenerator
     
     public class CableKnitStitch4 : CableStitch
     {
-        public CableKnitStitch4()
+        public CableKnitStitch4(int index) : base(index)
         {
+            this.index = index;
             this.loopsConsumed = 4;
             this.loopsProduced = 4;
             this.held = 0;

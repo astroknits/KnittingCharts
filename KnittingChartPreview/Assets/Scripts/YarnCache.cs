@@ -43,9 +43,9 @@ namespace YarnGenerator
             yarn.GenerateRow(stitches, yarnWidth, rowNumber, material);
         }
         
-        public Stitch GetStitch(StitchType stitchType, bool forceUpdate)
+        public Stitch GetStitch(StitchType stitchType, int stitchNo, bool forceUpdate)
         {
-            return stitchCache.GetStitch(stitchType, forceUpdate);
+            return stitchCache.GetStitch(stitchType, stitchNo, forceUpdate);
         }
     }
 }
