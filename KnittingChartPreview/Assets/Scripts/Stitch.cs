@@ -77,14 +77,14 @@ namespace YarnGenerator
             }
 
             // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
-            float angle = (float) j / (float) KnitSettings.stitchRes * 2 * (float) Math.PI;
+            float angle = (float) (j % KnitSettings.stitchRes) / (float) KnitSettings.stitchRes * 2 * (float) Math.PI;
 
             // parametric equation for stitch
             // eg from https://www.cs.cmu.edu/~kmcrane/Projects/Other/YarnCurve.pdf
-            float xVal = (angle + a * (float) Math.Sin(2.0f * angle)) / (float)Math.PI;
+            float xVal = (float)(angle + a * (float) Math.Sin(2.0f * angle)) / (float)Math.PI;
             float yVal = h * (float)Math.Cos(angle + (float)Math.PI);
             float zVal = d * (float)Math.Cos(2.0f * angle) - d2;
-            
+
             return new Vector3(xVal,yVal,zVal);
         }
         
@@ -92,7 +92,6 @@ namespace YarnGenerator
             int loopNoStart, int loopNoEnd, float yarnWidth,  bool lastStitch, bool cableFront)
         {
             int loopOffset = loopNoEnd - loopNoStart;
-            Debug.Log($"LK in BasicStitch.GenerateCurve: {loopNoStart} {loopNoEnd} {loopOffset}");
 
             Vector3[] curveForStitch = GenerateGenericCurve(yarnWidth, lastStitch, cableFront);
 
@@ -132,7 +131,6 @@ namespace YarnGenerator
             {
                 genericCurve[j] = GetLoop(j, yarnWidth, cableFront);
             }
-            
 
             return genericCurve;
         }
@@ -235,9 +233,7 @@ namespace YarnGenerator
                     xEnd = xStart + this.held;
                     front = (this.front);
                 }
-                
-                Debug.Log($"in CableStitch.GenerateCurve: {i} xStart {xStart} xEnd {xEnd}");
-                
+
                 Stitch stitch = Stitch.GetStitch(stitchTypeList[i], i);
                 Vector3[] curve = stitch.GenerateCurve(xStart, xEnd, yarnWidth, lastStitch, front);
                 curveForStitch = curveForStitch.Concat(curve).ToArray();

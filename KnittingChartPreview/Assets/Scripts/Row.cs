@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace YarnGenerator
 {
     public class Row

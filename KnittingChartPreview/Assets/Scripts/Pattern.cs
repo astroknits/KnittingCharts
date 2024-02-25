@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace YarnGenerator
 {
     public class Pattern
@@ -20,6 +22,17 @@ namespace YarnGenerator
                 {
                     this.width = row.nLoops;
                 }
+            }
+        }
+
+        public void RenderPreview(float yarnWidth, Material material)
+        {
+            GameObject parent = new GameObject($"Pattern {yarnWidth}");
+            for (int rowNumber = 0; rowNumber < this.nRows; rowNumber++)
+            {
+                Row row = this.rows[rowNumber];
+                GameObject yarn = Yarn.GenerateRowPreview(row, yarnWidth, material);
+                yarn.transform.SetParent(parent.transform);
             }
         }
     }

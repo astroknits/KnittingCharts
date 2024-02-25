@@ -8,15 +8,14 @@ namespace YarnGenerator
     {
         public float gauge = 1f;
         public float yarnWidth = 0.1f;
-        private StitchCache stitchCache = StitchCache.GetInstance();
 
-        public GameObject GenerateRow(
-            StitchType[] stitches, float yarnWidth, int rowNumber, Material material)
+        public static GameObject GenerateRowPreview(
+            Row row, float yarnWidth, Material material)
         {
             // For now, each row only has one stitch in it
 
             // Create the mesh for the yarn in this row
-            GameObject yarn = new GameObject($"Row {rowNumber} for {yarnWidth}/1.0f");
+            GameObject yarn = new GameObject($"Row {row.nRow} for {yarnWidth}/1.0f");
             MeshFilter meshFilter = yarn.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = yarn.AddComponent<MeshRenderer>();
             Mesh mesh = new Mesh();
@@ -24,7 +23,7 @@ namespace YarnGenerator
 
             // Set up vertices for the row based on the curve
             Vector3[] rowVertices = GenerateVerticesForRow(
-                stitches, yarnWidth, rowNumber);
+                row, yarnWidth, row.nRow);
             
             // Set up triangles for the row based on the vertices
             int[] triangles = GenerateTriangles(rowVertices);
@@ -39,7 +38,7 @@ namespace YarnGenerator
             return yarn;
         }
 
-        internal Vector3[] GenerateCircle(float yarnWidth, Vector3[] curve, int j)
+        internal static Vector3[] GenerateCircle(float yarnWidth, Vector3[] curve, int j)
         {
             /* Create circle of points in a plane normal to the direction
              * of the curve.
@@ -108,22 +107,18 @@ namespace YarnGenerator
             return circle;
         }
 
-        internal Vector3[] GenerateVerticesForRow(
-            StitchType[] stitches, float yarnWidth, int rowNumber)
+        internal static Vector3[] GenerateVerticesForRow(
+            Row row, float yarnWidth, int rowNumber)
         {
             Vector3[] rowCurve = Array.Empty<Vector3>();
             int loopNo = 0;
-            for (int k = 0; k < stitches.Length; k++)
+            for (int k = 0; k < row.stitches.Length; k++)
             {
-                StitchType stitchType = stitches[k];
-
-                // instantiate the stitch
-                Stitch stitch = Stitch.GetStitch(stitchType, k);
-
+                Stitch stitch = row.stitches[k];
                 Debug.Log($"loopNo: {loopNo}, k={k}");
                 // Get the curve for the stitch
                 Vector3[] rowCurve1 = stitch.GenerateCurve(
-                    loopNo, yarnWidth, (k == stitches.Length - 1));
+                    loopNo, yarnWidth, (k == row.nStitches - 1));
 
                 // and add to the vertices row array
                 rowCurve = rowCurve.Concat(rowCurve1).ToArray();
@@ -138,7 +133,7 @@ namespace YarnGenerator
             }
             return rowVertices;
         }
-        internal Vector3[] GenerateVerticesForCurve(Vector3[] curve, float yarnWidth)
+        internal static Vector3[] GenerateVerticesForCurve(Vector3[] curve, float yarnWidth)
         {
             // Generate vertices
             Vector3[] vertices = new Vector3[
@@ -156,7 +151,7 @@ namespace YarnGenerator
             return vertices;
         }
 
-        internal int[] GenerateTriangles(Vector3[] rowVertices)
+        internal static int[] GenerateTriangles(Vector3[] rowVertices)
         {
             int xSegments = (int) rowVertices.Length / KnitSettings.radialRes;
             int[] triangles = new int[rowVertices.Length * 6];
