@@ -77,7 +77,7 @@ namespace YarnGenerator
             }
 
             // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
-            float angle = (float) (j % KnitSettings.stitchRes) / (float) KnitSettings.stitchRes * 2 * (float) Math.PI;
+            float angle = (float)j / (float) KnitSettings.stitchRes * 2 * (float) Math.PI;
 
             // parametric equation for stitch
             // eg from https://www.cs.cmu.edu/~kmcrane/Projects/Other/YarnCurve.pdf
@@ -131,6 +131,7 @@ namespace YarnGenerator
                 genericCurve[j] = GetLoop(j, yarnWidth, cableFront);
             }
 
+            
             return genericCurve;
         }
         
