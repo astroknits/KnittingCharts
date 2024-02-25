@@ -126,7 +126,6 @@ namespace YarnGenerator
             }
 
             genericCurve = new Vector3[segments];
-            float jOffset = 0;
             for (int j = 0; j < segments; j++)
             {
                 genericCurve[j] = GetLoop(j, yarnWidth, cableFront);
