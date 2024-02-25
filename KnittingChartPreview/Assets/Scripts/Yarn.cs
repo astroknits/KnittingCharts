@@ -46,12 +46,12 @@ namespace YarnGenerator
              * apply rotations about the z-axis (theta) and y-axis (phi).
              */
             Vector3[] circle = new Vector3[KnitSettings.radialRes];
-            float theta = 0.0f;
-            float phi = 0.0f;
-            float cosTheta = 1.0f;
-            float sinTheta = 0.0f;
-            float cosPhi = 1.0f;
-            float sinPhi = 0.0f;
+            float theta = 0.0f; // (float) Math.PI; // (float) Math.PI / 2.0f;
+            float phi = 0.0f; // (float) Math.PI; // * 2.0f;
+            float cosTheta = (float) Math.Cos(theta);
+            float sinTheta = (float) Math.Sin(theta);
+            float cosPhi = (float) Math.Cos(phi);
+            float sinPhi = (float) Math.Sin(phi);
 
             // If j >= curve.Length, theta and phi remain the default values of 0.0f
             if (j < curve.Length - 1)
@@ -62,7 +62,7 @@ namespace YarnGenerator
                 // Calculate theta (angle from z-axis) and phi (angle from y-axis)
                 float length = (float) (Math.Sqrt(Math.Pow(diff.x, 2) + Math.Pow(diff.y, 2) + Math.Pow(diff.z, 2)));
                 theta = (float) Math.Asin(diff.y / length);
-                phi = (float) Math.Asin(diff.z / length / Math.Cos(theta));
+                phi = (float) Math.Asin(diff.z / length / (float) Math.Cos(theta));
 
                 // Precalculate the sine and cosine of the angles
                 cosTheta = (float)Math.Cos(theta);
@@ -115,7 +115,6 @@ namespace YarnGenerator
             for (int k = 0; k < row.stitches.Length; k++)
             {
                 Stitch stitch = row.stitches[k];
-                Debug.Log($"loopNo: {loopNo}, k={k}");
                 // Get the curve for the stitch
                 Vector3[] rowCurve1 = stitch.GenerateCurve(
                     loopNo, yarnWidth, (k == row.nStitches - 1));
