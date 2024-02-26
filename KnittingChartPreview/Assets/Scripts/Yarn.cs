@@ -26,7 +26,7 @@ namespace YarnGenerator
                 row, yarnWidth, row.nRow);
             
             // Set up triangles for the row based on the vertices
-            int[] triangles = GenerateTriangles(rowVertices);
+            int[] triangles = GenerateTriangles(row, rowVertices);
 
             mesh.vertices = rowVertices;
             mesh.triangles = triangles;
@@ -71,10 +71,6 @@ namespace YarnGenerator
                 cosPhi = (float)Math.Cos(phi);
                 sinPhi = (float)Math.Sin(phi);
             }
-            else
-            {
-                Debug.Log($"j {j}");
-            }
 
             for (int i = 0; i < KnitSettings.radialRes; i++)
             {
@@ -116,12 +112,12 @@ namespace YarnGenerator
         {
             Vector3[] rowCurve = Array.Empty<Vector3>();
             int loopNo = 0;
-            for (int k = 0; k < row.stitches.Length; k++)
+            for (int k = 0; k < row.nStitches; k++)
             {
                 Stitch stitch = row.stitches[k];
                 // Get the curve for the stitch
                 Vector3[] rowCurve1 = stitch.GenerateCurve(
-                    loopNo, yarnWidth, (k == row.nStitches - 1));
+                    loopNo, yarnWidth);
 
                 // and add to the vertices row array
                 rowCurve = rowCurve.Concat(rowCurve1).ToArray();
@@ -154,16 +150,15 @@ namespace YarnGenerator
             return vertices;
         }
 
-        internal static int[] GenerateTriangles(Vector3[] rowVertices)
+        internal static int[] GenerateTriangles(Row row, Vector3[] rowVertices)
         {
-            int xSegments = (int) ((float)rowVertices.Length / (float)KnitSettings.radialRes);
-            int[] triangles = new int[rowVertices.Length * 6];
-            Debug.Log($"xSegments: {xSegments}");
+            int xSegments = rowVertices.Length / KnitSettings.radialRes;
+            int[] triangles = new int[row.nLoops * KnitSettings.stitchRes * KnitSettings.radialRes * 6];
 
             int triangleIndex = 0;
             for (int i = 0; i < KnitSettings.radialRes; i++)
             {
-                for (int j = 0; j < xSegments - 1; j++)
+                for (int j = 0; j < row.nLoops * KnitSettings.stitchRes - 1; j++)
                 {
                     int index = j * KnitSettings.radialRes + i;
                     int nextIndex = j * KnitSettings.radialRes + (i + 1) % KnitSettings.radialRes;

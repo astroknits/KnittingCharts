@@ -35,14 +35,15 @@ namespace YarnGenerator
             return num;
         }
         
-        int GetTotalStitchesPerRow(int padding, int cableBlockSize, int sepSize, int cableStitchesPerRow)
+        int GetTotalStitchesPerRow(int padding, int cableStitchesPerRow, int sepSize)
         {
-            return cableStitchesPerRow + cableStitchesPerRow - 1 + 2 * padding;
+            Debug.Log($"GetTotalStitchesPerRow: {cableStitchesPerRow} + {Math.Max((cableStitchesPerRow - 1) * sepSize, 0)}, {2 * padding}");
+            return cableStitchesPerRow + Math.Max((cableStitchesPerRow - 1) * sepSize, 0) + 2 * padding;
         }
         
         int GetActualLoopsPerRow(int padding, int cableBlockSize, int sepSize, int cableStitchesPerRow)
         {
-            return cableStitchesPerRow * cableBlockSize + (cableStitchesPerRow - 1) * sepSize + 2 * padding;
+            return cableStitchesPerRow * cableBlockSize + Math.Max(cableStitchesPerRow - 1, 0) * sepSize + 2 * padding;
         }
 
         Pattern GetPattern()
@@ -52,14 +53,19 @@ namespace YarnGenerator
             // size of cable (eg for 2x2)
             int cableBlockSize = 4;
             // number of purl stitches separating each cable block
-            int sepSize = 1;
+            int sepSize = 0;
+            // Number of rows continuing cable pattern in knit stitch 
+            int knitRows = 3;
             // calculate number of cable stitches per row
-            int cableStitchesPerRow = GetCableStitchesPerRow(loopsPerRow, padding, cableBlockSize, sepSize);
+            int cableStitchesPerRow = GetCableStitchesPerRow(
+                loopsPerRow, padding, cableBlockSize, sepSize);
             // calculate # stitches per row
-            int stitchesPerRow = GetTotalStitchesPerRow(padding, cableBlockSize, sepSize, cableStitchesPerRow);
+            int stitchesPerRow = GetTotalStitchesPerRow(
+                padding, cableStitchesPerRow, sepSize);
 
             // Set the number of loops per row to reflect the number of loops for this pattern
-            loopsPerRow = GetActualLoopsPerRow(padding,  cableBlockSize, sepSize, cableStitchesPerRow);
+            loopsPerRow = GetActualLoopsPerRow(
+                padding,  cableBlockSize, sepSize, cableStitchesPerRow);
             Debug.Log($"Pattern.  cableStitchesPerRow {cableStitchesPerRow} stitchesPerRow {stitchesPerRow} loopsPerRow {loopsPerRow}");
 
             Row[] rows = new Row[nRows];
@@ -76,7 +82,7 @@ namespace YarnGenerator
 
                 for (int i = 0; i < cableStitchesPerRow; i++)
                 {
-                    if (rowNumber % 4 == 0)
+                    if (rowNumber % (knitRows + 1) == 0)
                     {
                         stitches[stitchIndex] = StitchType.Cable2Lo2RStitch;
                     }
@@ -87,8 +93,11 @@ namespace YarnGenerator
                     stitchIndex += 1;
                     if (cableStitchesPerRow > 1 && i < cableStitchesPerRow - 1)
                     {
-                        stitches[stitchIndex] = StitchType.PurlStitch;
-                        stitchIndex += 1;
+                        for (int j = 0; j < sepSize; j++)
+                        {
+                            stitches[stitchIndex] = StitchType.PurlStitch;
+                            stitchIndex += 1;
+                        }
                     }
                 }
 
@@ -99,6 +108,11 @@ namespace YarnGenerator
                 }
 
                 rows[rowNumber] = new Row(rowNumber, stitches);
+                Debug.Log($"{rowNumber} stitchIndex: {stitchIndex}; {stitches.Length}, rows[rowNumber].nLoops {rows[rowNumber].nLoops} ");
+                foreach (Stitch stitch in rows[rowNumber].stitches)
+                {
+                    Debug.Log($"    {rowNumber} stitch.stitchType {stitch.stitchType}");
+                }
             }
             return new Pattern(rows);
         }
