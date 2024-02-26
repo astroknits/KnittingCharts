@@ -60,6 +60,8 @@ namespace YarnGenerator
 
             // Set the number of loops per row to reflect the number of loops for this pattern
             loopsPerRow = GetActualLoopsPerRow(padding,  cableBlockSize, sepSize, cableStitchesPerRow);
+            Debug.Log($"Pattern.  cableStitchesPerRow {cableStitchesPerRow} stitchesPerRow {stitchesPerRow} loopsPerRow {loopsPerRow}");
+
             Row[] rows = new Row[nRows];
             for (int rowNumber = 0; rowNumber < nRows; rowNumber++)
             {

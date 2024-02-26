@@ -16,7 +16,6 @@ namespace YarnGenerator
         public int loopsConsumed;
         // # of loops left on the needle at the end of this stitch
         public int loopsProduced;
-        protected Vector3[] genericCurve;
 
         public Stitch(int index)
         {
@@ -77,7 +76,7 @@ namespace YarnGenerator
             }
 
             // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
-            float angle = (float)j / (float) KnitSettings.stitchRes * 2 * (float) Math.PI;
+            float angle = (float)j / (float) KnitSettings.stitchRes * 2.0f * (float) Math.PI;
 
             // parametric equation for stitch
             // eg from https://www.cs.cmu.edu/~kmcrane/Projects/Other/YarnCurve.pdf
@@ -104,7 +103,7 @@ namespace YarnGenerator
                 // Apply shear if there is a stitchOffset
                 if (loopOffset != 0)
                 {
-                    genericCurve[j].x +=  loopOffset + loopOffset * (genericCurve[j].y);
+                    curveForStitch[j].x +=  loopOffset + loopOffset * (curveForStitch[j].y);
                 }
             }
             return curveForStitch;
@@ -125,13 +124,12 @@ namespace YarnGenerator
                 segments += 1;
             }
 
-            genericCurve = new Vector3[segments];
+            Vector3[] genericCurve = new Vector3[segments];
             for (int j = 0; j < segments; j++)
             {
                 genericCurve[j] = GetLoop(j, yarnWidth, cableFront);
             }
 
-            
             return genericCurve;
         }
         

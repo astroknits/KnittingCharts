@@ -54,6 +54,7 @@ namespace YarnGenerator
             float sinPhi = (float) Math.Sin(phi);
 
             // If j >= curve.Length, theta and phi remain the default values of 0.0f
+            // LEK debug
             if (j < curve.Length - 1)
             {
                 // Direction vector, acts as the normal to the circle
@@ -70,18 +71,21 @@ namespace YarnGenerator
                 cosPhi = (float)Math.Cos(phi);
                 sinPhi = (float)Math.Sin(phi);
             }
-
+            else
+            {
+                Debug.Log($"j {j}");
+            }
 
             for (int i = 0; i < KnitSettings.radialRes; i++)
             {
                 // Angle runs from 0 to 2*Pi
-                float angle = Mathf.PI * 2 * i / KnitSettings.radialRes;
+                float angle = (float)Mathf.PI * 2.0f * (float)i / (float)KnitSettings.radialRes;
 
                 // generates circle of width yarnWidth in y-z plane
                 // for each point in the stitch curve
                 float cx = 0.0f;
-                float cy = yarnWidth * Mathf.Cos(angle);
-                float cz = yarnWidth * Mathf.Sin(angle);
+                float cy = yarnWidth * (float)Mathf.Cos(angle);
+                float cz = yarnWidth * (float)Mathf.Sin(angle);
 
                 // Now rotate the circle so its normal is
                 // in direction of the diff vector
@@ -128,7 +132,7 @@ namespace YarnGenerator
             Vector3[] rowVertices = GenerateVerticesForCurve(rowCurve, yarnWidth);
             for (int j = 0; j < rowVertices.Length; j++)
             {
-                rowVertices[j].y += rowNumber * (1 + 1.0f - 3.0f * yarnWidth);
+                rowVertices[j].y += (float)rowNumber * (1.0f + 1.0f - 3.0f * yarnWidth);
             }
             return rowVertices;
         }
@@ -152,26 +156,24 @@ namespace YarnGenerator
 
         internal static int[] GenerateTriangles(Vector3[] rowVertices)
         {
-            int xSegments = (int) rowVertices.Length / KnitSettings.radialRes;
+            int xSegments = (int) ((float)rowVertices.Length / (float)KnitSettings.radialRes);
             int[] triangles = new int[rowVertices.Length * 6];
+            Debug.Log($"xSegments: {xSegments}");
 
             int triangleIndex = 0;
             for (int i = 0; i < KnitSettings.radialRes; i++)
             {
                 for (int j = 0; j < xSegments - 1; j++)
                 {
-                    if (j > 0)
-                    {
-                        int index = j * KnitSettings.radialRes + i;
-                        int nextIndex = j * KnitSettings.radialRes + (i + 1) % KnitSettings.radialRes;
-                        // Side triangles
-                        triangles[triangleIndex] = nextIndex;
-                        triangles[triangleIndex + 1] = index + KnitSettings.radialRes;
-                        triangles[triangleIndex + 2] = index;
-                        triangles[triangleIndex + 3] = nextIndex + KnitSettings.radialRes;
-                        triangles[triangleIndex + 4] = index + KnitSettings.radialRes;
-                        triangles[triangleIndex + 5] = nextIndex;
-                    }
+                    int index = j * KnitSettings.radialRes + i;
+                    int nextIndex = j * KnitSettings.radialRes + (i + 1) % KnitSettings.radialRes;
+                    // Side triangles
+                    triangles[triangleIndex] = nextIndex;
+                    triangles[triangleIndex + 1] = index + KnitSettings.radialRes;
+                    triangles[triangleIndex + 2] = index;
+                    triangles[triangleIndex + 3] = nextIndex + KnitSettings.radialRes;
+                    triangles[triangleIndex + 4] = index + KnitSettings.radialRes;
+                    triangles[triangleIndex + 5] = nextIndex;
                     triangleIndex += 6;
                 }
             }
