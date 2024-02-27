@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace YarnGenerator
 {
@@ -19,6 +20,7 @@ namespace YarnGenerator
             MeshFilter meshFilter = yarn.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = yarn.AddComponent<MeshRenderer>();
             Mesh mesh = new Mesh();
+            mesh.indexFormat = IndexFormat.UInt32;
             meshFilter.mesh = mesh;
 
             // Set up vertices for the row based on the curve
