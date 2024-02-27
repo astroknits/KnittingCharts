@@ -30,6 +30,7 @@ namespace YarnGenerator
 
             mesh.vertices = rowVertices;
             mesh.triangles = triangles;
+            Debug.Log($"There are {rowVertices.Length} vertices.");
             mesh.RecalculateNormals();
 
             // Assign a default material
@@ -103,7 +104,6 @@ namespace YarnGenerator
                     curve[j].z + dz
                 );
             }
-
             return circle;
         }
 
@@ -124,7 +124,7 @@ namespace YarnGenerator
                 loopNo += stitch.loopsProduced;
             }
 
-            Stitch.DrawLine(rowCurve);
+            // Stitch.DrawLine(rowCurve);
             // Set up vertices for the stitch based on the stitch curve
             Vector3[] rowVertices = GenerateVerticesForCurve(rowCurve, yarnWidth);
             for (int j = 0; j < rowVertices.Length; j++)
@@ -142,6 +142,7 @@ namespace YarnGenerator
             for (int j = 0; j < curve.Length; j++)
             {
                 Vector3[] rotatedCircle = GenerateCircle(yarnWidth, curve, j);
+                Stitch.DrawLine(rotatedCircle);
                 for (int i = 0; i < KnitSettings.radialRes; i++)
                 {
                     vertices[j * KnitSettings.radialRes + i] = rotatedCircle[i];
@@ -172,12 +173,12 @@ namespace YarnGenerator
                     */
 
                     // Side triangles
-                    triangles[triangleIndex] = nextIndex;
+                    triangles[triangleIndex] = index;
                     triangles[triangleIndex + 1] = index + KnitSettings.radialRes;
-                    triangles[triangleIndex + 2] = index;
-                    triangles[triangleIndex + 3] = nextIndex + KnitSettings.radialRes;
+                    triangles[triangleIndex + 2] = nextIndex;
+                    triangles[triangleIndex + 3] = nextIndex;
                     triangles[triangleIndex + 4] = index + KnitSettings.radialRes;
-                    triangles[triangleIndex + 5] = nextIndex;
+                    triangles[triangleIndex + 5] = nextIndex + KnitSettings.radialRes;
                     triangleIndex += 6;
                 }
             }

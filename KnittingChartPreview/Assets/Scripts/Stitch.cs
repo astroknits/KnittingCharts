@@ -48,8 +48,6 @@ namespace YarnGenerator
 
         public static void DrawLine(Vector3[] vectorCurve)
         {
-            bool verbose = false;
-
             for (int j = 0; j < vectorCurve.Length; j++)
             {
                 if (j >= vectorCurve.Length - 1)
@@ -58,11 +56,7 @@ namespace YarnGenerator
                 }
                 Vector3 v1 = vectorCurve[j];
                 Vector3 v2 = vectorCurve[j + 1];
-
-                if (verbose)
-                {
-                    Debug.Log($"(curveForStitch[{j}]) (curveForStitch[{j+1}): ({v1.x} {v1.y} {v1.z}) ({v2.x} {v2.y} {v2.z})");
-                }
+                
                 Debug.DrawLine(v1, v2, Color.green, 2, false);
             }
         }
