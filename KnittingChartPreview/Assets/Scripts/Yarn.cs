@@ -124,6 +124,7 @@ namespace YarnGenerator
                 loopNo += stitch.loopsProduced;
             }
 
+            Stitch.DrawLine(rowCurve);
             // Set up vertices for the stitch based on the stitch curve
             Vector3[] rowVertices = GenerateVerticesForCurve(rowCurve, yarnWidth);
             for (int j = 0; j < rowVertices.Length; j++)
@@ -152,16 +153,24 @@ namespace YarnGenerator
 
         internal static int[] GenerateTriangles(Row row, Vector3[] rowVertices)
         {
-            int xSegments = rowVertices.Length / KnitSettings.radialRes;
             int[] triangles = new int[row.nLoops * KnitSettings.stitchRes * KnitSettings.radialRes * 6];
 
             int triangleIndex = 0;
-            for (int i = 0; i < KnitSettings.radialRes; i++)
+            for (int j = 0; j < row.nLoops * KnitSettings.stitchRes - 1; j++)
             {
-                for (int j = 0; j < row.nLoops * KnitSettings.stitchRes - 1; j++)
+                for (int i = 0; i < KnitSettings.radialRes; i++)
                 {
-                    int index = j * KnitSettings.radialRes + i;
+                    int index = j * KnitSettings.radialRes + i % KnitSettings.radialRes;
                     int nextIndex = j * KnitSettings.radialRes + (i + 1) % KnitSettings.radialRes;
+
+                    /*
+                    // Debugging triangle generation
+                    Vector3[] test = new Vector3[2];
+                    test[0] = rowVertices[index];
+                    test[1] = rowVertices[index + KnitSettings.radialRes];
+                    Stitch.DrawLine(test);
+                    */
+
                     // Side triangles
                     triangles[triangleIndex] = nextIndex;
                     triangles[triangleIndex + 1] = index + KnitSettings.radialRes;

@@ -21,7 +21,7 @@ namespace YarnGenerator
         {
             this.index = index;
         }
-
+        
         public static Stitch GetStitch(StitchType stitchType, int index)
         {
             switch (stitchType)
@@ -45,7 +45,27 @@ namespace YarnGenerator
 
         public abstract Vector3[] GenerateCurve(int loopNo, float yarnWidth);
         public abstract Vector3[] GenerateCurve(int loopNoStart, int loopNoEnd, float yarnWidth, bool cableFront);
-        
+
+        public static void DrawLine(Vector3[] vectorCurve)
+        {
+            bool verbose = false;
+
+            for (int j = 0; j < vectorCurve.Length; j++)
+            {
+                if (j >= vectorCurve.Length - 1)
+                {
+                    continue;
+                }
+                Vector3 v1 = vectorCurve[j];
+                Vector3 v2 = vectorCurve[j + 1];
+
+                if (verbose)
+                {
+                    Debug.Log($"(curveForStitch[{j}]) (curveForStitch[{j+1}): ({v1.x} {v1.y} {v1.z}) ({v2.x} {v2.y} {v2.z})");
+                }
+                Debug.DrawLine(v1, v2, Color.green, 2, false);
+            }
+        }
     }
     
     public abstract class BasicStitch : Stitch
@@ -100,15 +120,19 @@ namespace YarnGenerator
             for (int j = 0; j < curveForStitch.Length; j++)
             {
                 curveForStitch[j] = curveForStitch[j] + horizontalOffset;
+
                 // Apply shear if there is a stitchOffset
                 if (loopOffset != 0)
                 {
                     curveForStitch[j].x +=  loopOffset + loopOffset * (curveForStitch[j].y);
                 }
             }
+
+            // DrawLine(curveForStitch);
+
             return curveForStitch;
         }
-
+        
         public override Vector3[] GenerateCurve(int loopNo, float yarnWidth)
         {
             return GenerateCurve(loopNo, loopNo, yarnWidth, false);
@@ -206,8 +230,10 @@ namespace YarnGenerator
 
                 Stitch stitch = Stitch.GetStitch(stitchTypeList[i], i);
                 Vector3[] curve = stitch.GenerateCurve(xStart, xEnd, yarnWidth, front);
+                // DrawLine(curve);
                 curveForStitch = curveForStitch.Concat(curve).ToArray();
             }
+            // DrawLine(curveForStitch);
 
             return curveForStitch;
         }

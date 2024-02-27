@@ -108,10 +108,9 @@ namespace YarnGenerator
                 }
 
                 rows[rowNumber] = new Row(rowNumber, stitches);
-                Debug.Log($"{rowNumber} stitchIndex: {stitchIndex}; {stitches.Length}, rows[rowNumber].nLoops {rows[rowNumber].nLoops} ");
                 foreach (Stitch stitch in rows[rowNumber].stitches)
                 {
-                    Debug.Log($"    {rowNumber} stitch.stitchType {stitch.stitchType}");
+                    Debug.Log($"    rowNumber {rowNumber} index {stitch.index} stitch.stitchType {stitch.stitchType}");
                 }
             }
             return new Pattern(rows);

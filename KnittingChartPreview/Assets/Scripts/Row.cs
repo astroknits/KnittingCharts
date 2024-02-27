@@ -20,7 +20,6 @@ namespace YarnGenerator
             this.stitches = GetStitches(stitchTypes);
             this.nStitches = stitchTypes.Length;
             this.nLoops = GetLoopsInRow(this.stitches);
-            Debug.Log($"ROW {nRow}: nStitches - {this.nStitches}; nLoops - {this.nLoops}");
         }
 
         private static Stitch[] GetStitches(StitchType[] stitchTypes)
@@ -40,7 +39,6 @@ namespace YarnGenerator
             int nLoops = 0;
             foreach (Stitch stitch in stitches)
             {
-                Debug.Log($"stitch.stitchType: {stitch.stitchType} (stitch.LoopsProduced) {stitch.loopsProduced}");
                 nLoops += stitch.loopsProduced;
             }
 
