@@ -10,36 +10,56 @@ namespace YarnGenerator
     public abstract class Stitch
     {
         public StitchType stitchType;
+        // stitch number for the given row
+        public int index;
         // # of loops from previous row used by this stitch
         public int loopsConsumed;
         // # of loops left on the needle at the end of this stitch
         public int loopsProduced;
-        protected Vector3[] genericCurve;
 
-        public static Stitch GetStitch(StitchType stitchType)
+        public Stitch(int index)
+        {
+            this.index = index;
+        }
+        
+        public static Stitch GetStitch(StitchType stitchType, int index)
         {
             switch (stitchType)
             {
                 case StitchType.KnitStitch:
-                    return new KnitStitch();
+                    return new KnitStitch(index);
                 case StitchType.PurlStitch:
-                    return new PurlStitch();
+                    return new PurlStitch(index);
                 case StitchType.Cable1Lo1RStitch:
-                    return new Cable1Lo1RStitch();
+                    return new Cable1Lo1RStitch(index);
                 case StitchType.Cable2Lo2RStitch:
-                    return new Cable2Lo2RStitch();
+                    return new Cable2Lo2RStitch(index);
                 case StitchType.CableKnitStitch:
-                    return new CableKnitStitch();
+                    return new CableKnitStitch(index);
                 case StitchType.CableKnitStitch4:
-                    return new CableKnitStitch4();
+                    return new CableKnitStitch4(index);
                 default:
-                    return new KnitStitch();
+                    return new KnitStitch(index);
             }
         }
 
-        public abstract Vector3[] GenerateCurve(int loopNo, float yarnWidth, bool lastStitch);
-        public abstract Vector3[] GenerateCurve(int loopNoStart, int loopNoEnd, float yarnWidth, bool lastStitch, bool cableFront);
-        
+        public abstract Vector3[] GenerateCurve(int loopNo, float yarnWidth);
+        public abstract Vector3[] GenerateCurve(int loopNoStart, int loopNoEnd, float yarnWidth, bool cableFront);
+
+        public static void DrawLine(Vector3[] vectorCurve)
+        {
+            for (int j = 0; j < vectorCurve.Length; j++)
+            {
+                if (j >= vectorCurve.Length - 1)
+                {
+                    continue;
+                }
+                Vector3 v1 = vectorCurve[j];
+                Vector3 v2 = vectorCurve[j + 1];
+                
+                Debug.DrawLine(v1, v2, Color.green, 2, false);
+            }
+        }
     }
     
     public abstract class BasicStitch : Stitch
@@ -47,6 +67,10 @@ namespace YarnGenerator
         // Whether the stitch is knit or purl (indicates loop direction)
         public bool isPurlStitch;
         
+        protected BasicStitch(int index) : base(index)
+        {
+        }
+
         public Vector3 GetLoop(int j, float yarnWidth, bool cableFront)
         {
             float h = 1.0f; // height of stitches
@@ -66,24 +90,23 @@ namespace YarnGenerator
             }
 
             // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
-            float angle = (float) j / (float) KnitSettings.stitchRes * 2 * (float) Math.PI;
+            float angle = (float)j / (float) KnitSettings.stitchRes * 2.0f * (float) Math.PI;
 
             // parametric equation for stitch
             // eg from https://www.cs.cmu.edu/~kmcrane/Projects/Other/YarnCurve.pdf
-            float xVal = (angle + a * (float) Math.Sin(2.0f * angle)) / (float)Math.PI;
+            float xVal = (float)(angle + a * (float) Math.Sin(2.0f * angle)) / (float)Math.PI;
             float yVal = h * (float)Math.Cos(angle + (float)Math.PI);
             float zVal = d * (float)Math.Cos(2.0f * angle) - d2;
-            
+
             return new Vector3(xVal,yVal,zVal);
         }
         
         public override Vector3[] GenerateCurve(
-            int loopNoStart, int loopNoEnd, float yarnWidth,  bool lastStitch, bool cableFront)
+            int loopNoStart, int loopNoEnd, float yarnWidth, bool cableFront)
         {
             int loopOffset = loopNoEnd - loopNoStart;
-            Debug.Log($"LK in BasicStitch.GenerateCurve: {loopNoStart} {loopNoEnd} {loopOffset}");
 
-            Vector3[] curveForStitch = GenerateGenericCurve(yarnWidth, lastStitch, cableFront);
+            Vector3[] curveForStitch = GenerateGenericCurve(yarnWidth, cableFront);
 
             // Each stitch takes up 2 natural units.  Therefore, the next stitch
             // needs an offset of 2.0f from the previous stitch
@@ -91,73 +114,46 @@ namespace YarnGenerator
             for (int j = 0; j < curveForStitch.Length; j++)
             {
                 curveForStitch[j] = curveForStitch[j] + horizontalOffset;
+
                 // Apply shear if there is a stitchOffset
                 if (loopOffset != 0)
                 {
-                    genericCurve[j].x +=  loopOffset + loopOffset * (genericCurve[j].y);
+                    curveForStitch[j].x +=  loopOffset + loopOffset * (curveForStitch[j].y);
                 }
             }
+
+            // DrawLine(curveForStitch);
+
             return curveForStitch;
         }
-
-        public override Vector3[] GenerateCurve(int loopNo, float yarnWidth,  bool lastStitch)
+        
+        public override Vector3[] GenerateCurve(int loopNo, float yarnWidth)
         {
-            return GenerateCurve(loopNo, loopNo, yarnWidth, lastStitch, false);
+            return GenerateCurve(loopNo, loopNo, yarnWidth, false);
         }
         
         
         
-        public Vector3[] GenerateGenericCurve(float yarnWidth, bool lastStitch, bool cableFront)
+        public Vector3[] GenerateGenericCurve(float yarnWidth, bool cableFront)
         {
             int segments = KnitSettings.stitchRes;
-            if (lastStitch)
-            {
-                segments += 1;
-            }
 
-            genericCurve = new Vector3[segments];
-            float jOffset = 0;
+            Vector3[] genericCurve = new Vector3[segments];
             for (int j = 0; j < segments; j++)
             {
                 genericCurve[j] = GetLoop(j, yarnWidth, cableFront);
             }
-            
 
             return genericCurve;
         }
-        
-        /*
-        public Vector3[] GenerateGenericCurve(float yarnWidth, bool lastStitch)
-        {
-            int segments = KnitSettings.stitchRes;
-            if (lastStitch)
-            {
-                segments += 1;
-            }
-
-            Vector3[] genericCurveCopy = new Vector3[segments];
-            if (genericCurve != null && genericCurve.Length == segments)
-            {
-                Array.Copy(genericCurve, genericCurveCopy, genericCurve.Length);
-                return genericCurveCopy;
-            }
-
-            genericCurve = new Vector3[segments];
-            for (int j = 0; j < segments; j++)
-            {
-                genericCurveCopy[j] = GetLoop(j, yarnWidth);
-            }
-
-            Array.Copy(genericCurveCopy, genericCurve, genericCurveCopy.Length);
-            return genericCurveCopy;
-        }
-        */
     }
 
     public class KnitStitch : BasicStitch
     {
-        public KnitStitch()
+        public KnitStitch(int index) : base(index)
         {
+            this.stitchType = StitchType.KnitStitch;
+            this.index = index;
             this.loopsConsumed = 1;
             this.loopsProduced = 1;
             this.isPurlStitch = false;
@@ -166,8 +162,10 @@ namespace YarnGenerator
     
     public class PurlStitch : BasicStitch
     {
-        public PurlStitch()
+        public PurlStitch(int index) : base(index)
         {
+            this.stitchType = StitchType.PurlStitch;
+            this.index = index;
             this.loopsConsumed = 1;
             this.loopsProduced = 1;
             this.isPurlStitch = true;
@@ -193,7 +191,12 @@ namespace YarnGenerator
         // have been moved to the stitch holder
         public StitchType[] stitchTypeList;
         
-        public override Vector3[] GenerateCurve(int loopNo, float yarnWidth,  bool lastStitch)
+        protected CableStitch(int index, StitchType stitchType) : base(index)
+        {
+            this.stitchType = stitchType;
+        }
+        
+        public override Vector3[] GenerateCurve(int loopNo, float yarnWidth)
         {
             // loopNo = the index of the loop this stitch starts on
             // Create a curve for the whole cable stitch
@@ -218,17 +221,17 @@ namespace YarnGenerator
                     xEnd = xStart + this.held;
                     front = (this.front);
                 }
-                
-                Debug.Log($"in CableStitch.GenerateCurve: {i} xStart {xStart} xEnd {xEnd}");
-                
-                Stitch stitch = Stitch.GetStitch(stitchTypeList[i]);
-                Vector3[] curve = stitch.GenerateCurve(xStart, xEnd, yarnWidth, lastStitch, front);
+
+                Stitch stitch = Stitch.GetStitch(stitchTypeList[i], i);
+                Vector3[] curve = stitch.GenerateCurve(xStart, xEnd, yarnWidth, front);
+                // DrawLine(curve);
                 curveForStitch = curveForStitch.Concat(curve).ToArray();
             }
+            // DrawLine(curveForStitch);
 
             return curveForStitch;
         }
-        public override Vector3[] GenerateCurve(int loopNoStart, int loopNoEnd, float yarnWidth,  bool lastStitch, bool cableFront)
+        public override Vector3[] GenerateCurve(int loopNoStart, int loopNoEnd, float yarnWidth, bool cableFront)
         {
             throw new NotImplementedException();
         }
@@ -236,8 +239,9 @@ namespace YarnGenerator
 
     public class Cable1Lo1RStitch : CableStitch
     {
-        public Cable1Lo1RStitch()
+        public Cable1Lo1RStitch(int index) : base(index, StitchType.Cable1Lo1RStitch)
         {
+            this.index = index;
             this.loopsConsumed = 2;
             this.loopsProduced = 2;
             this.held = 1;
@@ -251,8 +255,9 @@ namespace YarnGenerator
     
     public class Cable2Lo2RStitch : CableStitch
     {
-        public Cable2Lo2RStitch()
+        public Cable2Lo2RStitch(int index) : base(index, StitchType.Cable2Lo2RStitch)
         {
+            this.index = index;
             this.loopsConsumed = 4;
             this.loopsProduced = 4;
             this.held = 2;
@@ -267,8 +272,9 @@ namespace YarnGenerator
     
     public class CableKnitStitch : CableStitch
     {
-        public CableKnitStitch()
+        public CableKnitStitch(int index) : base(index, StitchType.CableKnitStitch)
         {
+            this.index = index;
             this.loopsConsumed = 2;
             this.loopsProduced = 2;
             this.held = 0;
@@ -282,8 +288,9 @@ namespace YarnGenerator
     
     public class CableKnitStitch4 : CableStitch
     {
-        public CableKnitStitch4()
+        public CableKnitStitch4(int index) : base(index, StitchType.CableKnitStitch4)
         {
+            this.index = index;
             this.loopsConsumed = 4;
             this.loopsProduced = 4;
             this.held = 0;
