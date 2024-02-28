@@ -31,7 +31,7 @@ namespace YarnGenerator
             for (int rowNumber = 0; rowNumber < this.nRows; rowNumber++)
             {
                 Row row = this.rows[rowNumber];
-                GameObject yarn = Yarn.GenerateRowPreview(row, yarnWidth, material);
+                GameObject yarn = Stitch.GenerateRowPreview(row, yarnWidth, material);
                 yarn.transform.SetParent(parent.transform);
             }
         }
