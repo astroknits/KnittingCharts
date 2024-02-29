@@ -138,21 +138,6 @@ namespace YarnGenerator
                 return;
             }
 
-            // Pattern pattern = GetPattern();
-            // pattern.RenderPreview(this.material);
-            /*
-            Loop loop1 = Loop.GetLoop(LoopType.Knit, yarnWidth, 0, 0, 0, false, false);
-            Loop loop2 = Loop.GetLoop(LoopType.Purl, yarnWidth, 0, 1, 1, false, false);
-            loop1.GetMesh(material);
-            loop2.GetMesh(material);
-            Stitch stitch = Stitch.GetStitch(StitchType.KnitStitch, 0, 3, 3, yarnWidth);
-            stitch.GenerateMesh(material);
-            Row row1 = new Row(0, new StitchType[2] {StitchType.KnitStitch, StitchType.Cable1Lo1RStitch}, yarnWidth);
-            Row row2 = new Row(1, new StitchType[2] {StitchType.KnitStitch, StitchType.Cable1Lo1RStitch}, yarnWidth);
-            row1.GeneratePreview(material);
-            row2.GeneratePreview(material);
-            */
-
             Pattern pattern = GetPattern();
             pattern.RenderPreview(this.material);
         }
