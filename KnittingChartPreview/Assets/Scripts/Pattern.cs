@@ -25,14 +25,14 @@ namespace YarnGenerator
             }
         }
 
-        public void RenderPreview(float yarnWidth, Material material)
+        public void RenderPreview(Material material)
         {
-            GameObject parent = new GameObject($"Pattern {yarnWidth}");
+            GameObject parent = new GameObject($"Pattern 1");
             for (int rowNumber = 0; rowNumber < this.nRows; rowNumber++)
             {
                 Row row = this.rows[rowNumber];
-                GameObject yarn = Stitch.GenerateRowPreview(row, yarnWidth, material);
-                yarn.transform.SetParent(parent.transform);
+                GameObject rowGameObject = row.GeneratePreview(material);
+                rowGameObject.transform.SetParent(parent.transform);
             }
         }
     }

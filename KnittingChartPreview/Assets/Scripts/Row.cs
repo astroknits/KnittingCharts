@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using UnityEngine;
 
 namespace YarnGenerator
@@ -5,36 +7,41 @@ namespace YarnGenerator
     public class Row
     {
         // Index for this row
-        public int nRow;
+        public int rowIndex;
         // Number of stitches for this row
         public int nStitches;
         // Number of loops (ie basic stitches) in row
         public int nLoops;
         // Array of stitch objects
         public Stitch[] stitches;
+        public float yarnWidth;
 
-        public Row(int nRow, StitchType[] stitchTypes)
+        public Row(int rowIndex, StitchType[] stitchTypes, float yarnWidth)
         {
-            this.nRow = nRow;
+            this.rowIndex = rowIndex;
+            this.yarnWidth = yarnWidth;
             // Create array of Stitch objects
             this.stitches = GetStitches(stitchTypes);
             this.nStitches = stitchTypes.Length;
-            this.nLoops = GetLoopsInRow(this.stitches);
+            this.nLoops = GetLoopsInRow();
         }
 
-        private static Stitch[] GetStitches(StitchType[] stitchTypes)
+        private Stitch[] GetStitches(StitchType[] stitchTypes)
         {
             Stitch[] stitches = new Stitch[stitchTypes.Length];
 
-            for (int j = 0; j < stitchTypes.Length; j++)
+            int loopIndex = 0;
+            for (int stitchIndex = 0; stitchIndex < stitchTypes.Length; stitchIndex++)
             {
-                stitches[j] = Stitch.GetStitch(stitchTypes[j], j);
+                stitches[stitchIndex] = Stitch.GetStitch(
+                    stitchTypes[stitchIndex], rowIndex, stitchIndex, loopIndex, yarnWidth);
+                loopIndex += stitches[stitchIndex].loopsProduced;
             }
 
             return stitches;
         }
 
-        private static int GetLoopsInRow(Stitch[] stitches)
+        private int GetLoopsInRow()
         {
             int nLoops = 0;
             foreach (Stitch stitch in stitches)
@@ -43,6 +50,18 @@ namespace YarnGenerator
             }
 
             return nLoops;
+        }
+
+        public GameObject GeneratePreview(Material material)
+        {
+            GameObject rowGameObject = new GameObject($"Row {this.rowIndex} for yarnWidth {this.yarnWidth}");
+            foreach (Stitch stitch in this.stitches)
+            {
+                GameObject stitchGameObject = stitch.GenerateMesh(material);
+                stitchGameObject.transform.SetParent(rowGameObject.transform);
+            }
+
+            return rowGameObject;
         }
     }
 }
