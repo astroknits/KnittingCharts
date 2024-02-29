@@ -267,13 +267,26 @@ namespace YarnGenerator
 
         public Vector3[] GenerateCurve()
         {
-            int loopOffset = loopIndexEnd - loopIndexStart;
+            // check offset between where stitch was and where it ends up
+            // (if it's a cable stitch that crosses over)
+            float loopOffset = (float)loopIndexEnd - (float)loopIndexStart;
+
+            // Incorpoarte the yarn width in the loopOffset calculation
+            if (loopOffset > 0)
+            {
+                loopOffset += yarnWidth;
+            }
+            else if (loopOffset < 0)
+            {
+                loopOffset -= yarnWidth;
+            }
 
             Vector3[] curveForStitch = GenerateGenericCurve();
 
             // Each stitch takes up 2 natural units.  Therefore, the next stitch
             // needs an offset of 2.0f from the previous stitch
             Vector3 horizontalOffset = new Vector3(2.0f * loopIndexStart, 0, 0);
+
             for (int j = 0; j < curveForStitch.Length; j++)
             {
                 curveForStitch[j] = curveForStitch[j] + horizontalOffset;
