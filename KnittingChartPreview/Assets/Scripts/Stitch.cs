@@ -134,7 +134,7 @@ namespace YarnGenerator
                 // Work through each of the loops produced in the loopTypeList
                 for (int i = 0; i < this.loops.Length; i++)
                 {
-                    GameObject mesh = loops[i].GetMesh(material);
+                    GameObject mesh = loops[i].GenerateMesh(material);
                     mesh.transform.SetParent(stitchGameObject.transform);
                 }
 
