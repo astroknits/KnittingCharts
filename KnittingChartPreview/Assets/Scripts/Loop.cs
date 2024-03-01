@@ -60,7 +60,7 @@ namespace YarnGenerator
             }
         }
 
-        public GameObject GetMesh(Material material)
+        public GameObject GenerateMesh(Material material)
         {
             // Create the mesh for the yarn in this row
             GameObject gameObject = new GameObject($"Loop {this.loopIndexStart} for yarnWidth {this.yarnWidth}");
@@ -335,22 +335,34 @@ namespace YarnGenerator
 
     public class Knit : Loop
     {
-        public Knit(int rowIndex, float yarnWidth, int loopIndexStart, int loopIndexEnd, bool heldInFront, bool heldBehind) : 
+        public Knit(
+            int rowIndex,
+            float yarnWidth,
+            int loopIndexStart,
+            int loopIndexEnd,
+            bool heldInFront,
+            bool heldBehind
+            ) : 
             base(rowIndex, yarnWidth, loopIndexStart, loopIndexEnd, heldInFront, heldBehind)
         {
             this.loopType = LoopType.Knit;
-            this.yarnWidth = yarnWidth;
             this.loopsConsumed = 1;
             this.loopsProduced = 1;
         }
     }
     public class Purl : Loop
     {
-        public Purl(int rowIndex, float yarnWidth,  int loopIndexStart, int loopIndexEnd, bool heldInFront, bool heldBehind) : 
+        public Purl(
+            int rowIndex,
+            float yarnWidth, 
+            int loopIndexStart,
+            int loopIndexEnd,
+            bool heldInFront,
+            bool heldBehind
+            ) : 
             base(rowIndex, yarnWidth, loopIndexStart, loopIndexEnd, heldInFront, heldBehind)
         {
             this.loopType = LoopType.Purl;
-            this.yarnWidth = yarnWidth;
             this.loopsConsumed = 1;
             this.loopsProduced = 1;
         }
