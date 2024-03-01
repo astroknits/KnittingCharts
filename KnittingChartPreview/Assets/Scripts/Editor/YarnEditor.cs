@@ -107,10 +107,10 @@ namespace YarnGenerator
                     stitchIndex += 1;
                 }
 
-                rows[rowNumber] = new Row(rowNumber, stitches);
+                rows[rowNumber] = new Row(rowNumber, stitches, yarnWidth);
                 foreach (Stitch stitch in rows[rowNumber].stitches)
                 {
-                    Debug.Log($"    rowNumber {rowNumber} index {stitch.index} stitch.stitchType {stitch.stitchType}");
+                    Debug.Log($"    rowNumber {rowNumber} index {stitch.stitchIndex} stitch.stitchType {stitch.stitchType}");
                 }
             }
             return new Pattern(rows);
@@ -139,7 +139,7 @@ namespace YarnGenerator
             }
 
             Pattern pattern = GetPattern();
-            pattern.RenderPreview(yarnWidth, this.material);
+            pattern.RenderPreview(this.material);
         }
     }
 }
