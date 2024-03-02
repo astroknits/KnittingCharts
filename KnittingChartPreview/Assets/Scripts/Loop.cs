@@ -27,6 +27,9 @@ namespace YarnGenerator
         public bool heldInFront;
         public bool heldBehind;
 
+        public int radialRes = 20;
+        public int stitchRes = 40;
+
         public Loop(int rowIndex, float yarnWidth, int loopIndexStart, int loopIndexEnd, bool heldInFront, bool heldBehind)
         {
             this.rowIndex = rowIndex;
@@ -95,63 +98,35 @@ namespace YarnGenerator
              * Start by generating a circle of points in the y-z plane, and
              * apply rotations about the z-axis (theta) and y-axis (phi).
              */
-            Vector3[] circle = new Vector3[KnitSettings.radialRes];
-            float theta = 0.0f; // (float) Math.PI; // (float) Math.PI / 2.0f;
-            float phi = 0.0f; // (float) Math.PI; // * 2.0f;
-            float cosTheta = (float) Math.Cos(theta);
-            float sinTheta = (float) Math.Sin(theta);
-            float cosPhi = (float) Math.Cos(phi);
-            float sinPhi = (float) Math.Sin(phi);
+            Vector3[] circle = new Vector3[radialRes];
+            Vector3 normal = Vector3.right;
 
             // If j >= curve.Length, theta and phi remain the default values of 0.0f
-            // LEK debug
             if (j < curve.Length - 1)
             {
                 // Direction vector, acts as the normal to the circle
-                Vector3 diff = curve[j + 1] - curve[j];
-
-                // Calculate theta (angle from z-axis) and phi (angle from y-axis)
-                float length = (float) (Math.Sqrt(Math.Pow(diff.x, 2) + Math.Pow(diff.y, 2) + Math.Pow(diff.z, 2)));
-                theta = (float) Math.Asin(diff.y / length);
-                phi = (float) Math.Asin(diff.z / length / (float) Math.Cos(theta));
-
-                // Precalculate the sine and cosine of the angles
-                cosTheta = (float) Math.Cos(theta);
-                sinTheta = (float) Math.Sin(theta);
-                cosPhi = (float) Math.Cos(phi);
-                sinPhi = (float) Math.Sin(phi);
+                normal = (curve[j + 1] - curve[j]).normalized;
             }
 
-            for (int i = 0; i < KnitSettings.radialRes; i++)
+            for (int i = 0; i < radialRes; i++)
             {
                 // Angle runs from 0 to 2*Pi
-                float angle = (float) Mathf.PI * 2.0f * (float) i / (float) KnitSettings.radialRes;
+                float angle = (float) Mathf.PI * 2.0f * (float) i / (float) radialRes;
 
-                // generates circle of width yarnWidth in y-z plane
+                // generate circle of width yarnWidth in y-z plane
                 // for each point in the stitch curve
-                float cx = 0.0f;
-                float cy = this.yarnWidth * (float) Mathf.Cos(angle);
-                float cz = this.yarnWidth * (float) Mathf.Sin(angle);
+                Vector3 circleVector = new Vector3(
+                    0.0f,
+                    this.yarnWidth * (float) Mathf.Cos(angle),
+                    this.yarnWidth * (float) Mathf.Sin(angle)
+                    );
 
-                // Now rotate the circle so its normal is
+                // Rotate the circle so its normal is
                 // in direction of the diff vector
-                // 
-                // Calculate 3d rotations
-                // https://stackoverflow.com/questions/14607640/rotating-a-vector-in-3d-space
-                // rotate around the z axis first (theta)
-                float dx = cx * cosTheta - cy * sinTheta;
-                float dy = cx * sinTheta + cy * cosTheta;
-                float dz = cz;
-                // rotate around the y axis second (phi)
-                dx = dx * cosPhi + dz * sinPhi;
-                dz = -1.0f * dx * sinPhi + dz * cosPhi;
+                var rotation = Quaternion.FromToRotation(Vector3.right, normal);
 
                 // Add the circle at the point curve[j]
-                circle[i] = new Vector3(
-                    curve[j].x + dx,
-                    curve[j].y - dy,
-                    curve[j].z + dz
-                );
+                circle[i] = curve[j] + rotation * circleVector;
             }
 
             return circle;
@@ -183,15 +158,15 @@ namespace YarnGenerator
         {
             // Generate vertices
             Vector3[] vertices = new Vector3[
-                KnitSettings.radialRes * curve.Length
+                radialRes * curve.Length
             ];
             for (int j = 0; j < curve.Length; j++)
             {
                 Vector3[] rotatedCircle = GenerateCircle(curve, j);
                 Loop.DrawLine(rotatedCircle);
-                for (int i = 0; i < KnitSettings.radialRes; i++)
+                for (int i = 0; i < radialRes; i++)
                 {
-                    vertices[j * KnitSettings.radialRes + i] = rotatedCircle[i];
+                    vertices[j * radialRes + i] = rotatedCircle[i];
                 }
             }
 
@@ -200,30 +175,30 @@ namespace YarnGenerator
 
         internal int[] GenerateTriangles(Vector3[] rowVertices)
         {
-            int[] triangles = new int[this.loopsProduced * KnitSettings.stitchRes * KnitSettings.radialRes * 6];
+            int[] triangles = new int[this.loopsProduced * stitchRes * radialRes * 6];
 
             int triangleIndex = 0;
-            for (int j = 0; j < this.loopsProduced * KnitSettings.stitchRes - 1; j++)
+            for (int j = 0; j < this.loopsProduced * stitchRes - 1; j++)
             {
-                for (int i = 0; i < KnitSettings.radialRes; i++)
+                for (int i = 0; i < radialRes; i++)
                 {
-                    int index = j * KnitSettings.radialRes + i % KnitSettings.radialRes;
-                    int nextIndex = j * KnitSettings.radialRes + (i + 1) % KnitSettings.radialRes;
+                    int index = j * radialRes + i % radialRes;
+                    int nextIndex = j * radialRes + (i + 1) % radialRes;
 
                     /*
                     // Debugging triangle generation
                     Vector3[] test = new Vector3[2];
                     test[0] = rowVertices[index];
-                    test[1] = rowVertices[index + KnitSettings.radialRes];
+                    test[1] = rowVertices[index + radialRes];
                     Stitch.DrawLine(test);
                     */
 
                     // Side triangles
                     triangles[triangleIndex] = nextIndex;
-                    triangles[triangleIndex + 1] = index + KnitSettings.radialRes;
+                    triangles[triangleIndex + 1] = index + radialRes;
                     triangles[triangleIndex + 2] = index;
-                    triangles[triangleIndex + 3] = nextIndex + KnitSettings.radialRes;
-                    triangles[triangleIndex + 4] = index + KnitSettings.radialRes;
+                    triangles[triangleIndex + 3] = nextIndex + radialRes;
+                    triangles[triangleIndex + 4] = index + radialRes;
                     triangles[triangleIndex + 5] = nextIndex;
                     triangleIndex += 6;
                 }
@@ -241,10 +216,11 @@ namespace YarnGenerator
 
             if (heldInFront)
             {
-                d = 0.90f;
+                d = 0.5f;
             } else if (heldBehind)
             {
-                d = 1.10f;
+                d = 0.20f;
+                d2 = d2 * 0.8f;
             }
 
             if (this.loopType == LoopType.Purl)
@@ -254,7 +230,7 @@ namespace YarnGenerator
             }
 
             // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
-            float angle = (float) j / (float) KnitSettings.stitchRes * 2.0f * (float) Math.PI;
+            float angle = (float) j / (float) stitchRes * 2.0f * (float) Math.PI;
 
             // parametric equation for stitch
             // eg from https://www.cs.cmu.edu/~kmcrane/Projects/Other/YarnCurve.pdf
@@ -305,7 +281,7 @@ namespace YarnGenerator
 
         public Vector3[] GenerateGenericCurve()
         {
-            int segments = KnitSettings.stitchRes;
+            int segments = stitchRes;
 
             Vector3[] genericCurve = new Vector3[segments];
             for (int j = 0; j < segments; j++)
