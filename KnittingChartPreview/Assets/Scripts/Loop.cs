@@ -27,8 +27,8 @@ namespace YarnGenerator
         public bool heldInFront;
         public bool heldBehind;
 
-        public int radialRes = 20;
-        public int stitchRes = 40;
+        public int radialRes = KnitSettings.radialRes;
+        public int stitchRes = KnitSettings.stitchRes;
 
         public Loop(int rowIndex, float yarnWidth, int loopIndexStart, int loopIndexEnd, bool heldInFront, bool heldBehind)
         {
