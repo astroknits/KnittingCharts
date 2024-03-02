@@ -83,7 +83,6 @@ namespace YarnGenerator
             {
                 int loopIndexStart = this.loopIndex + i;
                 int loopIndexEnd = loopIndexStart;
-                bool front = false;
                 bool heldInFront = false;
                 bool heldBehind = false;
                 if (this.held == 0)
@@ -98,16 +97,17 @@ namespace YarnGenerator
                     if (i >= this.held)
                     {
                         loopIndexEnd = loopIndexStart - this.held;
-                        heldInFront = (!this.front);
-                        heldBehind = (!heldInFront);
+                        heldInFront = this.front;
+                        heldBehind = !this.front;
                     }
                     else
                     {
                         loopIndexEnd = loopIndexStart + this.held;
-                        heldInFront = (this.front);
-                        heldBehind = (!heldInFront);
+                        heldInFront = !this.front;
+                        heldBehind = this.front;
                     }
                 }
+                Debug.Log($"loopIndexStart {loopIndexStart} front {front} heldInFront {heldInFront} heldbehind {heldBehind}");
 
                 loops[i] = Loop.GetLoop(
                     loopTypeList[i], 
@@ -151,6 +151,7 @@ namespace YarnGenerator
             this.loopsConsumed = 1;
             this.loopsProduced = 1;
             this.held = 0;
+            this.front = false;
             this.loopTypeList = new LoopType[1] {LoopType.Knit};
             this.loops = GetLoops();
         }
@@ -165,6 +166,7 @@ namespace YarnGenerator
             this.loopsConsumed = 1;
             this.loopsProduced = 1;
             this.held = 0;
+            this.front = false;
             this.loopTypeList = new LoopType[1] {LoopType.Purl};
             this.loops = GetLoops();
         }
