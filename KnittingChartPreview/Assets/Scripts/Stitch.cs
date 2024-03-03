@@ -121,7 +121,16 @@ namespace YarnGenerator
 
             return loops;
         }
-        
+
+        public void GenerateCurve()
+        {
+            // Work through each of the loops produced in the loopTypeList
+            for (int i = 0; i < this.loops.Length; i++)
+            {
+                loops[i].GenerateCurve();
+            }
+        }
+
         public GameObject GenerateMesh(Material material)
             {
                 // Generate curves for each loop of this stitch
