@@ -214,13 +214,15 @@ namespace YarnGenerator
             float d = 0.3f; // depth curve factor for stitch
             float d2 = 2.1f * this.yarnWidth; // depth offset for stitch
 
+            // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
+            float angle = (float) j / (float) stitchRes * 2.0f * (float) Math.PI;
+
             if (heldInFront)
             {
                 d = 0.5f;
             } else if (heldBehind)
             {
                 d = 0.20f;
-                d2 = d2 * 0.8f;
             }
 
             if (this.loopType == LoopType.Purl)
@@ -228,9 +230,6 @@ namespace YarnGenerator
                 d *= -1.0f;
                 d2 *= -1.0f;
             }
-
-            // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
-            float angle = (float) j / (float) stitchRes * 2.0f * (float) Math.PI;
 
             // parametric equation for stitch
             // eg from https://www.cs.cmu.edu/~kmcrane/Projects/Other/YarnCurve.pdf
@@ -245,18 +244,7 @@ namespace YarnGenerator
         {
             // check offset between where stitch was and where it ends up
             // (if it's a cable stitch that crosses over)
-            float loopOffset = (float)loopIndexEnd - (float)loopIndexStart;
-
-            // Incorpoarte the yarn width in the loopOffset calculation
-            if (loopOffset > 0)
-            {
-                loopOffset += yarnWidth;
-            }
-            else if (loopOffset < 0)
-            {
-                loopOffset -= yarnWidth;
-            }
-
+            float loopOffset = ((float)loopIndexEnd - (float)loopIndexStart);
             Vector3[] curveForStitch = GenerateGenericCurve();
 
             // Each stitch takes up 2 natural units.  Therefore, the next stitch
@@ -268,10 +256,8 @@ namespace YarnGenerator
                 curveForStitch[j] = curveForStitch[j] + horizontalOffset;
 
                 // Apply shear if there is a stitchOffset
-                if (loopOffset != 0)
-                {
-                    curveForStitch[j].x += loopOffset + loopOffset * (curveForStitch[j].y);
-                }
+                curveForStitch[j].x += loopOffset * (1 + yarnWidth);
+                curveForStitch[j].x += loopOffset * (curveForStitch[j].y);
             }
 
             // DrawLine(curveForStitch);
