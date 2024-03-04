@@ -13,10 +13,20 @@ namespace YarnGenerator
         // row number for the given stitch
         public int rowIndex;
 
+        // Loop indices: actual integer loop # for 
+        // start and end of the stitch
         // loop index for the given loop (at base)
         public int loopIndexStart;
         // loop index for the given loop (once loop is completed)
         public int loopIndexEnd;
+        // Loop offset
+        // Loop start location along x axis (can be loopIndexStart
+        // but might be offset by a bit)
+        public float loopXStart;
+        // offset by which to shear the loop
+        // (default value is loopIndexEnd - loopIndexStart
+        // but might be tweaked by loops in a row above/below)
+        public float loopXOffset;
 
         // # of loops from previous row used by this stitch
         public int loopsConsumed;
@@ -38,6 +48,7 @@ namespace YarnGenerator
             this.loopIndexEnd = loopIndexEnd;
             this.heldInFront = heldInFront;
             this.heldBehind = heldBehind;
+            SetLoopStartAndOffset();
         }
 
         public static Loop GetLoop(
@@ -63,7 +74,7 @@ namespace YarnGenerator
             }
         }
 
-        public GameObject GenerateMesh(Material material)
+        public GameObject GetMesh(Vector3[] vertices, int[] triangles, Material material)
         {
             // Create the mesh for the yarn in this row
             GameObject gameObject = new GameObject($"Loop {this.loopIndexStart} for yarnWidth {this.yarnWidth}");
@@ -74,21 +85,29 @@ namespace YarnGenerator
             // setting to 32 bits allows for up to 4 billion vertices per mesh
             mesh.indexFormat = IndexFormat.UInt32;
             meshFilter.mesh = mesh;
-
-            // Set up vertices for the row based on the curve
-            Vector3[] vertices = GenerateVertices();
-
-            // Set up triangles for the row based on the vertices
-            int[] triangles = GenerateTriangles(vertices);
-
+            
             mesh.vertices = vertices;
             mesh.triangles = triangles;
             mesh.RecalculateNormals();
 
             // Assign a default material
-
             meshRenderer.material = material;
             return gameObject;
+        }
+
+        public GameObject GenerateMesh(Material material)
+        {
+            // Get the curve for the stitch
+            Vector3[] curve = GenerateCurve();
+            
+            // Set up vertices for the row based on the curve
+            Vector3[] vertices = GenerateVertices(curve);
+
+            // Set up triangles for the row based on the vertices
+            int[] triangles = GenerateTriangles(vertices);
+
+            // Create the mesh from the vertices & triangles
+            return GetMesh(vertices, triangles, material);
         }
 
         internal Vector3[] GenerateCircle(Vector3[] curve, int j)
@@ -132,17 +151,12 @@ namespace YarnGenerator
             return circle;
         }
 
-        internal Vector3[] GenerateVertices()
+        internal Vector3[] GenerateVertices(Vector3[] curve)
         {
             // Note that loopsProduced > 1 or loopsConsumed > 1
             // is not currently supported.
             // Once it is, we'll have to create vertices for more than
             // one loop.
-
-            // Get the curve for the stitch
-            //             int loopNoStart, int loopNoEnd, bool cableFront)
-
-            Vector3[] curve = GenerateCurve();
 
             // Set up vertices for the stitch based on the stitch curve
             Vector3[] stitchVertices = GenerateVerticesForCurve(curve);
@@ -207,7 +221,7 @@ namespace YarnGenerator
             return triangles;
         }
 
-        public Vector3 GenerateLoopCurve(int j)
+        public Vector3 GetLoopValueForSegment(int j)
         {
             float h = 1.0f; // height of stitches
             float a = 1.6f; // width of stitch
@@ -240,42 +254,40 @@ namespace YarnGenerator
             return new Vector3(xVal, yVal, zVal);
         }
 
+        public void SetLoopStartAndOffset()
+        {
+            // check offset between where stitch was and where it ends up
+            // (if it's a cable stitch that crosses over)
+            loopXStart = 2.0f * loopIndexStart + yarnWidth;
+            loopXOffset = (float)loopIndexEnd - (float)loopIndexStart;
+        }
+        
         public Vector3[] GenerateCurve()
         {
             // check offset between where stitch was and where it ends up
             // (if it's a cable stitch that crosses over)
-            float loopOffset = ((float)loopIndexEnd - (float)loopIndexStart);
-            Vector3[] curveForStitch = GenerateGenericCurve();
+            Vector3[] curveForStitch = new Vector3[stitchRes];
+            for (int j = 0; j < stitchRes; j++)
+            {
+                curveForStitch[j] = GetLoopValueForSegment(j);
+            }
 
             // Each stitch takes up 2 natural units.  Therefore, the next stitch
             // needs an offset of 2.0f from the previous stitch
-            Vector3 horizontalOffset = new Vector3(2.0f * loopIndexStart, 0, 0);
+            Vector3 horizontalOffset = new Vector3(loopXStart, 0, 0);
 
             for (int j = 0; j < curveForStitch.Length; j++)
             {
                 curveForStitch[j] = curveForStitch[j] + horizontalOffset;
 
-                // Apply shear if there is a stitchOffset
-                curveForStitch[j].x += loopOffset * (1 + yarnWidth);
-                curveForStitch[j].x += loopOffset * (curveForStitch[j].y);
+                // Apply shear if there is a loopXOffset
+                curveForStitch[j].x += loopXOffset * (1 + yarnWidth);
+                curveForStitch[j].x += loopXOffset * (curveForStitch[j].y);
             }
 
             // DrawLine(curveForStitch);
 
             return curveForStitch;
-        }
-
-        public Vector3[] GenerateGenericCurve()
-        {
-            int segments = stitchRes;
-
-            Vector3[] genericCurve = new Vector3[segments];
-            for (int j = 0; j < segments; j++)
-            {
-                genericCurve[j] = GenerateLoopCurve(j);
-            }
-
-            return genericCurve;
         }
 
         public static void DrawLine(Vector3[] vectorCurve)
