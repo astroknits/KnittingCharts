@@ -57,6 +57,7 @@ namespace YarnGenerator
             GameObject rowGameObject = new GameObject($"Row {this.rowIndex} for yarnWidth {this.yarnWidth}");
             foreach (Stitch stitch in this.stitches)
             {
+                stitch.GenerateCurve();
                 GameObject stitchGameObject = stitch.GenerateMesh(material);
                 stitchGameObject.transform.SetParent(rowGameObject.transform);
             }
