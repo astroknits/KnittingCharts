@@ -159,28 +159,18 @@ namespace YarnGenerator
             // one loop.
 
             // Set up vertices for the stitch based on the stitch curve
-            Vector3[] stitchVertices = GenerateVerticesForCurve(curve);
-            for (int j = 0; j < stitchVertices.Length; j++)
-            {
-                stitchVertices[j].y += this.rowIndex * (1 + 1.0f - 3.0f * this.yarnWidth);
-            }
-
-            return stitchVertices;
-        }
-
-        internal Vector3[] GenerateVerticesForCurve(Vector3[] curve)
-        {
-            // Generate vertices
             Vector3[] vertices = new Vector3[
-                radialRes * curve.Length
+                curve.Length * radialRes
             ];
             for (int j = 0; j < curve.Length; j++)
             {
                 Vector3[] rotatedCircle = GenerateCircle(curve, j);
-                Loop.DrawLine(rotatedCircle);
                 for (int i = 0; i < radialRes; i++)
                 {
-                    vertices[j * radialRes + i] = rotatedCircle[i];
+                    int index = j * radialRes + i;
+                    vertices[index] = rotatedCircle[i];
+                    // Shift the y position to the correct row
+                    vertices[index].y += this.rowIndex * (2.0f - 3.0f * this.yarnWidth);
                 }
             }
 
