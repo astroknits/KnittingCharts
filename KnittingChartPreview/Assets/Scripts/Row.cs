@@ -33,9 +33,9 @@ namespace YarnGenerator
             int loopIndex = 0;
             for (int stitchIndex = 0; stitchIndex < stitchTypes.Length; stitchIndex++)
             {
-                stitches[stitchIndex] = Stitch.GetStitch(
+                stitches[stitchIndex] = new Stitch(
                     stitchTypes[stitchIndex], rowIndex, stitchIndex, loopIndex, yarnWidth);
-                loopIndex += stitches[stitchIndex].loopsProduced;
+                loopIndex += stitches[stitchIndex].stitchInfo.loopsProduced;
             }
 
             return stitches;
@@ -46,7 +46,7 @@ namespace YarnGenerator
             int nLoops = 0;
             foreach (Stitch stitch in stitches)
             {
-                nLoops += stitch.loopsProduced;
+                nLoops += stitch.stitchInfo.loopsProduced;
             }
 
             return nLoops;
