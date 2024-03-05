@@ -66,7 +66,7 @@ namespace YarnGenerator
                 }
                 Debug.Log($"loopIndexStart {loopIndexStart} front {stitchInfo.front} heldInFront {heldInFront} heldbehind {heldBehind}");
 
-                loops[i] = Loop.GetLoop(
+                loops[i] = new Loop(
                     stitchInfo.loopTypeList[i], 
                     yarnWidth, 
                     rowIndex, 

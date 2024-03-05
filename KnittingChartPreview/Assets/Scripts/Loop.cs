@@ -6,7 +6,7 @@ namespace YarnGenerator
 {
     public class Loop
     {
-        public LoopType loopType;
+        public LoopInfo loopInfo;
 
         public float yarnWidth;
         
@@ -30,11 +30,7 @@ namespace YarnGenerator
         // (default value is loopIndexEnd - loopIndexStart
         // but might be tweaked by loops in a row above/below)
         public float loopXOffset;
-
-        // # of loops from previous row used by this stitch
-        public int loopsConsumed;
-        // # of loops left on the needle at the end of this stitch
-        public int loopsProduced;
+        
         // for cables, whether the loop is held in front or back
         // (default false)
         public bool heldInFront;
@@ -45,38 +41,24 @@ namespace YarnGenerator
 
         private Vector3[] curve;
 
-        public Loop(int rowIndex, float yarnWidth, int loopIndexStart, int loopIndexEnd, bool heldInFront, bool heldBehind)
-        {
-            this.rowIndex = rowIndex;
-            this.yarnWidth = yarnWidth;
-            this.loopIndexStart = loopIndexStart;
-            this.loopIndexEnd = loopIndexEnd;
-            this.heldInFront = heldInFront;
-            this.heldBehind = heldBehind;
-            SetLoopStartAndOffset();
-        }
-
-        public static Loop GetLoop(
+        public Loop(
             LoopType loopType,
             float yarnWidth,
             int rowIndex,
             int loopIndexStart,
             int loopIndexEnd,
             bool heldInFront,
-            bool heldBehind)
+            bool heldBehind
+            )
         {
-            switch (loopType)
-            {
-                case LoopType.Knit:
-                    return new Knit(
-                        rowIndex, yarnWidth, loopIndexStart, loopIndexEnd, heldInFront, heldBehind);
-                case LoopType.Purl:
-                    return new Purl(
-                        rowIndex, yarnWidth, loopIndexStart, loopIndexEnd, heldInFront, heldBehind);
-                default:
-                    return new Knit(
-                        rowIndex, yarnWidth, loopIndexStart, loopIndexEnd, heldInFront, heldBehind);
-            }
+            this.loopInfo = LoopInfo.GetLoopInfo(loopType);
+            this.yarnWidth = yarnWidth;
+            this.rowIndex = rowIndex;
+            this.loopIndexStart = loopIndexStart;
+            this.loopIndexEnd = loopIndexEnd;
+            this.heldInFront = heldInFront;
+            this.heldBehind = heldBehind;
+            SetLoopStartAndOffset();
         }
 
         public GameObject GetMesh(Vector3[] vertices, int[] triangles, Material material)
@@ -184,10 +166,10 @@ namespace YarnGenerator
 
         internal int[] GenerateTriangles()
         {
-            int[] triangles = new int[this.loopsProduced * stitchRes * radialRes * 6];
+            int[] triangles = new int[this.loopInfo.loopsProduced * stitchRes * radialRes * 6];
 
             int triangleIndex = 0;
-            for (int j = 0; j < this.loopsProduced * stitchRes - 1; j++)
+            for (int j = 0; j < this.loopInfo.loopsProduced * stitchRes - 1; j++)
             {
                 for (int i = 0; i < radialRes; i++)
                 {
@@ -234,7 +216,7 @@ namespace YarnGenerator
                 d = 0.20f;
             }
 
-            if (this.loopType == LoopType.Purl)
+            if (this.loopInfo.loopType == LoopType.Purl)
             {
                 d *= -1.0f;
                 d2 *= -1.0f;
@@ -299,41 +281,6 @@ namespace YarnGenerator
 
                 Debug.DrawLine(v1, v2, Color.green, 2, false);
             }
-        }
-    }
-
-    public class Knit : Loop
-    {
-        public Knit(
-            int rowIndex,
-            float yarnWidth,
-            int loopIndexStart,
-            int loopIndexEnd,
-            bool heldInFront,
-            bool heldBehind
-            ) : 
-            base(rowIndex, yarnWidth, loopIndexStart, loopIndexEnd, heldInFront, heldBehind)
-        {
-            this.loopType = LoopType.Knit;
-            this.loopsConsumed = 1;
-            this.loopsProduced = 1;
-        }
-    }
-    public class Purl : Loop
-    {
-        public Purl(
-            int rowIndex,
-            float yarnWidth, 
-            int loopIndexStart,
-            int loopIndexEnd,
-            bool heldInFront,
-            bool heldBehind
-            ) : 
-            base(rowIndex, yarnWidth, loopIndexStart, loopIndexEnd, heldInFront, heldBehind)
-        {
-            this.loopType = LoopType.Purl;
-            this.loopsConsumed = 1;
-            this.loopsProduced = 1;
         }
     }
 }
