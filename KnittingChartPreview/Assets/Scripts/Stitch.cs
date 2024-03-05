@@ -67,7 +67,7 @@ namespace YarnGenerator
                 Debug.Log($"loopIndexStart {loopIndexStart} front {stitchInfo.front} heldInFront {heldInFront} heldbehind {heldBehind}");
 
                 loops[i] = new Loop(
-                    stitchInfo.loopTypeList[i], 
+                    stitchInfo.loopInfoList[i].loopType, 
                     yarnWidth, 
                     rowIndex, 
                     loopIndexStart, 
@@ -81,7 +81,7 @@ namespace YarnGenerator
 
         public void GenerateCurve()
         {
-            // Work through each of the loops produced in the loopTypeList
+            // Work through each of the loops produced in the loopInfoList
             for (int i = 0; i < this.loops.Length; i++)
             {
                 loops[i].GenerateCurve();
