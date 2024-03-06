@@ -42,92 +42,19 @@ namespace YarnGenerator
             EditorWindow.GetWindow(typeof(KnittingPatternEditor));
         }
 
-        int GetTotalStitchesPerRow(int padding, int cableStitchesPerRow, int sepSize)
-        {
-            return cableStitchesPerRow + Math.Max((cableStitchesPerRow - 1) * sepSize, 0) + 2 * padding;
-        }
-
-        int GetActualLoopsPerRow(int padding, int cableBlockSize, int sepSize, int cableStitchesPerRow)
-        {
-            return cableStitchesPerRow * cableBlockSize + Math.Max(cableStitchesPerRow - 1, 0) * cableSeparationSize + 2 * padding;
-        }
-
         Pattern GetPattern()
         {
-
-            // calculate # stitches per row
-            int stitchesPerRow = GetTotalStitchesPerRow(
-                padding, cableStitchesPerRow, cableSeparationSize);
-
-            // Set the number of loops per row to reflect the number of loops for this pattern
-            int loopsPerRow = GetActualLoopsPerRow(
-                padding, cableBlockSize, cableSeparationSize, cableStitchesPerRow);
-
-            Row[] rows = new Row[nRows];
-            for (int rowNumber = 0; rowNumber < nRows; rowNumber++)
-            {
-                StitchType[] stitches = new StitchType[stitchesPerRow];
-
-                int stitchIndex = 0;
-                for (int i = 0; i < padding; i++)
-                {
-                    stitches[stitchIndex] = StitchType.PurlStitch;
-                    stitchIndex += 1;
-                }
-
-
-                StitchType cableStitchType;
-                StitchType nonCableStitchType;
-                switch (cableBlockSize)
-                {
-                    case 2:
-                        cableStitchType = StitchType.Cable1Lo1RStitch;
-                        nonCableStitchType = StitchType.CableKnitStitch;
-                        break;
-                    case 4:
-                        cableStitchType = StitchType.Cable2Lo2RStitch;
-                        nonCableStitchType = StitchType.CableKnitStitch4;
-                        break;
-                    default:
-                        cableStitchType = StitchType.Cable2Lo2RStitch;
-                        nonCableStitchType = StitchType.CableKnitStitch;
-                        break;
-                }
-                for (int i = 0; i < cableStitchesPerRow; i++)
-                {
-                    if (rowNumber % cableLength == 0)
-                    {
-                        stitches[stitchIndex] = cableStitchType;
-                    }
-                    else
-                    {
-                        stitches[stitchIndex] = nonCableStitchType;
-                    }
-
-                    stitchIndex += 1;
-                    if (cableStitchesPerRow > 1 && i < cableStitchesPerRow - 1)
-                    {
-                        for (int j = 0; j < cableSeparationSize; j++)
-                        {
-                            stitches[stitchIndex] = StitchType.PurlStitch;
-                            stitchIndex += 1;
-                        }
-                    }
-                }
-
-                for (int i = 0; i < padding; i++)
-                {
-                    stitches[stitchIndex] = StitchType.PurlStitch;
-                    stitchIndex += 1;
-                }
-
-                rows[rowNumber] = new Row(rowNumber, stitches, yarnWidth);
-            }
-
-            return new Pattern(rows);
+            return new CablePattern(
+                yarnWidth,
+                nRows,
+                padding,
+                cableStitchesPerRow,
+                cableBlockSize,
+                cableSeparationSize,
+                cableLength);
         }
 
-    void OnGUI()
+        void OnGUI()
     {
         GUILayout.Label("Basic Preview Options", EditorStyles.boldLabel);
         nRows = EditorGUILayout.IntSlider(
@@ -158,6 +85,8 @@ namespace YarnGenerator
                                + $"Please choose a yarn width less than {2.0f / 6.0f}");
                 return;
             }
+
+            // Pattern GetPattern(float yarnWidth, int nRows, int padding, int cableStitchesPerRow, int cableBlockSize, int cableSeparationSize, int cableLength)
 
             Pattern pattern = GetPattern();
             pattern.RenderPreview(this.material);

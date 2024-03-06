@@ -1,29 +1,17 @@
+using System;
 using UnityEngine;
 
 namespace YarnGenerator
 {
-    public class Pattern
+    public abstract class Pattern
     {
         // Array of row objects
         public Row[] rows;
+
         // nRows is the length of rows
         public int nRows;
-        // Width is the number of loops in the row with most loops
-        public int width;
-
-        public Pattern(Row[] rows)
-        {
-            this.rows = rows;
-            this.nRows = rows.Length;
-            this.width = 0;
-            foreach (Row row in rows)
-            {
-                if (row.nLoops > this.width)
-                {
-                    this.width = row.nLoops;
-                }
-            }
-        }
+        
+        public abstract Row[] GetPatternRows();
 
         public void RenderPreview(Material material)
         {
@@ -35,5 +23,117 @@ namespace YarnGenerator
                 rowGameObject.transform.SetParent(parent.transform);
             }
         }
+    }
+    public class CablePattern: Pattern
+    {
+        private float yarnWidth;
+        private int padding;
+        private int cableStitchesPerRow;
+        private int cableBlockSize;
+        private int cableSeparationSize;
+        private int cableLength;
+
+        public CablePattern(
+            float yarnWidth,
+            int nRows,
+            int padding,
+            int cableStitchesPerRow,
+            int cableBlockSize,
+            int cableSeparationSize,
+            int cableLength
+        )
+        {
+            this.yarnWidth = yarnWidth;
+            this.nRows = nRows;
+            this.padding = padding;
+            this.cableStitchesPerRow = cableStitchesPerRow;
+            this.cableBlockSize = cableBlockSize;
+            this.cableSeparationSize = cableSeparationSize;
+            this.cableLength = cableLength;
+            this.rows = GetPatternRows();
+        }
+
+        int GetTotalStitchesPerRow()
+        {
+            return cableStitchesPerRow + Math.Max((cableStitchesPerRow - 1) * cableSeparationSize, 0) + 2 * padding;
+        }
+
+        int GetActualLoopsPerRow()
+        {
+            return cableStitchesPerRow * cableBlockSize + Math.Max(cableStitchesPerRow - 1, 0) * cableSeparationSize + 2 * padding;
+        }
+
+        public override Row[] GetPatternRows()
+        {
+            // calculate # stitches per row
+            int stitchesPerRow = GetTotalStitchesPerRow();
+
+            // Set the number of loops per row to reflect the number of loops for this pattern
+            int loopsPerRow = GetActualLoopsPerRow();
+
+            Row[] rows = new Row[nRows];
+            for (int rowNumber = 0; rowNumber < nRows; rowNumber++)
+            {
+                StitchType[] stitches = new StitchType[stitchesPerRow];
+
+                int stitchIndex = 0;
+                for (int i = 0; i < padding; i++)
+                {
+                    stitches[stitchIndex] = StitchType.PurlStitch;
+                    stitchIndex += 1;
+                }
+
+
+                StitchType cableStitchType;
+                StitchType nonCableStitchType;
+                switch (cableBlockSize)
+                {
+                    case 2:
+                        cableStitchType = StitchType.Cable1Lo1RStitch;
+                        nonCableStitchType = StitchType.CableKnitStitch;
+                        break;
+                    case 4:
+                        cableStitchType = StitchType.Cable2Lo2RStitch;
+                        nonCableStitchType = StitchType.CableKnitStitch4;
+                        break;
+                    default:
+                        cableStitchType = StitchType.Cable2Lo2RStitch;
+                        nonCableStitchType = StitchType.CableKnitStitch;
+                        break;
+                }
+                for (int i = 0; i < cableStitchesPerRow; i++)
+                {
+                    if (rowNumber % cableLength == 0)
+                    {
+                        stitches[stitchIndex] = cableStitchType;
+                    }
+                    else
+                    {
+                        stitches[stitchIndex] = nonCableStitchType;
+                    }
+
+                    stitchIndex += 1;
+                    if (cableStitchesPerRow > 1 && i < cableStitchesPerRow - 1)
+                    {
+                        for (int j = 0; j < cableSeparationSize; j++)
+                        {
+                            stitches[stitchIndex] = StitchType.PurlStitch;
+                            stitchIndex += 1;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < padding; i++)
+                {
+                    stitches[stitchIndex] = StitchType.PurlStitch;
+                    stitchIndex += 1;
+                }
+
+                rows[rowNumber] = new Row(rowNumber, stitches, yarnWidth);
+            }
+
+            return rows;
+        }
+
     }
 }
