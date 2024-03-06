@@ -94,13 +94,23 @@ namespace YarnGenerator
             for (int i = 0; i < rows.Length; i ++)
             {
                 Row row = rows[i];
-                if (!(row.prevRow is null))
+                if (row.prevRow is null && row.nextRow is null)
                 {
-                    Debug.Log($"row.rowIndex: {row.rowIndex}; row.prevRow.rowIndex: {row.prevRow.rowIndex}");
+                    Debug.Log($"ROW.rowIndex: {row.rowIndex}; row.prevRow is NULL; row.nextRow is NULL");
+                    continue;
+                }
+                else if (row.prevRow is null)
+                {
+                    Debug.Log($"ROW.rowIndex: {row.rowIndex}; row.prevRow is NULL; row.nextRow.rowIndex: {row.nextRow.rowIndex}");
+                    var test = row.nextRow;
+                }
+                else if (row.nextRow is null)
+                {
+                    Debug.Log($"ROW.rowIndex: {row.rowIndex}; row.prevRow.rowIndex: {row.prevRow.rowIndex}; row.nextRow is NULL");
                 }
                 else
                 {
-                    Debug.Log($"row.rowIndex: {row.rowIndex}; prevRow is NULL");
+                    Debug.Log($"ROW.rowIndex: {row.rowIndex}; row.prevRow.rowIndex: {row.prevRow.rowIndex}; row.nextRow.rowIndex: {row.nextRow.rowIndex}");
                 }
             }
         }
