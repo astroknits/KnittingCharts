@@ -6,6 +6,7 @@ namespace YarnGenerator
 {
     public class Row
     {
+        public float yarnWidth;
         // Index for this row
         public int rowIndex;
         // Number of stitches for this row
@@ -14,16 +15,26 @@ namespace YarnGenerator
         public int nLoops;
         // Array of stitch objects
         public Stitch[] stitches;
-        public float yarnWidth;
+
+        public Row prevRow;
+        public Row nextRow;
 
         public Row(int rowIndex, StitchType[] stitchTypes, float yarnWidth)
         {
-            this.rowIndex = rowIndex;
             this.yarnWidth = yarnWidth;
+            this.rowIndex = rowIndex;
             // Create array of Stitch objects
             this.stitches = GetStitches(stitchTypes);
             this.nStitches = stitchTypes.Length;
             this.nLoops = GetLoopsInRow();
+            this.prevRow = null;
+            this.nextRow = null;
+        }
+
+        public void SetPreviousRow(Row prevRowObj)
+        {
+            prevRow = prevRowObj;
+            prevRowObj.nextRow = this;
         }
 
         private Stitch[] GetStitches(StitchType[] stitchTypes)
