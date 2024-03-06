@@ -11,7 +11,7 @@ namespace YarnGenerator
         // nRows is the length of rows
         public int nRows;
         
-        public abstract Row[] GetPatternRows();
+        public abstract Row[] GetPatternDefinition();
 
         public void RenderPreview(Material material)
         {
@@ -21,6 +21,97 @@ namespace YarnGenerator
                 Row row = this.rows[rowNumber];
                 GameObject rowGameObject = row.GeneratePreview(material);
                 rowGameObject.transform.SetParent(parent.transform);
+            }
+        }
+        
+        public void GetPatternRows()
+        {
+            this.rows = GetPatternDefinition();
+            SetAdjacentRows();
+            SetLoopsInAdjacentRows();
+            PrintLoopsInAdjacentRows();
+        }
+
+        public void PrintLoopsInAdjacentRows()
+        {
+            foreach (Row row in this.rows)
+            {
+                foreach (Loop loop in row.loops)
+                {
+                    if (loop.consumes is not null)
+                    {
+                        foreach (Loop consumes in loop.consumes)
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (loop.produces is not null)
+                    {
+                        foreach (Loop produces in loop.produces)
+                        {
+                            if (produces is null)
+                            {
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public void SetAdjacentRows()
+        {
+            Row prevRow = null;
+            foreach (Row row in rows)
+            {
+                if (prevRow is null)
+                {
+                    prevRow = row;
+                }
+                else
+                {
+                    row.SetPreviousRow(prevRow);
+                    prevRow.SetNextRow(row);
+                    prevRow = row;
+                }
+            }
+        }
+        
+        public void SetLoopsInAdjacentRows()
+        {
+            for (int i = 0; i < rows.Length; i ++)
+            {
+                Row row = rows[i];
+                if (row.prevRow is null && row.nextRow is null)
+                {
+                    continue;
+                }
+
+                for (int j = 0; j < row.nLoops; j++)
+                {
+                    Loop loop = row.loops[j];
+
+                    if (!(row.prevRow is null))
+                    {
+                        for (int k = 0; k < loop.loopInfo.loopsConsumed; k++)
+                        {
+                            loop.SetConsumes(k, row.prevRow.GetLoop(j + k));
+                            Loop prevLoop = row.prevRow.GetLoop(j + k);
+                            Debug.Log($" for {loop.rowIndex} {loop.loopIndexStart}: setting consumes {prevLoop.rowIndex} {prevLoop.loopIndexStart}");
+                        }
+                    }
+
+                    if (!(row.nextRow is null))
+                    {
+                        for (int k = 0; k < loop.loopInfo.loopsProduced; k++)
+                        {
+                            loop.SetProduces(k, row.nextRow.GetLoop(j + k));
+                            Loop nextLoop = row.nextRow.GetLoop(j + k);
+                            Debug.Log($" for {loop.rowIndex} {loop.loopIndexStart}: setting consumes {nextLoop.rowIndex} {nextLoop.loopIndexStart}");
+                        }
+                    }
+                }
             }
         }
     }
@@ -50,7 +141,7 @@ namespace YarnGenerator
             this.cableBlockSize = cableBlockSize;
             this.cableSeparationSize = cableSeparationSize;
             this.cableLength = cableLength;
-            this.rows = GetPatternRows();
+            GetPatternRows();
         }
 
         int GetTotalStitchesPerRow()
@@ -63,59 +154,7 @@ namespace YarnGenerator
             return cableStitchesPerRow * cableBlockSize + Math.Max(cableStitchesPerRow - 1, 0) * cableSeparationSize + 2 * padding;
         }
 
-        public override Row[] GetPatternRows()
-        {
-            Row[] rows = GetCablePatternRows();
-            UpdateAdjacentRows(rows);
-            UpdateAdjacentRowStitches(rows);
-            return rows;
-        }
-
-        public void UpdateAdjacentRows(Row[] rows)
-        {
-            Row prevRow = null;
-            foreach (Row row in rows)
-            {
-                if (prevRow is null)
-                {
-                    prevRow = row;
-                }
-                else
-                {
-                    row.SetPreviousRow(prevRow);
-                    prevRow.SetNextRow(row);
-                    prevRow = row;
-                }
-            }
-        }
-        
-        public void UpdateAdjacentRowStitches(Row[] rows)
-        {
-            for (int i = 0; i < rows.Length; i ++)
-            {
-                Row row = rows[i];
-                if (row.prevRow is null && row.nextRow is null)
-                {
-                    Debug.Log($"ROW.rowIndex: {row.rowIndex}; row.prevRow is NULL; row.nextRow is NULL");
-                    continue;
-                }
-                else if (row.prevRow is null)
-                {
-                    Debug.Log($"ROW.rowIndex: {row.rowIndex}; row.prevRow is NULL; row.nextRow.rowIndex: {row.nextRow.rowIndex}");
-                    var test = row.nextRow;
-                }
-                else if (row.nextRow is null)
-                {
-                    Debug.Log($"ROW.rowIndex: {row.rowIndex}; row.prevRow.rowIndex: {row.prevRow.rowIndex}; row.nextRow is NULL");
-                }
-                else
-                {
-                    Debug.Log($"ROW.rowIndex: {row.rowIndex}; row.prevRow.rowIndex: {row.prevRow.rowIndex}; row.nextRow.rowIndex: {row.nextRow.rowIndex}");
-                }
-            }
-        }
-
-        public Row[] GetCablePatternRows()
+        public override Row[] GetPatternDefinition()
         {
             // calculate # stitches per row
             int stitchesPerRow = GetTotalStitchesPerRow();

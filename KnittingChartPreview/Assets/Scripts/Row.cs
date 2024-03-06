@@ -34,6 +34,11 @@ namespace YarnGenerator
             this.nextRow = null;
         }
 
+        public Loop GetLoop(int i)
+        {
+            return this.loops[i];
+        }
+
         public void SetPreviousRow(Row prevRowObj)
         {
             prevRow = prevRowObj;

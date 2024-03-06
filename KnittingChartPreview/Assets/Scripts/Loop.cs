@@ -41,6 +41,9 @@ namespace YarnGenerator
 
         private Vector3[] curve;
 
+        public Loop[] consumes;
+        public Loop[] produces;
+
         public Loop(
             LoopType loopType,
             float yarnWidth,
@@ -59,6 +62,24 @@ namespace YarnGenerator
             this.heldInFront = heldInFront;
             this.heldBehind = heldBehind;
             SetLoopStartAndOffset();
+        }
+        
+        public void SetConsumes(int index, Loop prevLoopObj)
+        {
+            if (consumes is null)
+            {
+                this.consumes = new Loop[this.loopInfo.loopsConsumed];
+            }
+            consumes[index] = prevLoopObj;
+        }
+
+        public void SetProduces(int index, Loop nextLoopObj)
+        {
+            if (produces is null)
+            {
+                this.produces = new Loop[this.loopInfo.loopsProduced];
+            }
+            produces[index] = nextLoopObj;
         }
 
         public GameObject GetMesh(Vector3[] vertices, int[] triangles, Material material)
