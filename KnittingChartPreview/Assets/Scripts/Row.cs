@@ -15,6 +15,8 @@ namespace YarnGenerator
         public int nLoops;
         // Array of stitch objects
         public Stitch[] stitches;
+        // Array of loop objects
+        public Loop[] loops;
 
         public Row prevRow;
         public Row nextRow;
@@ -26,7 +28,8 @@ namespace YarnGenerator
             // Create array of Stitch objects
             this.stitches = GetStitches(stitchTypes);
             this.nStitches = stitchTypes.Length;
-            this.nLoops = GetLoopsInRow();
+            this.loops = GetLoopsInRow();
+            this.nLoops = this.loops.Length;
             this.prevRow = null;
             this.nextRow = null;
         }
@@ -56,7 +59,7 @@ namespace YarnGenerator
             return stitches;
         }
 
-        private int GetLoopsInRow()
+        private Loop[] GetLoopsInRow()
         {
             int nLoops = 0;
             foreach (Stitch stitch in stitches)
@@ -64,7 +67,19 @@ namespace YarnGenerator
                 nLoops += stitch.stitchInfo.loopsProduced;
             }
 
-            return nLoops;
+            Loop[] loops = new Loop[nLoops];
+
+            int loopIndex = 0;
+            for (int i = 0; i < stitches.Length; i++)
+            {
+                Stitch stitch = stitches[i];
+                for (int j = 0; j < stitch.loops.Length; j++)
+                {
+                    loops[loopIndex] = stitch.loops[j];
+                    loopIndex += 1;
+                }
+            }
+            return loops;
         }
 
         public GameObject GeneratePreview(Material material)
