@@ -72,7 +72,11 @@ namespace YarnGenerator
             this.loopsProduced = 1;
             this.held = 0;
             this.front = false;
-            this.loopInfoList = GetLoopInfoList(new LoopType[1] {LoopType.Knit});
+            LoopType[] loopTypeList = new LoopType[1]
+            {
+                LoopType.Knit
+            };
+            this.loopInfoList = GetLoopInfoList(loopTypeList);
         }
     }
 
@@ -85,7 +89,12 @@ namespace YarnGenerator
             this.loopsProduced = 1;
             this.held = 0;
             this.front = false;
-            this.loopInfoList = GetLoopInfoList(new LoopType[1] {LoopType.Purl});
+            LoopType[] loopTypeList = new LoopType[1]
+            {
+                LoopType.Purl
+            };
+            this.loopInfoList = GetLoopInfoList(loopTypeList);
+
         }
     }
 
@@ -98,7 +107,12 @@ namespace YarnGenerator
             this.loopsProduced = 2;
             this.held = 1;
             this.front = false;
-            this.loopInfoList = GetLoopInfoList(new LoopType[2] {LoopType.Knit, LoopType.Knit});
+            LoopType[] loopTypeList = new LoopType[2]
+            {
+                LoopType.Knit,
+                LoopType.Knit
+            };
+            this.loopInfoList = GetLoopInfoList(loopTypeList);
         }
     }
     
@@ -111,8 +125,14 @@ namespace YarnGenerator
             this.loopsProduced = 4;
             this.held = 2;
             this.front = false;
-            this.loopInfoList = GetLoopInfoList(new LoopType[4] 
-                {LoopType.Knit, LoopType.Knit, LoopType.Knit, LoopType.Knit});
+            LoopType[] loopTypeList = new LoopType[4]
+            {
+                LoopType.Knit,
+                LoopType.Knit,
+                LoopType.Knit,
+                LoopType.Knit
+            };
+            this.loopInfoList = GetLoopInfoList(loopTypeList);
         }
     }
     
@@ -125,7 +145,12 @@ namespace YarnGenerator
             this.loopsProduced = 2;
             this.held = 0;
             this.front = true;
-            this.loopInfoList = GetLoopInfoList(new LoopType[2] {LoopType.Knit, LoopType.Knit});
+            LoopType[] loopTypeList = new LoopType[2]
+            {
+                LoopType.Knit,
+                LoopType.Knit
+            };
+            this.loopInfoList = GetLoopInfoList(loopTypeList);
         }
     }
     
@@ -138,8 +163,13 @@ namespace YarnGenerator
             this.loopsProduced = 4;
             this.held = 0;
             this.front = true;
-            this.loopInfoList = GetLoopInfoList(new LoopType[4] 
-                {LoopType.Knit, LoopType.Knit, LoopType.Knit, LoopType.Knit});
+            LoopType[] loopTypeList = new LoopType[4] {
+                LoopType.Knit,
+                LoopType.Knit,
+                LoopType.Knit,
+                LoopType.Knit
+            };
+            this.loopInfoList = GetLoopInfoList(loopTypeList);
         }
     }
 }
