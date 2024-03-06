@@ -64,7 +64,6 @@ namespace YarnGenerator
                         heldBehind = this.stitchInfo.front;
                     }
                 }
-                Debug.Log($"loopIndexStart {loopIndexStart} front {stitchInfo.front} heldInFront {heldInFront} heldbehind {heldBehind}");
 
                 loops[i] = new Loop(
                     stitchInfo.loopInfoList[i].loopType, 

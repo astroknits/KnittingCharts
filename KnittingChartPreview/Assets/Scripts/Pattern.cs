@@ -67,6 +67,7 @@ namespace YarnGenerator
         {
             Row[] rows = GetCablePatternRows();
             UpdateAdjacentRows(rows);
+            UpdateAdjacentRowStitches(rows);
             return rows;
         }
 
@@ -84,6 +85,22 @@ namespace YarnGenerator
                     row.SetPreviousRow(prevRow);
                     prevRow.SetNextRow(row);
                     prevRow = row;
+                }
+            }
+        }
+        
+        public void UpdateAdjacentRowStitches(Row[] rows)
+        {
+            for (int i = 0; i < rows.Length; i ++)
+            {
+                Row row = rows[i];
+                if (!(row.prevRow is null))
+                {
+                    Debug.Log($"row.rowIndex: {row.rowIndex}; row.prevRow.rowIndex: {row.prevRow.rowIndex}");
+                }
+                else
+                {
+                    Debug.Log($"row.rowIndex: {row.rowIndex}; prevRow is NULL");
                 }
             }
         }
