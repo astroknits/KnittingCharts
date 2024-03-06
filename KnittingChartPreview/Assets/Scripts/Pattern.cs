@@ -65,6 +65,31 @@ namespace YarnGenerator
 
         public override Row[] GetPatternRows()
         {
+            Row[] rows = GetCablePatternRows();
+            UpdateAdjacentRows(rows);
+            return rows;
+        }
+
+        public void UpdateAdjacentRows(Row[] rows)
+        {
+            Row prevRow = null;
+            foreach (Row row in rows)
+            {
+                if (prevRow is null)
+                {
+                    prevRow = row;
+                }
+                else
+                {
+                    row.SetPreviousRow(prevRow);
+                    prevRow.SetNextRow(row);
+                    prevRow = row;
+                }
+            }
+        }
+
+        public Row[] GetCablePatternRows()
+        {
             // calculate # stitches per row
             int stitchesPerRow = GetTotalStitchesPerRow();
 

@@ -34,7 +34,11 @@ namespace YarnGenerator
         public void SetPreviousRow(Row prevRowObj)
         {
             prevRow = prevRowObj;
-            prevRowObj.nextRow = this;
+        }
+
+        public void SetNextRow(Row nextRowObj)
+        {
+            nextRow = nextRowObj;
         }
 
         private Stitch[] GetStitches(StitchType[] stitchTypes)
