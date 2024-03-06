@@ -8,7 +8,8 @@ namespace YarnGenerator
 {
     public class Stitch
     {
-        // List of stitches to perform in order.  
+        // StitchInfo object, containing StitchType and set of
+        // attributes that define the stitch.  
         public StitchInfo stitchInfo;
         // width of the yarn
         public float yarnWidth;
