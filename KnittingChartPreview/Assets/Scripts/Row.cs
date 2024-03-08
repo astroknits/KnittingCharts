@@ -78,7 +78,7 @@ namespace YarnGenerator
             for (int i = 0; i < stitches.Length; i++)
             {
                 Stitch stitch = stitches[i];
-                for (int j = 0; j < stitch.loops.Length; j++)
+                for (int j = 0; j < stitch.stitchInfo.loopsProduced; j++)
                 {
                     loops[loopIndex] = stitch.loops[j];
                     loopIndex += 1;
