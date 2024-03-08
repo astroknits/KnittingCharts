@@ -19,6 +19,10 @@ namespace YarnGenerator
             for (int rowNumber = 0; rowNumber < this.nRows; rowNumber++)
             {
                 Row row = this.rows[rowNumber];
+                if (row is null)
+                {
+                    continue;
+                }
                 GameObject rowGameObject = row.GeneratePreview(material);
                 rowGameObject.transform.SetParent(parent.transform);
             }
@@ -36,6 +40,10 @@ namespace YarnGenerator
         {
             foreach (Row row in this.rows)
             {
+                if (row is null)
+                {
+                    continue;
+                }
                 foreach (Loop loop in row.loops)
                 {
                     if (loop.consumes is not null)
@@ -65,6 +73,11 @@ namespace YarnGenerator
             Row prevRow = null;
             foreach (Row row in rows)
             {
+                if (row is null)
+                {
+                    continue;
+                }
+
                 if (prevRow is null)
                 {
                     prevRow = row;
@@ -80,41 +93,81 @@ namespace YarnGenerator
         
         public void SetLoopsInAdjacentRows()
         {
-            for (int i = 0; i < rows.Length; i ++)
+            foreach (Row row in rows)
             {
-                Row row = rows[i];
+                if (row is null)
+                {
+                    continue;
+                }
+                Debug.Log($"ROW {row.rowIndex}");
                 if (row.prevRow is null && row.nextRow is null)
                 {
                     continue;
                 }
 
-                for (int j = 0; j < row.nLoops; j++)
+                // Set the loops that are consumed by this stitch
+                if (!(row.prevRow is null))
                 {
-                    Loop loop = row.loops[j];
-
-                    if (!(row.prevRow is null))
+                    int consumedIndex = 0;
+                    for (int i = 0; i < row.nLoops; i++)
                     {
-                        for (int k = 0; k < loop.loopInfo.loopsConsumed; k++)
+                        Loop loop = row.loops[i];
+                        Debug.Log($"    Loop {loop.loopIndexStart} - {loop.loopInfo.loopsConsumed} ({loop.loopInfo.loopType})");
+                        for (int j = 0; j < loop.loopInfo.loopsConsumed; j++)
                         {
-                            loop.SetConsumes(k, row.prevRow.GetLoop(j + k));
-                            Loop prevLoop = row.prevRow.GetLoop(j + k);
-                            Debug.Log($" for {loop.rowIndex} {loop.loopIndexStart}: setting consumes {prevLoop.rowIndex} {prevLoop.loopIndexStart}");
-                        }
-                    }
-
-                    if (!(row.nextRow is null))
-                    {
-                        for (int k = 0; k < loop.loopInfo.loopsProduced; k++)
-                        {
-                            loop.SetProduces(k, row.nextRow.GetLoop(j + k));
-                            Loop nextLoop = row.nextRow.GetLoop(j + k);
-                            Debug.Log($" for {loop.rowIndex} {loop.loopIndexStart}: setting consumes {nextLoop.rowIndex} {nextLoop.loopIndexStart}");
+                            Loop prevLoop = row.prevRow.GetLoop(consumedIndex);
+                            loop.SetConsumes(j, prevLoop);
+                            Debug.Log($" (i, j) = ({i}, {j}): for {loop.rowIndex} {loop.loopInfo.loopType} {loop.loopIndexStart}: setting consumes {prevLoop.rowIndex} {prevLoop.loopIndexStart}");
+                            consumedIndex += 1;
                         }
                     }
                 }
             }
         }
     }
+    
+    public class BasicPattern: Pattern
+    {
+        private float yarnWidth;
+
+        public BasicPattern(float yarnWidth, int nRows)
+        {
+            this.yarnWidth = yarnWidth;
+            this.nRows = nRows;
+            GetPatternRows();
+        }
+
+        public override Row[] GetPatternDefinition()
+        {
+            // calculate # stitches per row
+            int stitchesPerRow = 5;
+            
+            Row[] rows = new Row[nRows];
+            for (int rowNumber = 0; rowNumber < nRows; rowNumber++)
+            {
+                if (stitchesPerRow <= 0)
+                {
+                    continue;
+                }
+
+                StitchType[] stitches = new StitchType[stitchesPerRow];
+
+                for (int i = 0; i < stitchesPerRow - 1; i++)
+                {
+                    stitches[i] = StitchType.KnitStitch;
+                }
+
+                stitches[stitchesPerRow - 1] = StitchType.Knit2TogStitch;
+                stitchesPerRow -= 1;
+                
+                rows[rowNumber] = new Row(rowNumber, stitches, yarnWidth);
+            }
+
+            return rows;
+        }
+
+    }
+
     public class CablePattern: Pattern
     {
         private float yarnWidth;

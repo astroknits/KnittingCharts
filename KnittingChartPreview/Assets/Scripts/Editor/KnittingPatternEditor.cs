@@ -44,6 +44,8 @@ namespace YarnGenerator
 
         Pattern GetPattern()
         {
+            return new BasicPattern(yarnWidth, nRows);
+            /*
             return new CablePattern(
                 yarnWidth,
                 nRows,
@@ -52,6 +54,7 @@ namespace YarnGenerator
                 cableBlockSize,
                 cableSeparationSize,
                 cableLength);
+            */
         }
 
         void OnGUI()
