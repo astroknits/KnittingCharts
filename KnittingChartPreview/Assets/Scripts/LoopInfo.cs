@@ -16,6 +16,8 @@ namespace YarnGenerator
                     return new Knit();
                 case LoopType.Purl:
                     return new Purl();
+                case LoopType.Knit2Tog:
+                    return new Knit2Tog();
                 default:
                     return new Knit();
             }
@@ -31,12 +33,23 @@ namespace YarnGenerator
             this.loopsProduced = 1;
         }
     }
+
     public class Purl : LoopInfo
     {
         public Purl(): base()
         {
             this.loopType = LoopType.Purl;
             this.loopsConsumed = 1;
+            this.loopsProduced = 1;
+        }
+    }
+    
+    public class Knit2Tog : LoopInfo
+    {
+        public Knit2Tog() : base()
+        {
+            this.loopType = LoopType.Knit2Tog;
+            this.loopsConsumed = 2;
             this.loopsProduced = 1;
         }
     }

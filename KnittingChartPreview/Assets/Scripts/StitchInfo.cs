@@ -45,6 +45,8 @@ namespace YarnGenerator
                     return new CableKnitStitch();
                 case StitchType.CableKnitStitch4:
                     return new CableKnitStitch4();
+                case StitchType.Knit2TogStitch:
+                    return new Knit2TogStitch();
                 default:
                     return new KnitStitch();
             }
@@ -98,6 +100,24 @@ namespace YarnGenerator
         }
     }
 
+    public class Knit2TogStitch : StitchInfo
+    {
+        public Knit2TogStitch() : 
+            base()
+        {
+            this.stitchType = StitchType.Knit2TogStitch;
+            this.loopsConsumed = 2;
+            this.loopsProduced = 1;
+            this.held = 0;
+            this.front = false;
+            LoopType[] loopTypeList = new LoopType[1]
+            {
+                LoopType.Knit2Tog
+            };
+            this.loopInfoList = GetLoopInfoList(loopTypeList);
+        }
+    }
+    
     public class Cable1Lo1RStitch : StitchInfo
     {
         public Cable1Lo1RStitch() : base()

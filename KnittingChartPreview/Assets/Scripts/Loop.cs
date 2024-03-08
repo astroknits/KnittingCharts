@@ -242,6 +242,12 @@ namespace YarnGenerator
                 d *= -1.0f;
                 d2 *= -1.0f;
             }
+            
+            if (this.loopInfo.loopType == LoopType.Knit2Tog)
+            {
+                d *= 100.0f;
+                d2 *= 100.0f;
+            }
 
             // parametric equation for stitch
             // eg from https://www.cs.cmu.edu/~kmcrane/Projects/Other/YarnCurve.pdf

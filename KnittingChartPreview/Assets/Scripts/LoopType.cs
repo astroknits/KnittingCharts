@@ -4,5 +4,6 @@ namespace YarnGenerator
     {
         Knit,
         Purl,
+        Knit2Tog,
     }
 }
