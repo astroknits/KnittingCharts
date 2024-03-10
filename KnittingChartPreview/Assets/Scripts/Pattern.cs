@@ -126,18 +126,18 @@ namespace YarnGenerator
     public class BasicPattern: Pattern
     {
         private float yarnWidth;
+        private int stitchesPerRowStart;
 
-        public BasicPattern(float yarnWidth, int nRows)
+        public BasicPattern(float yarnWidth, int nRows, int stitchesPerRowStart)
         {
             this.yarnWidth = yarnWidth;
             this.nRows = nRows;
+            this.stitchesPerRowStart = stitchesPerRowStart;
             GetPatternRows();
         }
 
         public override Row[] GetPatternDefinition()
         {
-            // calculate # stitches per row
-            int stitchesPerRowStart = 8;
             int stitchesPerRow = stitchesPerRowStart;
             
             Row[] rows = new Row[nRows];
