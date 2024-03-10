@@ -100,26 +100,23 @@ namespace YarnGenerator
                     continue;
                 }
                 Debug.Log($"ROW {row.rowIndex}");
-                if (row.prevRow is null && row.nextRow is null)
+                if (row.prevRow is null)
                 {
                     continue;
                 }
 
                 // Set the loops that are consumed by this stitch
-                if (!(row.prevRow is null))
+                int consumedIndex = 0;
+                for (int i = 0; i < row.nLoops; i++)
                 {
-                    int consumedIndex = 0;
-                    for (int i = 0; i < row.nLoops; i++)
+                    Loop loop = row.loops[i];
+                    Debug.Log($"    Loop {loop.loopIndexStart} - {loop.loopInfo.loopsConsumed} ({loop.loopInfo.loopType})");
+                    for (int j = 0; j < loop.loopInfo.loopsConsumed; j++)
                     {
-                        Loop loop = row.loops[i];
-                        Debug.Log($"    Loop {loop.loopIndexStart} - {loop.loopInfo.loopsConsumed} ({loop.loopInfo.loopType})");
-                        for (int j = 0; j < loop.loopInfo.loopsConsumed; j++)
-                        {
-                            Loop prevLoop = row.prevRow.GetLoop(consumedIndex);
-                            loop.SetConsumes(j, prevLoop);
-                            Debug.Log($" (i, j) = ({i}, {j}): for {loop.rowIndex} {loop.loopInfo.loopType} {loop.loopIndexStart}: setting consumes {prevLoop.rowIndex} {prevLoop.loopIndexStart}");
-                            consumedIndex += 1;
-                        }
+                        Loop prevLoop = row.prevRow.GetLoop(consumedIndex);
+                        loop.SetConsumes(j, prevLoop);
+                        Debug.Log($" (i, j) = ({i}, {j}): for {loop.rowIndex} {loop.loopInfo.loopType} {loop.loopIndexStart}: setting consumes {prevLoop.rowIndex} {prevLoop.loopIndexStart}");
+                        consumedIndex += 1;
                     }
                 }
             }
@@ -140,10 +137,10 @@ namespace YarnGenerator
         public override Row[] GetPatternDefinition()
         {
             // calculate # stitches per row
-            int stitchesPerRow = 5;
+            int stitchesPerRow = 6;
             
             Row[] rows = new Row[nRows];
-            for (int rowNumber = 0; rowNumber < nRows; rowNumber++)
+            for (int rowNumber = 0; rowNumber < nRows - 1; rowNumber++)
             {
                 if (stitchesPerRow <= 0)
                 {
@@ -151,14 +148,24 @@ namespace YarnGenerator
                 }
 
                 StitchType[] stitches = new StitchType[stitchesPerRow];
-
-                for (int i = 0; i < stitchesPerRow - 1; i++)
+                
+                for (int i = 0; i < stitchesPerRow - 3; i++)
                 {
                     stitches[i] = StitchType.KnitStitch;
                 }
 
-                stitches[stitchesPerRow - 1] = StitchType.Knit2TogStitch;
+                if (rowNumber > 0)
+                {
+                    Debug.Log($"row {rowNumber} stitchesPerRow {stitchesPerRow}");
+                    stitches[stitchesPerRow - 1] = StitchType.Knit2TogStitch;
+                }
+                else
+                {
+                    stitches[stitchesPerRow - 1] = StitchType.KnitStitch;
+                }
                 stitchesPerRow -= 1;
+
+
                 
                 rows[rowNumber] = new Row(rowNumber, stitches, yarnWidth);
             }
