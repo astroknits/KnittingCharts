@@ -107,7 +107,6 @@ namespace YarnGenerator
                 {
                     continue;
                 }
-                Debug.Log($"ROW {row.rowIndex}");
                 if (row.prevRow is null)
                 {
                     continue;
@@ -118,12 +117,10 @@ namespace YarnGenerator
                 for (int i = 0; i < row.baseStitches.Length; i++)
                 {
                     BaseStitch baseStitch = row.baseStitches[i];
-                    Debug.Log($"    BaseStitch {baseStitch.loopIndexStart} - {baseStitch.BaseStitchInfo.loopsConsumed} ({baseStitch.BaseStitchInfo.BaseStitchType})");
                     for (int j = 0; j < baseStitch.BaseStitchInfo.loopsConsumed; j++)
                     {
                         BaseStitch prevBaseStitch = row.prevRow.GetBaseStitch(consumedIndex);
                         baseStitch.SetConsumes(j, prevBaseStitch);
-                        Debug.Log($" (i, j) = ({i}, {j}): for {baseStitch.rowIndex} {baseStitch.BaseStitchInfo.BaseStitchType} {baseStitch.loopIndexStart}: setting consumes {prevBaseStitch.rowIndex} {prevBaseStitch.loopIndexStart}");
                         consumedIndex += 1;
                     }
                 }
@@ -146,39 +143,52 @@ namespace YarnGenerator
             GetPatternRows();
         }
 
+        public bool DoesRowDecrease(int rowNumber)
+        {
+            return !(rowNumber == 0 || rowNumber == 3);
+        }
+
         public override Row[] GetPatternDefinition()
         {
             int stitchesPerRow = stitchesPerRowStart;
             
+            
             Row[] rows = new Row[nRows];
             for (int rowNumber = 0; rowNumber < nRows - 1; rowNumber++)
             {
-                if (stitchesPerRow <= 0)
+                if (stitchesPerRow <= 2)
                 {
                     continue;
+                }
+                
+                if (DoesRowDecrease(rowNumber))
+                {
+                    stitchesPerRow -= 1;
                 }
 
                 StitchType[] stitches = new StitchType[stitchesPerRow];
                 
-                for (int i = 0; i < stitchesPerRow - 3; i++)
+                for (int i = 0; i < stitchesPerRow - 1 - 2; i++)
                 {
                     stitches[i] = StitchType.KnitStitch;
                 }
 
-                if (rowNumber > 0)
+                if (rowNumber == 3)
                 {
-                    Debug.Log($"row {rowNumber} stitchesPerRow {stitchesPerRow}");
-                    stitches[stitchesPerRow - 1] = StitchType.Knit2TogStitch;
-                    stitchesPerRow -= 1;
+                    stitches[stitchesPerRow - 1 - 0] = StitchType.KnitStitch;
+                    stitches[stitchesPerRow - 1 - 0] = StitchType.KnitStitch;
+                }
+                else if (rowNumber == 0)
+                {
+                    stitches[stitchesPerRow - 1 - 1] = StitchType.KnitStitch;
+                    stitches[stitchesPerRow - 1 - 0] = StitchType.KnitStitch;
                 }
                 else
                 {
-                    stitches[stitchesPerRow - 1] = StitchType.KnitStitch;
-                    stitchesPerRow -= 1;
+                    stitches[stitchesPerRow - 1 - 1] = StitchType.Knit2TogStitch;
+                    stitches[stitchesPerRow - 1 - 0] = StitchType.KnitStitch;
                 }
 
-
-                
                 rows[rowNumber] = new Row(rowNumber, stitches, yarnWidth);
             }
 
