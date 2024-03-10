@@ -137,7 +137,8 @@ namespace YarnGenerator
         public override Row[] GetPatternDefinition()
         {
             // calculate # stitches per row
-            int stitchesPerRow = 6;
+            int stitchesPerRowStart = 8;
+            int stitchesPerRow = stitchesPerRowStart;
             
             Row[] rows = new Row[nRows];
             for (int rowNumber = 0; rowNumber < nRows - 1; rowNumber++)
@@ -158,12 +159,13 @@ namespace YarnGenerator
                 {
                     Debug.Log($"row {rowNumber} stitchesPerRow {stitchesPerRow}");
                     stitches[stitchesPerRow - 1] = StitchType.Knit2TogStitch;
+                    stitchesPerRow -= 1;
                 }
                 else
                 {
                     stitches[stitchesPerRow - 1] = StitchType.KnitStitch;
+                    stitchesPerRow -= 1;
                 }
-                stitchesPerRow -= 1;
 
 
                 

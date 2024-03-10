@@ -5,5 +5,7 @@ namespace YarnGenerator
         Knit,
         Purl,
         Knit2Tog,
+        M1,
+        YarnOver,
     }
 }

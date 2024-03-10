@@ -53,4 +53,24 @@ namespace YarnGenerator
             this.loopsProduced = 1;
         }
     }
+    
+    public class M1 : LoopInfo
+    {
+        public M1() : base()
+        {
+            this.loopType = LoopType.M1;
+            this.loopsConsumed = 1;
+            this.loopsProduced = 2;
+        }
+    }
+
+    public class YarnOver : LoopInfo
+    {
+        public YarnOver() : base()
+        {
+            this.loopType = LoopType.YarnOver;
+            this.loopsConsumed = 0;
+            this.loopsProduced = 1;
+        }
+    }
 }

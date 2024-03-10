@@ -117,7 +117,43 @@ namespace YarnGenerator
             this.loopInfoList = GetLoopInfoList(loopTypeList);
         }
     }
-    
+
+    public class M1Stitch : StitchInfo
+    {
+        public M1Stitch() : 
+            base()
+        {
+            this.stitchType = StitchType.M1Stitch;
+            this.loopsConsumed = 1;
+            this.loopsProduced = 2;
+            this.held = 0;
+            this.front = false;
+            LoopType[] loopTypeList = new LoopType[1]
+            {
+                LoopType.M1
+            };
+            this.loopInfoList = GetLoopInfoList(loopTypeList);
+        }
+    }
+
+    public class YarnOverStitch : StitchInfo
+    {
+        public YarnOverStitch() : 
+            base()
+        {
+            this.stitchType = StitchType.YarnOverStitch;
+            this.loopsConsumed = 0;
+            this.loopsProduced = 1;
+            this.held = 0;
+            this.front = false;
+            LoopType[] loopTypeList = new LoopType[1]
+            {
+                LoopType.YarnOver
+            };
+            this.loopInfoList = GetLoopInfoList(loopTypeList);
+        }
+    }
+
     public class Cable1Lo1RStitch : StitchInfo
     {
         public Cable1Lo1RStitch() : base()
