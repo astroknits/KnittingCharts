@@ -4,34 +4,34 @@ using UnityEngine.Rendering;
 
 namespace YarnGenerator
 {
-    public class Loop
+    public class BaseStitch
     {
-        public LoopInfo loopInfo;
+        public BaseStitchInfo BaseStitchInfo;
 
         public float yarnWidth;
         
         // row number for the given stitch
         public int rowIndex;
 
-        // Loop indices: actual integer loop # for 
+        // BaseStitch indices: actual integer baseStitch # for 
         // start and end of the stitch
-        // loop index for the given loop (at base)
+        // baseStitch index for the given baseStitch (at base)
         public int loopIndexStart;
 
-        // loop index for the given loop (once loop is completed)
+        // baseStitch index for the given baseStitch (once baseStitch is completed)
         public int loopIndexEnd;
 
-        // Loop offset
-        // Loop start location along x axis (can be loopIndexStart
+        // BaseStitch offset
+        // BaseStitch start location along x axis (can be loopIndexStart
         // but might be offset by a bit)
         public float loopXStart;
 
-        // offset by which to shear the loop
+        // offset by which to shear the baseStitch
         // (default value is loopIndexEnd - loopIndexStart
-        // but might be tweaked by loops in a row above/below)
+        // but might be tweaked by baseStitches in a row above/below)
         public float loopXOffset;
         
-        // for cables, whether the loop is held in front or back
+        // for cables, whether the baseStitch is held in front or back
         // (default false)
         public bool heldInFront;
         public bool heldBehind;
@@ -41,11 +41,11 @@ namespace YarnGenerator
 
         private Vector3[] curve;
 
-        public Loop[] consumes;
-        public Loop[] produces;
+        public BaseStitch[] consumes;
+        public BaseStitch[] produces;
 
-        public Loop(
-            LoopType loopType,
+        public BaseStitch(
+            BaseStitchType baseStitchType,
             float yarnWidth,
             int rowIndex,
             int loopIndexStart,
@@ -54,7 +54,7 @@ namespace YarnGenerator
             bool heldBehind
             )
         {
-            this.loopInfo = LoopInfo.GetLoopInfo(loopType);
+            this.BaseStitchInfo = BaseStitchInfo.GetBaseStitchInfo(baseStitchType);
             this.yarnWidth = yarnWidth;
             this.rowIndex = rowIndex;
             this.loopIndexStart = loopIndexStart;
@@ -64,28 +64,28 @@ namespace YarnGenerator
             SetLoopStartAndOffset();
         }
         
-        public void SetConsumes(int index, Loop prevLoopObj)
+        public void SetConsumes(int index, BaseStitch prevBaseStitchObj)
         {
             if (consumes is null)
             {
-                this.consumes = new Loop[this.loopInfo.loopsConsumed];
+                this.consumes = new BaseStitch[this.BaseStitchInfo.loopsConsumed];
             }
-            consumes[index] = prevLoopObj;
+            consumes[index] = prevBaseStitchObj;
         }
 
-        public void SetProduces(int index, Loop nextLoopObj)
+        public void SetProduces(int index, BaseStitch nextBaseStitchObj)
         {
             if (produces is null)
             {
-                this.produces = new Loop[this.loopInfo.loopsProduced];
+                this.produces = new BaseStitch[this.BaseStitchInfo.loopsProduced];
             }
-            produces[index] = nextLoopObj;
+            produces[index] = nextBaseStitchObj;
         }
 
         public GameObject GetMesh(Vector3[] vertices, int[] triangles, Material material)
         {
             // Create the mesh for the yarn in this row
-            GameObject gameObject = new GameObject($"Loop {this.loopIndexStart} for yarnWidth {this.yarnWidth}");
+            GameObject gameObject = new GameObject($"BaseStitch {this.loopIndexStart} for yarnWidth {this.yarnWidth}");
             MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
             Mesh mesh = new Mesh();
@@ -164,7 +164,7 @@ namespace YarnGenerator
             // Note that loopsProduced > 1 or loopsConsumed > 1
             // is not currently supported.
             // Once it is, we'll have to create vertices for more than
-            // one loop.
+            // one baseStitch.
 
             // Set up vertices for the stitch based on the stitch curve
             Vector3[] vertices = new Vector3[
@@ -187,10 +187,10 @@ namespace YarnGenerator
 
         internal int[] GenerateTriangles()
         {
-            int[] triangles = new int[this.loopInfo.loopsProduced * stitchRes * radialRes * 6];
+            int[] triangles = new int[this.BaseStitchInfo.loopsProduced * stitchRes * radialRes * 6];
 
             int triangleIndex = 0;
-            for (int j = 0; j < this.loopInfo.loopsProduced * stitchRes - 1; j++)
+            for (int j = 0; j < this.BaseStitchInfo.loopsProduced * stitchRes - 1; j++)
             {
                 for (int i = 0; i < radialRes; i++)
                 {
@@ -237,13 +237,14 @@ namespace YarnGenerator
                 d = 0.20f;
             }
 
-            if (this.loopInfo.loopType == LoopType.Purl)
+            if
+                (this.BaseStitchInfo.BaseStitchType == BaseStitchType.Purl)
             {
                 d *= -1.0f;
                 d2 *= -1.0f;
             }
             
-            if (this.loopInfo.loopType == LoopType.Knit2Tog)
+            if (this.BaseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
             {
                 d *= 2.0f;
                 d2 *= 2.0f;

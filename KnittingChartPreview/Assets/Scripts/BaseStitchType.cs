@@ -1,6 +1,6 @@
 namespace YarnGenerator
 {
-    public enum LoopType
+    public enum BaseStitchType
     {
         Knit,
         Purl,

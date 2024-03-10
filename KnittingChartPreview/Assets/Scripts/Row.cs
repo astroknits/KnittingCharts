@@ -9,14 +9,10 @@ namespace YarnGenerator
         public float yarnWidth;
         // Index for this row
         public int rowIndex;
-        // Number of stitches for this row
-        public int nStitches;
-        // Number of loops (ie basic stitches) in row
-        public int nLoops;
         // Array of stitch objects
         public Stitch[] stitches;
         // Array of loop objects
-        public Loop[] loops;
+        public BaseStitch[] baseStitches;
 
         public Row prevRow;
         public Row nextRow;
@@ -27,16 +23,14 @@ namespace YarnGenerator
             this.rowIndex = rowIndex;
             // Create array of Stitch objects
             this.stitches = GetStitches(stitchTypes);
-            this.nStitches = stitchTypes.Length;
-            this.loops = GetLoopsInRow();
-            this.nLoops = this.loops.Length;
+            this.baseStitches = GetBaseStitchesInRow();
             this.prevRow = null;
             this.nextRow = null;
         }
 
-        public Loop GetLoop(int i)
+        public BaseStitch GetBaseStitch(int i)
         {
-            return this.loops[i];
+            return this.baseStitches[i];
         }
 
         public void SetPreviousRow(Row prevRowObj)
@@ -64,7 +58,7 @@ namespace YarnGenerator
             return stitches;
         }
 
-        private Loop[] GetLoopsInRow()
+        private BaseStitch[] GetBaseStitchesInRow()
         {
             int nLoops = 0;
             foreach (Stitch stitch in stitches)
@@ -72,7 +66,7 @@ namespace YarnGenerator
                 nLoops += stitch.stitchInfo.loopsProduced;
             }
 
-            Loop[] loops = new Loop[nLoops];
+            BaseStitch[] loops = new BaseStitch[nLoops];
 
             int loopIndex = 0;
             for (int i = 0; i < stitches.Length; i++)

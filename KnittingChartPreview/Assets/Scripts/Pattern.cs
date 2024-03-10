@@ -44,11 +44,11 @@ namespace YarnGenerator
                 {
                     continue;
                 }
-                foreach (Loop loop in row.loops)
+                foreach (BaseStitch loop in row.baseStitches)
                 {
                     if (loop.consumes is not null)
                     {
-                        foreach (Loop consumes in loop.consumes)
+                        foreach (BaseStitch consumes in loop.consumes)
                         {
                             continue;
                         }
@@ -56,7 +56,7 @@ namespace YarnGenerator
 
                     if (loop.produces is not null)
                     {
-                        foreach (Loop produces in loop.produces)
+                        foreach (BaseStitch produces in loop.produces)
                         {
                             if (produces is null)
                             {
@@ -105,17 +105,17 @@ namespace YarnGenerator
                     continue;
                 }
 
-                // Set the loops that are consumed by this stitch
+                // Set the baseStitches that are consumed by this stitch
                 int consumedIndex = 0;
-                for (int i = 0; i < row.nLoops; i++)
+                for (int i = 0; i < row.baseStitches.Length; i++)
                 {
-                    Loop loop = row.loops[i];
-                    Debug.Log($"    Loop {loop.loopIndexStart} - {loop.loopInfo.loopsConsumed} ({loop.loopInfo.loopType})");
-                    for (int j = 0; j < loop.loopInfo.loopsConsumed; j++)
+                    BaseStitch baseStitch = row.baseStitches[i];
+                    Debug.Log($"    BaseStitch {baseStitch.loopIndexStart} - {baseStitch.BaseStitchInfo.loopsConsumed} ({baseStitch.BaseStitchInfo.BaseStitchType})");
+                    for (int j = 0; j < baseStitch.BaseStitchInfo.loopsConsumed; j++)
                     {
-                        Loop prevLoop = row.prevRow.GetLoop(consumedIndex);
-                        loop.SetConsumes(j, prevLoop);
-                        Debug.Log($" (i, j) = ({i}, {j}): for {loop.rowIndex} {loop.loopInfo.loopType} {loop.loopIndexStart}: setting consumes {prevLoop.rowIndex} {prevLoop.loopIndexStart}");
+                        BaseStitch prevBaseStitch = row.prevRow.GetBaseStitch(consumedIndex);
+                        baseStitch.SetConsumes(j, prevBaseStitch);
+                        Debug.Log($" (i, j) = ({i}, {j}): for {baseStitch.rowIndex} {baseStitch.BaseStitchInfo.BaseStitchType} {baseStitch.loopIndexStart}: setting consumes {prevBaseStitch.rowIndex} {prevBaseStitch.loopIndexStart}");
                         consumedIndex += 1;
                     }
                 }
@@ -221,7 +221,7 @@ namespace YarnGenerator
             // calculate # stitches per row
             int stitchesPerRow = GetTotalStitchesPerRow();
 
-            // Set the number of loops per row to reflect the number of loops for this pattern
+            // Set the number of baseStitches per row to reflect the number of baseStitches for this pattern
             int loopsPerRow = GetActualLoopsPerRow();
 
             Row[] rows = new Row[nRows];

@@ -21,7 +21,7 @@ namespace YarnGenerator
         public int loopIndex;
         
         // list of loop objects
-        public Loop[] loops;
+        public BaseStitch[] loops;
         
         public Stitch(StitchType stitchType, int rowIndex, int stitchIndex, int loopIndex, float yarnWidth)
         {
@@ -33,10 +33,10 @@ namespace YarnGenerator
             this.loops = GetLoops();
         }
 
-        public Loop[] GetLoops()
+        public BaseStitch[] GetLoops()
         {
-            loops = new Loop[this.stitchInfo.loopsProduced];
-            // Work through each of the loops produced in the loopTypeList
+            loops = new BaseStitch[this.stitchInfo.loopsProduced];
+            // Work through each of the baseStitches produced in the baseStitchTypeList
             for (int i = 0; i < this.stitchInfo.loopsProduced; i++)
             {
                 int loopIndexStart = this.loopIndex + i;
@@ -49,9 +49,9 @@ namespace YarnGenerator
                 }
                 else
                 {
-                    // hold the first this.held loops in front of/behind the
+                    // hold the first this.held baseStitches in front of/behind the
                     // needle and first knit the remaining
-                    // this.loopsProduced - this.held loops
+                    // this.loopsProduced - this.held baseStitches
                     if (i >= this.stitchInfo.held)
                     {
                         loopIndexEnd = loopIndexStart - this.stitchInfo.held;
@@ -66,8 +66,8 @@ namespace YarnGenerator
                     }
                 }
 
-                loops[i] = new Loop(
-                    stitchInfo.loopInfoList[i].loopType, 
+                loops[i] = new BaseStitch(
+                    stitchInfo.BaseStitchInfoList[i].BaseStitchType, 
                     yarnWidth, 
                     rowIndex, 
                     loopIndexStart, 
@@ -81,7 +81,7 @@ namespace YarnGenerator
 
         public void GenerateCurve()
         {
-            // Work through each of the loops produced in the loopInfoList
+            // Work through each of the baseStitches produced in the BaseStitchInfoList
             for (int i = 0; i < this.loops.Length; i++)
             {
                 loops[i].GenerateCurve();
@@ -97,7 +97,7 @@ namespace YarnGenerator
                 // Create parent GameObject under which to nest the mesh for each loop
                 GameObject stitchGameObject = new GameObject($"Stitch - row {rowIndex} stitch {stitchIndex} loop {loopIndex}");
 
-                // Work through each of the loops produced in the loopTypeList
+                // Work through each of the baseStitches produced in the baseStitchTypeList
                 for (int i = 0; i < this.loops.Length; i++)
                 {
                     GameObject mesh = loops[i].GenerateMesh(material);

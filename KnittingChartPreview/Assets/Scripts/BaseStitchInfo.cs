@@ -1,22 +1,22 @@
 namespace YarnGenerator
 {
-    public class LoopInfo
+    public class BaseStitchInfo
     {
-        public LoopType loopType;
-        // # of loops from previous row used by this stitch
+        public BaseStitchType BaseStitchType;
+        // # of baseStitches from previous row used by this stitch
         public int loopsConsumed;
-        // # of loops left on the needle at the end of this stitch
+        // # of baseStitches left on the needle at the end of this stitch
         public int loopsProduced;
         
-        public static LoopInfo GetLoopInfo(LoopType loopType)
+        public static BaseStitchInfo GetBaseStitchInfo(BaseStitchType baseStitchType)
         {
-            switch (loopType)
+            switch (baseStitchType)
             {
-                case LoopType.Knit:
+                case BaseStitchType.Knit:
                     return new Knit();
-                case LoopType.Purl:
+                case BaseStitchType.Purl:
                     return new Purl();
-                case LoopType.Knit2Tog:
+                case BaseStitchType.Knit2Tog:
                     return new Knit2Tog();
                 default:
                     return new Knit();
@@ -24,51 +24,51 @@ namespace YarnGenerator
         }
     }
     
-    public class Knit : LoopInfo
+    public class Knit : BaseStitchInfo
     {
         public Knit() : base()
         {
-            this.loopType = LoopType.Knit;
+            this.BaseStitchType = BaseStitchType.Knit;
             this.loopsConsumed = 1;
             this.loopsProduced = 1;
         }
     }
 
-    public class Purl : LoopInfo
+    public class Purl : BaseStitchInfo
     {
         public Purl(): base()
         {
-            this.loopType = LoopType.Purl;
+            this.BaseStitchType = BaseStitchType.Purl;
             this.loopsConsumed = 1;
             this.loopsProduced = 1;
         }
     }
     
-    public class Knit2Tog : LoopInfo
+    public class Knit2Tog : BaseStitchInfo
     {
         public Knit2Tog() : base()
         {
-            this.loopType = LoopType.Knit2Tog;
+            this.BaseStitchType = BaseStitchType.Knit2Tog;
             this.loopsConsumed = 2;
             this.loopsProduced = 1;
         }
     }
     
-    public class M1 : LoopInfo
+    public class M1 : BaseStitchInfo
     {
         public M1() : base()
         {
-            this.loopType = LoopType.M1;
+            this.BaseStitchType = BaseStitchType.M1;
             this.loopsConsumed = 1;
             this.loopsProduced = 2;
         }
     }
 
-    public class YarnOver : LoopInfo
+    public class YarnOver : BaseStitchInfo
     {
         public YarnOver() : base()
         {
-            this.loopType = LoopType.YarnOver;
+            this.BaseStitchType = BaseStitchType.YarnOver;
             this.loopsConsumed = 0;
             this.loopsProduced = 1;
         }

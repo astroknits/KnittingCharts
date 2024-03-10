@@ -4,24 +4,24 @@ namespace YarnGenerator
     {
         // List of stitches to perform in order.  
         public StitchType stitchType;
-        // # of loops from previous row used by this stitch
+        // # of baseStitches from previous row used by this stitch
         public int loopsConsumed;
-        // # of loops left on the needle at the end of this stitch
+        // # of baseStitches left on the needle at the end of this stitch
         public int loopsProduced;
 
         // List of loop types for this stitch (knit, purl), to perform.
         // Stitches are performed in this order once the
         // held stitches have been moved to the stitch holder
-        public LoopInfo[] loopInfoList;
+        public BaseStitchInfo[] BaseStitchInfoList;
         
         // The cable stitch is defined as any composite stitch
-        // where the first X loops from the needle are picked up
+        // where the first X baseStitches from the needle are picked up
         // and placed either in front of (front=true) or behind (front=false)
         // the needle, and the rest of the stitches are
-        // knitted according to the loopInfoList before placing
+        // knitted according to the BaseStitchInfoList before placing
         // the held stitches back on the needle and knitting those
         
-        // held parameter indicates how many loops to hold on a stitch holder
+        // held parameter indicates how many baseStitches to hold on a stitch holder
         // before starting to knit
         public int held;
         // Indicates whether to place the first $held stitches
@@ -52,15 +52,15 @@ namespace YarnGenerator
             }
         }
 
-        public LoopInfo[] GetLoopInfoList(LoopType[] loopTypeList)
+        public BaseStitchInfo[] GetBaseStitchInfoList(BaseStitchType[] baseStitchTypeList)
         {
-            LoopInfo[] loopInfoList = new LoopInfo[loopTypeList.Length];
-            for (int i = 0; i < loopInfoList.Length; i++)
+            BaseStitchInfo[] baseStitchInfoList = new BaseStitchInfo[baseStitchTypeList.Length];
+            for (int i = 0; i < baseStitchInfoList.Length; i++)
             {
-                loopInfoList[i] = LoopInfo.GetLoopInfo(loopTypeList[i]);
+                baseStitchInfoList[i] = BaseStitchInfo.GetBaseStitchInfo(baseStitchTypeList[i]);
             }
 
-            return loopInfoList;
+            return baseStitchInfoList;
         }
     }
     
@@ -74,11 +74,11 @@ namespace YarnGenerator
             this.loopsProduced = 1;
             this.held = 0;
             this.front = false;
-            LoopType[] loopTypeList = new LoopType[1]
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
             {
-                LoopType.Knit
+                BaseStitchType.Knit
             };
-            this.loopInfoList = GetLoopInfoList(loopTypeList);
+            this.BaseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
         }
     }
 
@@ -91,11 +91,11 @@ namespace YarnGenerator
             this.loopsProduced = 1;
             this.held = 0;
             this.front = false;
-            LoopType[] loopTypeList = new LoopType[1]
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
             {
-                LoopType.Purl
+                BaseStitchType.Purl
             };
-            this.loopInfoList = GetLoopInfoList(loopTypeList);
+            this.BaseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
 
         }
     }
@@ -110,11 +110,11 @@ namespace YarnGenerator
             this.loopsProduced = 1;
             this.held = 0;
             this.front = false;
-            LoopType[] loopTypeList = new LoopType[1]
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
             {
-                LoopType.Knit2Tog
+                BaseStitchType.Knit2Tog
             };
-            this.loopInfoList = GetLoopInfoList(loopTypeList);
+            this.BaseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
         }
     }
 
@@ -128,11 +128,11 @@ namespace YarnGenerator
             this.loopsProduced = 2;
             this.held = 0;
             this.front = false;
-            LoopType[] loopTypeList = new LoopType[1]
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
             {
-                LoopType.M1
+                BaseStitchType.M1
             };
-            this.loopInfoList = GetLoopInfoList(loopTypeList);
+            this.BaseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
         }
     }
 
@@ -146,11 +146,11 @@ namespace YarnGenerator
             this.loopsProduced = 1;
             this.held = 0;
             this.front = false;
-            LoopType[] loopTypeList = new LoopType[1]
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
             {
-                LoopType.YarnOver
+                BaseStitchType.YarnOver
             };
-            this.loopInfoList = GetLoopInfoList(loopTypeList);
+            this.BaseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
         }
     }
 
@@ -163,12 +163,12 @@ namespace YarnGenerator
             this.loopsProduced = 2;
             this.held = 1;
             this.front = false;
-            LoopType[] loopTypeList = new LoopType[2]
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[2]
             {
-                LoopType.Knit,
-                LoopType.Knit
+                BaseStitchType.Knit,
+                BaseStitchType.Knit
             };
-            this.loopInfoList = GetLoopInfoList(loopTypeList);
+            this.BaseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
         }
     }
     
@@ -181,14 +181,14 @@ namespace YarnGenerator
             this.loopsProduced = 4;
             this.held = 2;
             this.front = false;
-            LoopType[] loopTypeList = new LoopType[4]
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[4]
             {
-                LoopType.Knit,
-                LoopType.Knit,
-                LoopType.Knit,
-                LoopType.Knit
+                BaseStitchType.Knit,
+                BaseStitchType.Knit,
+                BaseStitchType.Knit,
+                BaseStitchType.Knit
             };
-            this.loopInfoList = GetLoopInfoList(loopTypeList);
+            this.BaseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
         }
     }
     
@@ -201,12 +201,12 @@ namespace YarnGenerator
             this.loopsProduced = 2;
             this.held = 0;
             this.front = true;
-            LoopType[] loopTypeList = new LoopType[2]
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[2]
             {
-                LoopType.Knit,
-                LoopType.Knit
+                BaseStitchType.Knit,
+                BaseStitchType.Knit
             };
-            this.loopInfoList = GetLoopInfoList(loopTypeList);
+            this.BaseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
         }
     }
     
@@ -219,13 +219,13 @@ namespace YarnGenerator
             this.loopsProduced = 4;
             this.held = 0;
             this.front = true;
-            LoopType[] loopTypeList = new LoopType[4] {
-                LoopType.Knit,
-                LoopType.Knit,
-                LoopType.Knit,
-                LoopType.Knit
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[4] {
+                BaseStitchType.Knit,
+                BaseStitchType.Knit,
+                BaseStitchType.Knit,
+                BaseStitchType.Knit
             };
-            this.loopInfoList = GetLoopInfoList(loopTypeList);
+            this.BaseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
         }
     }
 }
