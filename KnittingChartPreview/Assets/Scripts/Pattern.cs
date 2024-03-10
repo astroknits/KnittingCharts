@@ -5,12 +5,20 @@ namespace YarnGenerator
 {
     public abstract class Pattern
     {
+        public float yarnWidth;
+
         // Array of row objects
         public Row[] rows;
 
         // nRows is the length of rows
         public int nRows;
-        
+
+        public Pattern(float yarnWidth, int nRows)
+        { 
+            this.yarnWidth = yarnWidth;
+            this.nRows = nRows;
+        }
+
         public abstract Row[] GetPatternDefinition();
 
         public void RenderPreview(Material material)
@@ -125,13 +133,15 @@ namespace YarnGenerator
     
     public class BasicPattern: Pattern
     {
-        private float yarnWidth;
         private int stitchesPerRowStart;
 
-        public BasicPattern(float yarnWidth, int nRows, int stitchesPerRowStart)
+        public BasicPattern(
+            float yarnWidth,
+            int nRows,
+            int stitchesPerRowStart
+            ): 
+            base(yarnWidth, nRows)
         {
-            this.yarnWidth = yarnWidth;
-            this.nRows = nRows;
             this.stitchesPerRowStart = stitchesPerRowStart;
             GetPatternRows();
         }
@@ -179,7 +189,6 @@ namespace YarnGenerator
 
     public class CablePattern: Pattern
     {
-        private float yarnWidth;
         private int padding;
         private int cableStitchesPerRow;
         private int cableBlockSize;
@@ -194,9 +203,8 @@ namespace YarnGenerator
             int cableBlockSize,
             int cableSeparationSize,
             int cableLength
-        )
+        ): base(yarnWidth, nRows)
         {
-            this.yarnWidth = yarnWidth;
             this.nRows = nRows;
             this.padding = padding;
             this.cableStitchesPerRow = cableStitchesPerRow;
