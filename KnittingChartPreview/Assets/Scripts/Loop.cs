@@ -245,8 +245,8 @@ namespace YarnGenerator
             
             if (this.loopInfo.loopType == LoopType.Knit2Tog)
             {
-                d *= 100.0f;
-                d2 *= 100.0f;
+                d *= 2.0f;
+                d2 *= 2.0f;
             }
 
             // parametric equation for stitch
