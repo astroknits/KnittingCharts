@@ -143,6 +143,12 @@ namespace YarnGenerator
             GetPatternRows();
         }
 
+        public bool DoesRowIncrease(int rowNumber)
+        {
+            // return false;
+            return (rowNumber == 4);
+        }
+
         public bool DoesRowDecrease(int rowNumber)
         {
             return !(rowNumber == 0 || rowNumber == 3);
@@ -165,6 +171,11 @@ namespace YarnGenerator
                 {
                     stitchesPerRow -= 1;
                 }
+                
+                if (DoesRowIncrease(rowNumber))
+                {
+                    stitchesPerRow += 1;
+                }
 
                 StitchType[] stitches = new StitchType[stitchesPerRow];
                 
@@ -175,8 +186,13 @@ namespace YarnGenerator
 
                 if (rowNumber == 3)
                 {
+                    stitches[stitchesPerRow - 1 - 1] = StitchType.KnitStitch;
                     stitches[stitchesPerRow - 1 - 0] = StitchType.KnitStitch;
-                    stitches[stitchesPerRow - 1 - 0] = StitchType.KnitStitch;
+                }
+                else if (rowNumber == 4)
+                {
+                    stitches[stitchesPerRow - 1 - 1] = StitchType.YarnOverStitch;
+                    stitches[stitchesPerRow - 1 - 0] = StitchType.PurlStitch;
                 }
                 else if (rowNumber == 0)
                 {
