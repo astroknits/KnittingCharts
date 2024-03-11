@@ -47,6 +47,10 @@ namespace YarnGenerator
                     return new CableKnitStitch4();
                 case StitchType.Knit2TogStitch:
                     return new Knit2TogStitch();
+                case StitchType.YarnOverStitch:
+                    return new YarnOverStitch();
+                case StitchType.M1Stitch:
+                    return new M1Stitch();
                 default:
                     return new KnitStitch();
             }

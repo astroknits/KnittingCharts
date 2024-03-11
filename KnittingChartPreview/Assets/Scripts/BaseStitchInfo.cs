@@ -18,6 +18,10 @@ namespace YarnGenerator
                     return new Purl();
                 case BaseStitchType.Knit2Tog:
                     return new Knit2Tog();
+                case BaseStitchType.YarnOver:
+                    return new YarnOver();
+                case BaseStitchType.M1:
+                    return new M1();
                 default:
                     return new Knit();
             }
