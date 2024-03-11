@@ -11,8 +11,6 @@ namespace YarnGenerator
         public int rowIndex;
         // Array of stitch objects
         public Stitch[] stitches;
-        // Array of loop objects
-        public BaseStitch[] baseStitches;
 
         public Row prevRow;
         public Row nextRow;
@@ -23,14 +21,13 @@ namespace YarnGenerator
             this.rowIndex = rowIndex;
             // Create array of Stitch objects
             this.stitches = GetStitches(stitchTypes);
-            this.baseStitches = GetBaseStitchesInRow();
             this.prevRow = null;
             this.nextRow = null;
         }
 
         public BaseStitch GetBaseStitch(int i)
         {
-            return this.baseStitches[i];
+            return this.GetBaseStitches()[i];
         }
 
         public void SetPreviousRow(Row prevRowObj)
@@ -58,7 +55,7 @@ namespace YarnGenerator
             return stitches;
         }
 
-        private BaseStitch[] GetBaseStitchesInRow()
+        public BaseStitch[] GetBaseStitches()
         {
             int nLoops = 0;
             foreach (Stitch stitch in stitches)

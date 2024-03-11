@@ -52,19 +52,19 @@ namespace YarnGenerator
                 {
                     continue;
                 }
-                foreach (BaseStitch loop in row.baseStitches)
+                foreach (BaseStitch baseStitch in row.GetBaseStitches())
                 {
-                    if (loop.consumes is not null)
+                    if (baseStitch.consumes is not null)
                     {
-                        foreach (BaseStitch consumes in loop.consumes)
+                        foreach (BaseStitch consumes in baseStitch.consumes)
                         {
                             continue;
                         }
                     }
 
-                    if (loop.produces is not null)
+                    if (baseStitch.produces is not null)
                     {
-                        foreach (BaseStitch produces in loop.produces)
+                        foreach (BaseStitch produces in baseStitch.produces)
                         {
                             if (produces is null)
                             {
@@ -114,9 +114,9 @@ namespace YarnGenerator
 
                 // Set the baseStitches that are consumed by this stitch
                 int consumedIndex = 0;
-                for (int i = 0; i < row.baseStitches.Length; i++)
+                for (int i = 0; i < row.GetBaseStitches().Length; i++)
                 {
-                    BaseStitch baseStitch = row.baseStitches[i];
+                    BaseStitch baseStitch = row.GetBaseStitch(i);
                     for (int j = 0; j < baseStitch.BaseStitchInfo.loopsConsumed; j++)
                     {
                         BaseStitch prevBaseStitch = row.prevRow.GetBaseStitch(consumedIndex);
