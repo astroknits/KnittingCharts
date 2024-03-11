@@ -11,6 +11,8 @@ namespace YarnGenerator
         public int rowIndex;
         // Array of stitch objects
         public Stitch[] stitches;
+        public int nStitches;
+        public int nBaseStitches;
 
         public Row prevRow;
         public Row nextRow;
@@ -21,6 +23,8 @@ namespace YarnGenerator
             this.rowIndex = rowIndex;
             // Create array of Stitch objects
             this.stitches = GetStitches(stitchTypes);
+            this.nStitches = this.stitches.Length;
+            this.nBaseStitches = GetNBaseStitches();
             this.prevRow = null;
             this.nextRow = null;
         }
@@ -55,15 +59,42 @@ namespace YarnGenerator
             return stitches;
         }
 
-        public BaseStitch[] GetBaseStitches()
+        public int GetNBaseStitches()
         {
-            int nLoops = 0;
+            int nBaseStitches = 0;
             foreach (Stitch stitch in stitches)
             {
-                nLoops += stitch.stitchInfo.loopsProduced;
+                nBaseStitches += stitch.stitchInfo.nBaseStitches;
             }
 
-            BaseStitch[] loops = new BaseStitch[nLoops];
+            return nBaseStitches;
+        }
+        
+        public int GetLoopsConsumed()
+        {
+            int nConsumed = 0;
+            foreach (Stitch stitch in stitches)
+            {
+                nConsumed += stitch.stitchInfo.loopsConsumed;
+            }
+
+            return nConsumed;
+        }
+        
+        public int GetLoopsProduced()
+        {
+            int nProduced = 0;
+            foreach (Stitch stitch in stitches)
+            {
+                nProduced += stitch.stitchInfo.loopsProduced;
+            }
+
+            return nProduced;
+        }
+        
+        public BaseStitch[] GetBaseStitches()
+        {
+            BaseStitch[] loops = new BaseStitch[this.nBaseStitches];
 
             int loopIndex = 0;
             for (int i = 0; i < stitches.Length; i++)

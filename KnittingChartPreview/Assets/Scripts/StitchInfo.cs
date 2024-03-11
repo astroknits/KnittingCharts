@@ -4,6 +4,8 @@ namespace YarnGenerator
     {
         // List of stitches to perform in order.  
         public StitchType stitchType;
+        // # of baseStitches that comprise this stitch
+        public int nBaseStitches;
         // # of baseStitches from previous row used by this stitch
         public int loopsConsumed;
         // # of baseStitches left on the needle at the end of this stitch
@@ -74,6 +76,7 @@ namespace YarnGenerator
             base()
         {
             this.stitchType = StitchType.KnitStitch;
+            this.nBaseStitches = 1;
             this.loopsConsumed = 1;
             this.loopsProduced = 1;
             this.held = 0;
@@ -91,6 +94,7 @@ namespace YarnGenerator
         public PurlStitch() : base()
         {
             this.stitchType = StitchType.PurlStitch;
+            this.nBaseStitches = 1;
             this.loopsConsumed = 1;
             this.loopsProduced = 1;
             this.held = 0;
@@ -110,6 +114,7 @@ namespace YarnGenerator
             base()
         {
             this.stitchType = StitchType.Knit2TogStitch;
+            this.nBaseStitches = 1;
             this.loopsConsumed = 2;
             this.loopsProduced = 1;
             this.held = 0;
@@ -128,6 +133,7 @@ namespace YarnGenerator
             base()
         {
             this.stitchType = StitchType.M1Stitch;
+            this.nBaseStitches = 1;
             this.loopsConsumed = 1;
             this.loopsProduced = 2;
             this.held = 0;
@@ -146,6 +152,7 @@ namespace YarnGenerator
             base()
         {
             this.stitchType = StitchType.YarnOverStitch;
+            this.nBaseStitches = 1;
             this.loopsConsumed = 0;
             this.loopsProduced = 1;
             this.held = 0;
@@ -163,6 +170,7 @@ namespace YarnGenerator
         public Cable1Lo1RStitch() : base()
         {
             this.stitchType = StitchType.Cable1Lo1RStitch;
+            this.nBaseStitches = 2;
             this.loopsConsumed = 2;
             this.loopsProduced = 2;
             this.held = 1;
@@ -181,6 +189,7 @@ namespace YarnGenerator
         public Cable2Lo2RStitch() : base()
         {
             this.stitchType = StitchType.Cable2Lo2RStitch;
+            this.nBaseStitches = 4;
             this.loopsConsumed = 4;
             this.loopsProduced = 4;
             this.held = 2;
@@ -201,6 +210,7 @@ namespace YarnGenerator
         public CableKnitStitch() : base()
         {
             this.stitchType = StitchType.CableKnitStitch;
+            this.nBaseStitches = 2;
             this.loopsConsumed = 2;
             this.loopsProduced = 2;
             this.held = 0;
@@ -219,6 +229,7 @@ namespace YarnGenerator
         public CableKnitStitch4() : base()
         {
             this.stitchType = StitchType.CableKnitStitch4;
+            this.nBaseStitches = 4;
             this.loopsConsumed = 4;
             this.loopsProduced = 4;
             this.held = 0;

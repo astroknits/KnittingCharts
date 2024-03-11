@@ -30,10 +30,10 @@ namespace YarnGenerator
             this.stitchIndex = stitchIndex;
             this.loopIndex = loopIndex;
             this.yarnWidth = yarnWidth;
-            this.loops = GetLoops();
+            this.loops = GetBaseStitches();
         }
 
-        public BaseStitch[] GetLoops()
+        public BaseStitch[] GetBaseStitches()
         {
             loops = new BaseStitch[this.stitchInfo.loopsProduced];
             // Work through each of the baseStitches produced in the baseStitchTypeList
