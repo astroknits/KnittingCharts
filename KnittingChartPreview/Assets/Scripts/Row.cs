@@ -35,7 +35,7 @@ namespace YarnGenerator
             this.nStitches = this.stitches.Length;
 
             // Calculate number of BaseStitch objects for row
-            // Also calculate the number of loops consumed and produced
+            // Also calculate the number of baseStitches consumed and produced
             // for this row (calc by looping through the BaseStitch objects)
             this.nBaseStitches = 0;
             this.nLoopsConsumed = 0;
@@ -112,7 +112,7 @@ namespace YarnGenerator
                 Stitch stitch = stitches[i];
                 for (int j = 0; j < stitch.stitchInfo.loopsProduced; j++)
                 {
-                    loops[loopIndex] = stitch.loops[j];
+                    loops[loopIndex] = stitch.baseStitches[j];
                     loopIndex += 1;
                 }
             }
