@@ -6,12 +6,14 @@ namespace YarnGenerator
 {
     public class BaseStitch
     {
-        public BaseStitchInfo BaseStitchInfo;
+        public BaseStitchInfo baseStitchInfo;
 
         public float yarnWidth;
         
         // row number for the given stitch
         public int rowIndex;
+
+        public int baseStitchIndex;
 
         // BaseStitch indices: actual integer baseStitch # for 
         // start and end of the stitch
@@ -41,47 +43,64 @@ namespace YarnGenerator
 
         private Vector3[] curve;
 
-        public BaseStitch[] consumes;
-        public BaseStitch[] produces;
+        public Loop[] loopsConsumed;
+        public Loop[] loopsProduced;
 
         public BaseStitch(
-            BaseStitchType baseStitchType,
+            BaseStitchInfo baseStitchInfo,
             float yarnWidth,
             int rowIndex,
+            int baseStitchIndex,
             int loopIndexStart,
             int loopIndexEnd,
             bool heldInFront,
-            bool heldBehind
+            bool heldBehind,
+            Loop[] loopsConsumed
             )
         {
-            this.BaseStitchInfo = BaseStitchInfo.GetBaseStitchInfo(baseStitchType);
+            this.baseStitchInfo = baseStitchInfo;
             this.yarnWidth = yarnWidth;
             this.rowIndex = rowIndex;
+            this.baseStitchIndex = baseStitchIndex;
+            //        public Loop(int rowIndex, int loopIndex, BaseStitch[] producedBy)
+            
             this.loopIndexStart = loopIndexStart;
             this.loopIndexEnd = loopIndexEnd;
             this.heldInFront = heldInFront;
             this.heldBehind = heldBehind;
             SetLoopStartAndOffset();
+            this.loopsConsumed = loopsConsumed;
+            SetLoopsProduced();
         }
         
-        public void SetConsumes(int index, BaseStitch prevBaseStitchObj)
+        public void SetConsumes(int index, Loop loopObj)
         {
-            if (consumes is null)
+            if (loopsConsumed is null)
             {
-                this.consumes = new BaseStitch[this.BaseStitchInfo.loopsConsumed];
+                this.loopsConsumed = new Loop[this.baseStitchInfo.nLoopsConsumed];
             }
-            consumes[index] = prevBaseStitchObj;
+            loopsConsumed[index] = loopObj;
         }
 
-        public void SetProduces(int index, BaseStitch nextBaseStitchObj)
+        public void SetProduces(int index, Loop loopObj)
         {
-            if (produces is null)
+            if (loopsProduced is null)
             {
-                this.produces = new BaseStitch[this.BaseStitchInfo.loopsProduced];
+                this.loopsProduced = new Loop[this.baseStitchInfo.nLoopsProduced];
             }
-            produces[index] = nextBaseStitchObj;
+            loopsProduced[index] = loopObj;
         }
 
+        public void SetLoopsProduced()
+        {
+            this.loopsProduced = new Loop[this.baseStitchInfo.nLoopsProduced];
+            for (int i = 0; i < this.baseStitchInfo.nLoopsProduced; i++)
+            {
+                Loop loop = new Loop(rowIndex, loopIndexEnd + i, this);
+                this.loopsProduced[i] = loop;
+                Debug.Log($"loopsProduced[{i}] = new Loop({rowIndex}, {loopIndexEnd + i}, this)");
+            }
+        }
         public GameObject GetMesh(Vector3[] vertices, int[] triangles, Material material)
         {
             // Create the mesh for the yarn in this row
@@ -161,7 +180,7 @@ namespace YarnGenerator
 
         internal Vector3[] GenerateVertices()
         {
-            // Note that loopsProduced > 1 or loopsConsumed > 1
+            // Note that nLoopsProduced > 1 or nLoopsConsumed > 1
             // is not currently supported.
             // Once it is, we'll have to create vertices for more than
             // one baseStitch.
@@ -187,10 +206,10 @@ namespace YarnGenerator
 
         internal int[] GenerateTriangles()
         {
-            int[] triangles = new int[this.BaseStitchInfo.loopsProduced * stitchRes * radialRes * 6];
+            int[] triangles = new int[this.baseStitchInfo.nLoopsProduced * stitchRes * radialRes * 6];
 
             int triangleIndex = 0;
-            for (int j = 0; j < this.BaseStitchInfo.loopsProduced * stitchRes - 1; j++)
+            for (int j = 0; j < this.baseStitchInfo.nLoopsProduced * stitchRes - 1; j++)
             {
                 for (int i = 0; i < radialRes; i++)
                 {
@@ -238,13 +257,13 @@ namespace YarnGenerator
             }
 
             if
-                (this.BaseStitchInfo.BaseStitchType == BaseStitchType.Purl)
+                (this.baseStitchInfo.BaseStitchType == BaseStitchType.Purl)
             {
                 d *= -1.0f;
                 d2 *= -1.0f;
             }
             
-            if (this.BaseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
+            if (this.baseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
             {
                 d *= 2.0f;
                 d2 *= 2.0f;

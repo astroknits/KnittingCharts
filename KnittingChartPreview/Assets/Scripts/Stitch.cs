@@ -23,36 +23,43 @@ namespace YarnGenerator
         // list of loop objects
         public BaseStitch[] baseStitches;
         
-        public Stitch(StitchType stitchType, int rowIndex, int stitchIndex, int loopIndex, float yarnWidth)
+        // list of consumed loops
+        public Loop[] loopsConsumed;
+        
+        public Stitch(StitchInfo stitchInfo, int rowIndex, int stitchIndex, int loopIndex, float yarnWidth, Loop[] loopsConsumed)
         {
-            this.stitchInfo = StitchInfo.GetStitchInfo(stitchType);
+            this.stitchInfo = stitchInfo;
             this.rowIndex = rowIndex;
             this.stitchIndex = stitchIndex;
             this.loopIndex = loopIndex;
             this.yarnWidth = yarnWidth;
+            this.loopsConsumed = loopsConsumed;
             this.baseStitches = GetBaseStitches();
         }
 
         public BaseStitch[] GetBaseStitches()
         {
-            baseStitches = new BaseStitch[this.stitchInfo.loopsProduced];
+            baseStitches = new BaseStitch[this.stitchInfo.nBaseStitches];
+            
             // Work through each of the baseStitches produced in the baseStitchTypeList
-            for (int i = 0; i < this.stitchInfo.loopsProduced; i++)
+            for (int baseStitchIndex = 0; baseStitchIndex < this.stitchInfo.nBaseStitches; baseStitchIndex++)
             {
-                int loopIndexStart = this.loopIndex + i;
+                BaseStitchInfo baseStitchInfo = BaseStitchInfo.GetBaseStitchInfo(stitchInfo.baseStitchInfoList[baseStitchIndex].BaseStitchType);
+                int loopIndexStart = this.loopIndex + baseStitchIndex;
                 int loopIndexEnd = loopIndexStart;
+                Loop[] loopsConsumedByBaseStitch = Array.Empty<Loop>();
+                if (loopsConsumed is not null && baseStitchInfo.nLoopsConsumed > 0)
+                {
+                    loopsConsumed.Skip(loopIndexEnd).Take(baseStitchInfo.nLoopsConsumed).ToArray();
+                }
                 bool heldInFront = false;
                 bool heldBehind = false;
-                if (this.stitchInfo.held == 0)
-                {
-                    loopIndexEnd = loopIndexStart;
-                }
-                else
+                if (this.stitchInfo.held != 0)
                 {
                     // hold the first this.held baseStitches in front of/behind the
                     // needle and first knit the remaining
-                    // this.loopsProduced - this.held baseStitches
-                    if (i >= this.stitchInfo.held)
+                    // this.nLoopsProduced - this.held baseStitches
+                    if (baseStitchIndex >= this.stitchInfo.held)
                     {
                         loopIndexEnd = loopIndexStart - this.stitchInfo.held;
                         heldInFront = this.stitchInfo.front;
@@ -65,15 +72,18 @@ namespace YarnGenerator
                         heldBehind = this.stitchInfo.front;
                     }
                 }
+                
 
-                baseStitches[i] = new BaseStitch(
-                    stitchInfo.baseStitchInfoList[i].BaseStitchType, 
+                baseStitches[baseStitchIndex] = new BaseStitch(
+                    baseStitchInfo, 
                     yarnWidth, 
                     rowIndex, 
-                    loopIndexStart, 
+                    baseStitchIndex,
+                    loopIndexStart,
                     loopIndexEnd,
                     heldInFront,
-                    heldBehind);
+                    heldBehind,
+                    loopsConsumedByBaseStitch);
             }
 
             return baseStitches;

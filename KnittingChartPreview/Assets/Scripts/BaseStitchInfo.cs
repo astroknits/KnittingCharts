@@ -4,9 +4,9 @@ namespace YarnGenerator
     {
         public BaseStitchType BaseStitchType;
         // # of baseStitches from previous row used by this stitch
-        public int loopsConsumed;
+        public int nLoopsConsumed;
         // # of baseStitches left on the needle at the end of this stitch
-        public int loopsProduced;
+        public int nLoopsProduced;
         
         public static BaseStitchInfo GetBaseStitchInfo(BaseStitchType baseStitchType)
         {
@@ -33,8 +33,8 @@ namespace YarnGenerator
         public Knit() : base()
         {
             this.BaseStitchType = BaseStitchType.Knit;
-            this.loopsConsumed = 1;
-            this.loopsProduced = 1;
+            this.nLoopsConsumed = 1;
+            this.nLoopsProduced = 1;
         }
     }
 
@@ -43,8 +43,8 @@ namespace YarnGenerator
         public Purl(): base()
         {
             this.BaseStitchType = BaseStitchType.Purl;
-            this.loopsConsumed = 1;
-            this.loopsProduced = 1;
+            this.nLoopsConsumed = 1;
+            this.nLoopsProduced = 1;
         }
     }
     
@@ -53,8 +53,8 @@ namespace YarnGenerator
         public Knit2Tog() : base()
         {
             this.BaseStitchType = BaseStitchType.Knit2Tog;
-            this.loopsConsumed = 2;
-            this.loopsProduced = 1;
+            this.nLoopsConsumed = 2;
+            this.nLoopsProduced = 1;
         }
     }
     
@@ -63,8 +63,8 @@ namespace YarnGenerator
         public M1() : base()
         {
             this.BaseStitchType = BaseStitchType.M1;
-            this.loopsConsumed = 1;
-            this.loopsProduced = 2;
+            this.nLoopsConsumed = 1;
+            this.nLoopsProduced = 2;
         }
     }
 
@@ -73,8 +73,8 @@ namespace YarnGenerator
         public YarnOver() : base()
         {
             this.BaseStitchType = BaseStitchType.YarnOver;
-            this.loopsConsumed = 0;
-            this.loopsProduced = 1;
+            this.nLoopsConsumed = 0;
+            this.nLoopsProduced = 1;
         }
     }
 }

@@ -40,8 +40,8 @@ namespace YarnGenerator
         {
             this.rows = GetPatternDefinition();
             SetAdjacentRows();
-            SetLoopsInAdjacentRows();
-            PrintLoopsInAdjacentRows();
+            // SetLoopsInAdjacentRows();
+            // PrintLoopsInAdjacentRows();
         }
 
         public void PrintLoopsInAdjacentRows()
@@ -54,21 +54,21 @@ namespace YarnGenerator
                 }
                 foreach (BaseStitch baseStitch in row.GetBaseStitches())
                 {
-                    if (baseStitch.consumes is not null)
+                    if (baseStitch.loopsConsumed is not null)
                     {
-                        foreach (BaseStitch consumes in baseStitch.consumes)
+                        foreach (Loop consumed in baseStitch.loopsConsumed)
                         {
-                            continue;
+                            Debug.Log($"Row {row.rowIndex} baseStitch {baseStitch.baseStitchIndex} consumed {consumed}");
                         }
                     }
 
-                    if (baseStitch.produces is not null)
+                    if (baseStitch.loopsProduced is not null)
                     {
-                        foreach (BaseStitch produces in baseStitch.produces)
+                        foreach (Loop produced in baseStitch.loopsProduced)
                         {
-                            if (produces is null)
+                            if (produced is null)
                             {
-                                continue;
+                                Debug.Log($"Row {row.rowIndex} baseStitch {baseStitch.baseStitchIndex} produced {produced}");
                             }
                         }
                     }
@@ -112,10 +112,10 @@ namespace YarnGenerator
                 for (int i = 0; i < row.GetBaseStitches().Length; i++)
                 {
                     BaseStitch baseStitch = row.GetBaseStitch(i);
-                    for (int j = 0; j < baseStitch.BaseStitchInfo.loopsConsumed; j++)
+                    for (int j = 0; j < baseStitch.baseStitchInfo.nLoopsConsumed; j++)
                     {
                         BaseStitch prevBaseStitch = row.prevRow.GetBaseStitch(consumedIndex);
-                        baseStitch.SetConsumes(j, prevBaseStitch);
+                        //baseStitch.SetConsumes(j, prevBaseStitch.loopsProduced);
                         consumedIndex += 1;
                     }
                 }
