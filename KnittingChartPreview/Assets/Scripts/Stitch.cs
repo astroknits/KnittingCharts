@@ -34,23 +34,25 @@ namespace YarnGenerator
             this.loopIndex = loopIndex;
             this.yarnWidth = yarnWidth;
             this.loopsConsumed = loopsConsumed;
-            this.baseStitches = GetBaseStitches();
+            GenerateBaseStitches();
         }
 
-        public BaseStitch[] GetBaseStitches()
+        public void GenerateBaseStitches()
         {
             baseStitches = new BaseStitch[this.stitchInfo.nBaseStitches];
             
             // Work through each of the baseStitches produced in the baseStitchTypeList
             for (int baseStitchIndex = 0; baseStitchIndex < this.stitchInfo.nBaseStitches; baseStitchIndex++)
             {
-                BaseStitchInfo baseStitchInfo = BaseStitchInfo.GetBaseStitchInfo(stitchInfo.baseStitchInfoList[baseStitchIndex].BaseStitchType);
+                BaseStitchType baseStitchType = stitchInfo.baseStitchInfoList[baseStitchIndex].BaseStitchType;
+                BaseStitchInfo baseStitchInfo = BaseStitchInfo.GetBaseStitchInfo(baseStitchType);
                 int loopIndexStart = this.loopIndex + baseStitchIndex;
                 int loopIndexEnd = loopIndexStart;
+
                 Loop[] loopsConsumedByBaseStitch = Array.Empty<Loop>();
                 if (loopsConsumed is not null && baseStitchInfo.nLoopsConsumed > 0)
                 {
-                    loopsConsumed.Skip(loopIndexEnd).Take(baseStitchInfo.nLoopsConsumed).ToArray();
+                    loopsConsumedByBaseStitch = loopsConsumed.Skip(loopIndexEnd).Take(baseStitchInfo.nLoopsConsumed).ToArray();
                 }
                 bool heldInFront = false;
                 bool heldBehind = false;
@@ -72,12 +74,12 @@ namespace YarnGenerator
                         heldBehind = this.stitchInfo.front;
                     }
                 }
-                
 
                 baseStitches[baseStitchIndex] = new BaseStitch(
                     baseStitchInfo, 
                     yarnWidth, 
                     rowIndex, 
+                    stitchIndex,
                     baseStitchIndex,
                     loopIndexStart,
                     loopIndexEnd,
@@ -85,8 +87,6 @@ namespace YarnGenerator
                     heldBehind,
                     loopsConsumedByBaseStitch);
             }
-
-            return baseStitches;
         }
 
         public void GenerateCurve()

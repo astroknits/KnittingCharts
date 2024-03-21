@@ -20,18 +20,28 @@ namespace YarnGenerator
         public Row prevRow;
         public Row nextRow;
 
+        internal BaseStitch[] baseStitches;
+        internal Loop[] loopsConsumed;
+        internal Loop[] loopsProduced;
+
         public Row(int rowIndex, Row prevRow, StitchType[] stitchTypes, float yarnWidth)
         {
             this.yarnWidth = yarnWidth;
             this.rowIndex = rowIndex;
+
+            // Set the previous row, and set the loops consumed to
+            // be equal to the set of loops produced by the previous row.
             SetPreviousRow(prevRow);
+            SetLoopsConsumed();
+            // Generate the stitches for this row, and set the number of
+            // stitches, base stitches, and loops produced/consumed
             Configure(stitchTypes);
         }
 
         public void Configure(StitchType[] stitchTypes)
         {
             // Create array of Stitch objects
-            this.stitches = GetStitches(stitchTypes);
+            GenerateStitches(stitchTypes);
             // Calculate number of Stitch objects
             this.nStitches = this.stitches.Length;
 
@@ -43,7 +53,7 @@ namespace YarnGenerator
             this.nLoopsProduced = 0;
             foreach (Stitch stitch in stitches)
             {
-                foreach (BaseStitch baseStitch in stitch.GetBaseStitches())
+                foreach (BaseStitch baseStitch in stitch.baseStitches)
                 {
                     this.nLoopsConsumed += baseStitch.baseStitchInfo.nLoopsConsumed;
                     this.nLoopsProduced += baseStitch.baseStitchInfo.nLoopsProduced;
@@ -54,7 +64,7 @@ namespace YarnGenerator
         }
         public BaseStitch GetBaseStitch(int i)
         {
-            return this.GetBaseStitches()[i];
+            return GetBaseStitches()[i];
         }
 
         public void SetPreviousRow(Row prevRowObj)
@@ -66,102 +76,84 @@ namespace YarnGenerator
             }
         }
 
-        private Stitch[] GetStitches(StitchType[] stitchTypes)
+        private void GenerateStitches(StitchType[] stitchTypes)
         {
-            Stitch[] stitches = new Stitch[stitchTypes.Length];
+            this.stitches = new Stitch[stitchTypes.Length];
 
-            Loop[] prevRowLoops = GetLoopsProducedByPrevRow();
             int loopIndex = 0;
             for (int stitchIndex = 0; stitchIndex < stitchTypes.Length; stitchIndex++)
             {
                 StitchType stitchType = stitchTypes[stitchIndex];
-                Debug.Log($"Row {rowIndex} in GetStitches: stitch {stitchIndex}/{stitchType}");
                 StitchInfo stitchInfo = StitchInfo.GetStitchInfo(stitchType);
-                Loop[] loopsConsumed = null;
-                if (stitchInfo.loopsConsumed > 0)
-                {
-                    int endStitchLoopIndex = loopIndex + stitchInfo.loopsConsumed - 1;
-                    Debug.Log($"       Row {rowIndex} stitchInfo.loopsConsumed: {stitchInfo.loopsConsumed}, endStitchLoopIndex = {loopIndex} + {stitchInfo.loopsConsumed} - 1 = {endStitchLoopIndex}");
-                    loopsConsumed = GetLoopsProducedByPrevRow(loopIndex, endStitchLoopIndex);
-                    foreach (Loop loop in loopsConsumed)
-                    {
-                        Debug.Log($"             rowIndex {loop.rowIndex} {loop.loopIndex}");
-                    }
-                }
-                stitches[stitchIndex] = new Stitch(
-                    stitchInfo,
-                    rowIndex,
-                    stitchIndex,
-                    loopIndex,
-                    yarnWidth,
-                    loopsConsumed
-                    );
+                Loop[] loopsConsumedInStitch = GetLoopsConsumed(loopIndex, stitchInfo.loopsConsumed);
+                Stitch stitch = new Stitch(stitchInfo, rowIndex, stitchIndex, loopIndex, yarnWidth, loopsConsumedInStitch);
+                this.stitches[stitchIndex] = stitch;
                 loopIndex += stitchInfo.loopsConsumed;
             }
-
-            return stitches;
         }
 
-        public Loop[] GetLoopsProducedByPrevRow(int startLoop, int endLoop)
+        public void SetLoopsConsumed()
         {
-            Debug.Log($"GetLoopsProducedByPrevRow. {startLoop} {endLoop}");
-            if (prevRow is null)
+            if (prevRow is not null)
             {
-                Debug.Log($"    Is null.");
-                return new Loop[0];
+                loopsConsumed = prevRow.GetLoopsProduced();
             }
-            
-            Debug.Log($"    rowIndex {rowIndex} loopsConsumed: Loop[{endLoop} - {startLoop}]");
-            Loop[] loopsConsumed = new Loop[endLoop - startLoop + 1];
-            
-            int loopIndex = 0;
-            // cycle through all stitches from previous row
-            Debug.Log($"prevRow.stitches.Length: {prevRow.stitches.Length}");
-            foreach (Stitch stitch in prevRow.stitches)
-            {
-                Debug.Log($"         stitch.baseStitches.Length: {stitch.baseStitches.Length}");
+        }
 
-                // cycle through all baseStitches for each stitch in previous row
+        public Loop[] GetLoopsConsumed(int start, int nLoops)
+        {
+            if (loopsConsumed is null)
+            {
+                return Array.Empty<Loop>();
+            }
+            return loopsConsumed.Skip(start).Take(nLoops).ToArray();
+        }
+
+        public Loop[] GetLoopsProduced()
+        {
+            if (loopsProduced is not null)
+            {
+                return loopsProduced;
+            }
+
+            loopsProduced = new Loop[nLoopsConsumed];
+            
+            foreach (Stitch stitch in stitches)
+            {
+                // cycle through all baseStitches for each stitch in row
                 foreach (BaseStitch baseStitch in stitch.baseStitches)
                 {
-                    Debug.Log($"             baseStitch.loopsProduced: {baseStitch.loopsProduced}");
                     for (int i = 0; i  < baseStitch.loopsProduced.Length; i++)
                     {
-                        Loop loop = baseStitch.loopsProduced[i];
-                        if (loopIndex >= startLoop && loopIndex >= endLoop)
-                        {
-                            Debug.Log($"              {i}: {loopIndex} {startLoop} {endLoop}");
-                            loopsConsumed[i] = loop;
-                        }
-                        loopIndex += 1;
+                        loopsProduced[i] = baseStitch.loopsProduced[i];
                     }
                 }
             }
 
-            Debug.Log($"loopsConsumed.Length: {loopsConsumed.Length}");
-            return loopsConsumed;
-        }
-        
-        public Loop[] GetLoopsProducedByPrevRow()
-        {
-            return GetLoopsProducedByPrevRow(0, this.nLoopsConsumed);
+            return loopsProduced;
         }
         
         public BaseStitch[] GetBaseStitches()
         {
-            BaseStitch[] loops = new BaseStitch[this.nBaseStitches];
+            // use cached value
+            if (baseStitches is not null)
+            {
+                return baseStitches;
+            }
 
-            int loopIndex = 0;
+            baseStitches = new BaseStitch[this.nBaseStitches];
+
+            int baseStitchIndex = 0;
             for (int i = 0; i < stitches.Length; i++)
             {
                 Stitch stitch = stitches[i];
-                for (int j = 0; j < stitch.stitchInfo.loopsProduced; j++)
+                for (int j = 0; j < stitch.stitchInfo.nBaseStitches; j++)
                 {
-                    loops[loopIndex] = stitch.baseStitches[j];
-                    loopIndex += 1;
+                    baseStitches[baseStitchIndex] = stitch.baseStitches[j];
+                    baseStitchIndex += 1;
                 }
             }
-            return loops;
+            return baseStitches;
         }
 
         public GameObject GeneratePreview(Material material)

@@ -13,6 +13,9 @@ namespace YarnGenerator
         // row number for the given stitch
         public int rowIndex;
 
+        // stitch index for the given stitch
+        public int stitchIndex;
+
         public int baseStitchIndex;
 
         // BaseStitch indices: actual integer baseStitch # for 
@@ -50,6 +53,7 @@ namespace YarnGenerator
             BaseStitchInfo baseStitchInfo,
             float yarnWidth,
             int rowIndex,
+            int stitchIndex,
             int baseStitchIndex,
             int loopIndexStart,
             int loopIndexEnd,
@@ -61,6 +65,7 @@ namespace YarnGenerator
             this.baseStitchInfo = baseStitchInfo;
             this.yarnWidth = yarnWidth;
             this.rowIndex = rowIndex;
+            this.stitchIndex = stitchIndex;
             this.baseStitchIndex = baseStitchIndex;
             //        public Loop(int rowIndex, int loopIndex, BaseStitch[] producedBy)
             
@@ -70,7 +75,7 @@ namespace YarnGenerator
             this.heldBehind = heldBehind;
             SetLoopStartAndOffset();
             this.loopsConsumed = loopsConsumed;
-            SetLoopsProduced();
+            GenerateLoopsProduced();
         }
         
         public void SetConsumes(int index, Loop loopObj)
@@ -91,14 +96,13 @@ namespace YarnGenerator
             loopsProduced[index] = loopObj;
         }
 
-        public void SetLoopsProduced()
+        public void GenerateLoopsProduced()
         {
             this.loopsProduced = new Loop[this.baseStitchInfo.nLoopsProduced];
             for (int i = 0; i < this.baseStitchInfo.nLoopsProduced; i++)
             {
                 Loop loop = new Loop(rowIndex, loopIndexEnd + i, this);
                 this.loopsProduced[i] = loop;
-                Debug.Log($"loopsProduced[{i}] = new Loop({rowIndex}, {loopIndexEnd + i}, this)");
             }
         }
         public GameObject GetMesh(Vector3[] vertices, int[] triangles, Material material)
@@ -206,10 +210,10 @@ namespace YarnGenerator
 
         internal int[] GenerateTriangles()
         {
-            int[] triangles = new int[this.baseStitchInfo.nLoopsProduced * stitchRes * radialRes * 6];
+            int[] triangles = new int[curve.Length * radialRes * 6];
 
             int triangleIndex = 0;
-            for (int j = 0; j < this.baseStitchInfo.nLoopsProduced * stitchRes - 1; j++)
+            for (int j = 0; j < curve.Length - 1; j++)
             {
                 for (int i = 0; i < radialRes; i++)
                 {
