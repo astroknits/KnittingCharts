@@ -6,10 +6,10 @@ namespace YarnGenerator
         public StitchType stitchType;
         // # of baseStitches that comprise this stitch
         public int nBaseStitches;
-        // # of baseStitches from previous row used by this stitch
-        public int loopsConsumed;
-        // # of baseStitches left on the needle at the end of this stitch
-        public int loopsProduced;
+        // # of loops from previous row used by this stitch
+        public int nLoopsConsumed;
+        // # of loops left on the needle at the end of this stitch
+        public int nLoopsProduced;
 
         // List of base stitches for this stitch (eg knit, purl),
         // to perform.
@@ -78,8 +78,8 @@ namespace YarnGenerator
         {
             this.stitchType = StitchType.KnitStitch;
             this.nBaseStitches = 1;
-            this.loopsConsumed = 1;
-            this.loopsProduced = 1;
+            this.nLoopsConsumed = 1;
+            this.nLoopsProduced = 1;
             this.held = 0;
             this.holdDirection = HoldDirection.None;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
@@ -96,8 +96,8 @@ namespace YarnGenerator
         {
             this.stitchType = StitchType.PurlStitch;
             this.nBaseStitches = 1;
-            this.loopsConsumed = 1;
-            this.loopsProduced = 1;
+            this.nLoopsConsumed = 1;
+            this.nLoopsProduced = 1;
             this.held = 0;
             this.holdDirection = HoldDirection.None;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
@@ -116,8 +116,8 @@ namespace YarnGenerator
         {
             this.stitchType = StitchType.Knit2TogStitch;
             this.nBaseStitches = 1;
-            this.loopsConsumed = 2;
-            this.loopsProduced = 1;
+            this.nLoopsConsumed = 2;
+            this.nLoopsProduced = 1;
             this.held = 0;
             this.holdDirection = HoldDirection.None;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
@@ -135,8 +135,8 @@ namespace YarnGenerator
         {
             this.stitchType = StitchType.M1Stitch;
             this.nBaseStitches = 1;
-            this.loopsConsumed = 1;
-            this.loopsProduced = 2;
+            this.nLoopsConsumed = 1;
+            this.nLoopsProduced = 2;
             this.held = 0;
             this.holdDirection = HoldDirection.None;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
@@ -154,8 +154,8 @@ namespace YarnGenerator
         {
             this.stitchType = StitchType.YarnOverStitch;
             this.nBaseStitches = 1;
-            this.loopsConsumed = 0;
-            this.loopsProduced = 1;
+            this.nLoopsConsumed = 0;
+            this.nLoopsProduced = 1;
             this.held = 0;
             this.holdDirection = HoldDirection.None;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
@@ -172,8 +172,8 @@ namespace YarnGenerator
         {
             this.stitchType = StitchType.Cable1Lo1RStitch;
             this.nBaseStitches = 2;
-            this.loopsConsumed = 2;
-            this.loopsProduced = 2;
+            this.nLoopsConsumed = 2;
+            this.nLoopsProduced = 2;
             this.held = 1;
             this.holdDirection = HoldDirection.Back;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[2]
@@ -191,8 +191,8 @@ namespace YarnGenerator
         {
             this.stitchType = StitchType.Cable2Lo2RStitch;
             this.nBaseStitches = 4;
-            this.loopsConsumed = 4;
-            this.loopsProduced = 4;
+            this.nLoopsConsumed = 4;
+            this.nLoopsProduced = 4;
             this.held = 2;
             this.holdDirection = HoldDirection.Back;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[4]
@@ -212,8 +212,8 @@ namespace YarnGenerator
         {
             this.stitchType = StitchType.CableKnitStitch;
             this.nBaseStitches = 2;
-            this.loopsConsumed = 2;
-            this.loopsProduced = 2;
+            this.nLoopsConsumed = 2;
+            this.nLoopsProduced = 2;
             this.held = 0;
             this.holdDirection = HoldDirection.None;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[2]
@@ -231,8 +231,8 @@ namespace YarnGenerator
         {
             this.stitchType = StitchType.CableKnitStitch4;
             this.nBaseStitches = 4;
-            this.loopsConsumed = 4;
-            this.loopsProduced = 4;
+            this.nLoopsConsumed = 4;
+            this.nLoopsProduced = 4;
             this.held = 0;
             this.holdDirection = HoldDirection.None;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[4] {

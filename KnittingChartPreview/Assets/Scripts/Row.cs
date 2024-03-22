@@ -85,10 +85,10 @@ namespace YarnGenerator
             {
                 StitchType stitchType = stitchTypes[stitchIndex];
                 StitchInfo stitchInfo = StitchInfo.GetStitchInfo(stitchType);
-                Loop[] loopsConsumedInStitch = GetLoopsConsumed(loopIndex, stitchInfo.loopsConsumed);
+                Loop[] loopsConsumedInStitch = GetLoopsConsumed(loopIndex, stitchInfo.nLoopsConsumed);
                 Stitch stitch = new Stitch(stitchInfo, rowIndex, stitchIndex, loopIndex, yarnWidth, loopsConsumedInStitch);
                 this.stitches[stitchIndex] = stitch;
-                loopIndex += stitchInfo.loopsConsumed;
+                loopIndex += stitchInfo.nLoopsConsumed;
             }
         }
 
