@@ -38,8 +38,7 @@ namespace YarnGenerator
         
         // for cables, whether the baseStitch is held in front or back
         // (default false)
-        public bool heldInFront;
-        public bool heldBehind;
+        public HoldDirection holdDirection;
 
         public int radialRes = KnitSettings.radialRes;
         public int stitchRes = KnitSettings.stitchRes;
@@ -57,8 +56,7 @@ namespace YarnGenerator
             int baseStitchIndex,
             int loopIndexConsumed,
             int loopIndexProduced,
-            bool heldInFront,
-            bool heldBehind,
+            HoldDirection holdDirection,
             Loop[] loopsConsumed
             )
         {
@@ -71,8 +69,7 @@ namespace YarnGenerator
             
             this.loopIndexConsumed = loopIndexConsumed;
             this.loopIndexProduced = loopIndexProduced;
-            this.heldInFront = heldInFront;
-            this.heldBehind = heldBehind;
+            this.holdDirection = holdDirection;
             SetLoopStartAndOffset();
             this.loopsConsumed = loopsConsumed;
             GenerateLoopsProduced();
@@ -252,10 +249,10 @@ namespace YarnGenerator
             // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
             float angle = (float) j / (float) stitchRes * 2.0f * (float) Math.PI;
 
-            if (heldInFront)
+            if (holdDirection == HoldDirection.Front)
             {
                 d = 0.5f;
-            } else if (heldBehind)
+            } else if (holdDirection == HoldDirection.Back)
             {
                 d = 0.20f;
             }

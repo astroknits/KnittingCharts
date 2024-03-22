@@ -29,7 +29,7 @@ namespace YarnGenerator
         public int held;
         // Indicates whether to place the first $held stitches
         // in front of (true) or behind (false) the needle
-        public bool front;
+        public HoldDirection holdDirection;
 
 
         public static StitchInfo GetStitchInfo(StitchType stitchType)
@@ -81,7 +81,7 @@ namespace YarnGenerator
             this.loopsConsumed = 1;
             this.loopsProduced = 1;
             this.held = 0;
-            this.front = false;
+            this.holdDirection = HoldDirection.None;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
             {
                 BaseStitchType.Knit
@@ -99,7 +99,7 @@ namespace YarnGenerator
             this.loopsConsumed = 1;
             this.loopsProduced = 1;
             this.held = 0;
-            this.front = false;
+            this.holdDirection = HoldDirection.None;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
             {
                 BaseStitchType.Purl
@@ -119,7 +119,7 @@ namespace YarnGenerator
             this.loopsConsumed = 2;
             this.loopsProduced = 1;
             this.held = 0;
-            this.front = false;
+            this.holdDirection = HoldDirection.None;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
             {
                 BaseStitchType.Knit2Tog
@@ -138,7 +138,7 @@ namespace YarnGenerator
             this.loopsConsumed = 1;
             this.loopsProduced = 2;
             this.held = 0;
-            this.front = false;
+            this.holdDirection = HoldDirection.None;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
             {
                 BaseStitchType.M1
@@ -157,7 +157,7 @@ namespace YarnGenerator
             this.loopsConsumed = 0;
             this.loopsProduced = 1;
             this.held = 0;
-            this.front = false;
+            this.holdDirection = HoldDirection.None;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
             {
                 BaseStitchType.YarnOver
@@ -175,7 +175,7 @@ namespace YarnGenerator
             this.loopsConsumed = 2;
             this.loopsProduced = 2;
             this.held = 1;
-            this.front = false;
+            this.holdDirection = HoldDirection.Back;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[2]
             {
                 BaseStitchType.Knit,
@@ -194,7 +194,7 @@ namespace YarnGenerator
             this.loopsConsumed = 4;
             this.loopsProduced = 4;
             this.held = 2;
-            this.front = false;
+            this.holdDirection = HoldDirection.Back;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[4]
             {
                 BaseStitchType.Knit,
@@ -215,7 +215,7 @@ namespace YarnGenerator
             this.loopsConsumed = 2;
             this.loopsProduced = 2;
             this.held = 0;
-            this.front = true;
+            this.holdDirection = HoldDirection.None;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[2]
             {
                 BaseStitchType.Knit,
@@ -234,7 +234,7 @@ namespace YarnGenerator
             this.loopsConsumed = 4;
             this.loopsProduced = 4;
             this.held = 0;
-            this.front = true;
+            this.holdDirection = HoldDirection.None;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[4] {
                 BaseStitchType.Knit,
                 BaseStitchType.Knit,

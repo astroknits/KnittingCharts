@@ -46,16 +46,25 @@ namespace YarnGenerator
             {
                 BaseStitchType baseStitchType = stitchInfo.baseStitchInfoList[baseStitchIndex].BaseStitchType;
                 BaseStitchInfo baseStitchInfo = BaseStitchInfo.GetBaseStitchInfo(baseStitchType);
-                int loopIndexConsumed = this.loopIndex + baseStitchIndex;
-                int loopIndexProduced = loopIndexConsumed;
 
+                // Index of the first loop consumed by this baseStitch
+                int loopIndexConsumed = this.loopIndex + baseStitchIndex;
+
+                // Create a list of the loops that are consumed by this baseStitch
                 Loop[] loopsConsumedByBaseStitch = Array.Empty<Loop>();
                 if (loopsConsumed is not null && baseStitchInfo.nLoopsConsumed > 0)
                 {
-                    loopsConsumedByBaseStitch = loopsConsumed.Skip(loopIndexProduced).Take(baseStitchInfo.nLoopsConsumed).ToArray();
+                    loopsConsumedByBaseStitch = loopsConsumed.Skip(loopIndexConsumed).Take(baseStitchInfo.nLoopsConsumed).ToArray();
                 }
-                bool heldInFront = false;
-                bool heldBehind = false;
+
+                // Handle cable stitches which include holding stitches in front/behind
+                // Default is to have stitchInfo.held == 0, which doesn't
+                // need this logic.
+
+                // If there are no held stitches, the index of the first produced loop
+                // is equal to the index of the first consumed loop
+                int loopIndexProduced = loopIndexConsumed;
+                HoldDirection holdDirection = HoldDirection.None;
                 if (this.stitchInfo.held != 0)
                 {
                     // hold the first this.held baseStitches in front of/behind the
@@ -64,27 +73,30 @@ namespace YarnGenerator
                     if (baseStitchIndex >= this.stitchInfo.held)
                     {
                         loopIndexProduced = loopIndexConsumed - this.stitchInfo.held;
-                        heldInFront = this.stitchInfo.front;
-                        heldBehind = !this.stitchInfo.front;
+                        holdDirection = stitchInfo.holdDirection;
                     }
                     else
                     {
                         loopIndexProduced = loopIndexConsumed + this.stitchInfo.held;
-                        heldInFront = !this.stitchInfo.front;
-                        heldBehind = this.stitchInfo.front;
+                        if (stitchInfo.holdDirection == HoldDirection.Front)
+                        {
+                            holdDirection = HoldDirection.Back;
+                        } else if (stitchInfo.holdDirection == HoldDirection.Back)
+                        {
+                            holdDirection = HoldDirection.Front;
+                        }
                     }
                 }
 
                 baseStitches[baseStitchIndex] = new BaseStitch(
-                    baseStitchInfo, 
-                    yarnWidth, 
-                    rowIndex, 
+                    baseStitchInfo,
+                    yarnWidth,
+                    rowIndex,
                     stitchIndex,
                     baseStitchIndex,
                     loopIndexConsumed,
                     loopIndexProduced,
-                    heldInFront,
-                    heldBehind,
+                    holdDirection,
                     loopsConsumedByBaseStitch);
             }
         }
