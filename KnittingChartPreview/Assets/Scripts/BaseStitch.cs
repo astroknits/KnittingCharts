@@ -21,18 +21,18 @@ namespace YarnGenerator
         // BaseStitch indices: actual integer baseStitch # for 
         // start and end of the stitch
         // baseStitch index for the given baseStitch (at base)
-        public int loopIndexStart;
+        public int loopIndexConsumed;
 
         // baseStitch index for the given baseStitch (once baseStitch is completed)
-        public int loopIndexEnd;
+        public int loopIndexProduced;
 
         // BaseStitch offset
-        // BaseStitch start location along x axis (can be loopIndexStart
+        // BaseStitch start location along x axis (can be loopIndexConsumed
         // but might be offset by a bit)
         public float loopXStart;
 
         // offset by which to shear the baseStitch
-        // (default value is loopIndexEnd - loopIndexStart
+        // (default value is loopIndexProduced - loopIndexConsumed
         // but might be tweaked by baseStitches in a row above/below)
         public float loopXOffset;
         
@@ -55,8 +55,8 @@ namespace YarnGenerator
             int rowIndex,
             int stitchIndex,
             int baseStitchIndex,
-            int loopIndexStart,
-            int loopIndexEnd,
+            int loopIndexConsumed,
+            int loopIndexProduced,
             bool heldInFront,
             bool heldBehind,
             Loop[] loopsConsumed
@@ -69,8 +69,8 @@ namespace YarnGenerator
             this.baseStitchIndex = baseStitchIndex;
             //        public Loop(int rowIndex, int loopIndex, BaseStitch[] producedBy)
             
-            this.loopIndexStart = loopIndexStart;
-            this.loopIndexEnd = loopIndexEnd;
+            this.loopIndexConsumed = loopIndexConsumed;
+            this.loopIndexProduced = loopIndexProduced;
             this.heldInFront = heldInFront;
             this.heldBehind = heldBehind;
             SetLoopStartAndOffset();
@@ -101,14 +101,14 @@ namespace YarnGenerator
             this.loopsProduced = new Loop[this.baseStitchInfo.nLoopsProduced];
             for (int i = 0; i < this.baseStitchInfo.nLoopsProduced; i++)
             {
-                Loop loop = new Loop(rowIndex, loopIndexEnd + i, this);
+                Loop loop = new Loop(rowIndex, loopIndexProduced + i, this);
                 this.loopsProduced[i] = loop;
             }
         }
         public GameObject GetMesh(Vector3[] vertices, int[] triangles, Material material)
         {
             // Create the mesh for the yarn in this row
-            GameObject gameObject = new GameObject($"BaseStitch {this.loopIndexStart} for yarnWidth {this.yarnWidth}");
+            GameObject gameObject = new GameObject($"BaseStitch {this.loopIndexConsumed} for yarnWidth {this.yarnWidth}");
             MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
             Mesh mesh = new Mesh();
@@ -286,8 +286,8 @@ namespace YarnGenerator
         {
             // check offset between where stitch was and where it ends up
             // (if it's a cable stitch that crosses over)
-            loopXStart = 2.0f * loopIndexStart + yarnWidth;
-            loopXOffset = (float)loopIndexEnd - (float)loopIndexStart;
+            loopXStart = 2.0f * loopIndexConsumed + yarnWidth;
+            loopXOffset = (float)loopIndexProduced - (float)loopIndexConsumed;
         }
         
         public Vector3[] GenerateCurve()

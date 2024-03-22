@@ -46,13 +46,13 @@ namespace YarnGenerator
             {
                 BaseStitchType baseStitchType = stitchInfo.baseStitchInfoList[baseStitchIndex].BaseStitchType;
                 BaseStitchInfo baseStitchInfo = BaseStitchInfo.GetBaseStitchInfo(baseStitchType);
-                int loopIndexStart = this.loopIndex + baseStitchIndex;
-                int loopIndexEnd = loopIndexStart;
+                int loopIndexConsumed = this.loopIndex + baseStitchIndex;
+                int loopIndexProduced = loopIndexConsumed;
 
                 Loop[] loopsConsumedByBaseStitch = Array.Empty<Loop>();
                 if (loopsConsumed is not null && baseStitchInfo.nLoopsConsumed > 0)
                 {
-                    loopsConsumedByBaseStitch = loopsConsumed.Skip(loopIndexEnd).Take(baseStitchInfo.nLoopsConsumed).ToArray();
+                    loopsConsumedByBaseStitch = loopsConsumed.Skip(loopIndexProduced).Take(baseStitchInfo.nLoopsConsumed).ToArray();
                 }
                 bool heldInFront = false;
                 bool heldBehind = false;
@@ -63,13 +63,13 @@ namespace YarnGenerator
                     // this.nLoopsProduced - this.held baseStitches
                     if (baseStitchIndex >= this.stitchInfo.held)
                     {
-                        loopIndexEnd = loopIndexStart - this.stitchInfo.held;
+                        loopIndexProduced = loopIndexConsumed - this.stitchInfo.held;
                         heldInFront = this.stitchInfo.front;
                         heldBehind = !this.stitchInfo.front;
                     }
                     else
                     {
-                        loopIndexEnd = loopIndexStart + this.stitchInfo.held;
+                        loopIndexProduced = loopIndexConsumed + this.stitchInfo.held;
                         heldInFront = !this.stitchInfo.front;
                         heldBehind = this.stitchInfo.front;
                     }
@@ -81,8 +81,8 @@ namespace YarnGenerator
                     rowIndex, 
                     stitchIndex,
                     baseStitchIndex,
-                    loopIndexStart,
-                    loopIndexEnd,
+                    loopIndexConsumed,
+                    loopIndexProduced,
                     heldInFront,
                     heldBehind,
                     loopsConsumedByBaseStitch);
