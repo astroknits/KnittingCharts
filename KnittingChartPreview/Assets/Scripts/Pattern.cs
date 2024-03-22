@@ -40,7 +40,6 @@ namespace YarnGenerator
         {
             this.rows = GetPatternDefinition();
             SetAdjacentRows();
-            // SetLoopsInAdjacentRows();
             PrintLoopsInAdjacentRows();
         }
 
@@ -91,34 +90,6 @@ namespace YarnGenerator
                     row.SetPreviousRow(prevRow);
                 }
                 prevRow = row;
-            }
-        }
-        
-        public void SetLoopsInAdjacentRows()
-        {
-            foreach (Row row in rows)
-            {
-                if (row is null)
-                {
-                    continue;
-                }
-                if (row.prevRow is null)
-                {
-                    continue;
-                }
-
-                // Set the baseStitches that are consumed by this stitch
-                int consumedIndex = 0;
-                for (int i = 0; i < row.GetBaseStitches().Length; i++)
-                {
-                    BaseStitch baseStitch = row.GetBaseStitch(i);
-                    for (int j = 0; j < baseStitch.baseStitchInfo.nLoopsConsumed; j++)
-                    {
-                        BaseStitch prevBaseStitch = row.prevRow.GetBaseStitch(consumedIndex);
-                        //baseStitch.SetConsumes(j, prevBaseStitch.loopsProduced);
-                        consumedIndex += 1;
-                    }
-                }
             }
         }
     }
