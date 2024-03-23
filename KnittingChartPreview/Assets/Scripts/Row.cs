@@ -85,7 +85,11 @@ namespace YarnGenerator
             {
                 StitchType stitchType = stitchTypes[stitchIndex];
                 StitchInfo stitchInfo = StitchInfo.GetStitchInfo(stitchType);
+
+                // Get loops consumed in the stitch
+                // based on the start loop index for the stitch and number of loops consumed
                 Loop[] loopsConsumedInStitch = GetLoopsConsumed(loopIndex, stitchInfo.nLoopsConsumed);
+
                 Stitch stitch = new Stitch(stitchInfo, rowIndex, stitchIndex, loopIndex, yarnWidth, loopsConsumedInStitch);
                 this.stitches[stitchIndex] = stitch;
                 loopIndex += stitchInfo.nLoopsConsumed;
@@ -106,6 +110,18 @@ namespace YarnGenerator
             {
                 return Array.Empty<Loop>();
             }
+
+            for (int i = 0; i < loopsConsumed.Length; i++)
+            {
+                if (loopsConsumed[i] is null)
+                {
+                    Debug.Log($"GetLoopsConsumed: loop {i} is null");
+                }
+                else
+                {
+                    Debug.Log($"GetLoopsConsumed: loop {i}: rowIndex {loopsConsumed[i].rowIndex} loopIndex {loopsConsumed[i].loopIndex}");
+                }
+            }
             return loopsConsumed.Skip(start).Take(nLoops).ToArray();
         }
 
@@ -116,17 +132,15 @@ namespace YarnGenerator
                 return loopsProduced;
             }
 
-            loopsProduced = new Loop[nLoopsConsumed];
-            
+            loopsProduced = new Loop[nLoopsProduced];
+
+            int loopIndex = 0;
             foreach (Stitch stitch in stitches)
             {
-                // cycle through all baseStitches for each stitch in row
-                foreach (BaseStitch baseStitch in stitch.baseStitches)
+                foreach (Loop loop in stitch.GetLoopsProduced())
                 {
-                    for (int i = 0; i  < baseStitch.loopsProduced.Length; i++)
-                    {
-                        loopsProduced[i] = baseStitch.loopsProduced[i];
-                    }
+                    loopsProduced[loopIndex] = loop;
+                    loopIndex++;
                 }
             }
 
