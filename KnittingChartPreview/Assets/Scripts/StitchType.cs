@@ -5,6 +5,7 @@ namespace YarnGenerator
         KnitStitch,
         PurlStitch,
         Knit2TogStitch,
+        SSKStitch,
         M1Stitch,
         YarnOverStitch,
         Cable1Lo1RStitch,
