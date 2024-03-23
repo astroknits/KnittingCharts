@@ -25,7 +25,7 @@ namespace YarnGenerator
         
         // list of consumed loops
         public Loop[] loopsConsumed;
-        
+
         public Stitch(StitchInfo stitchInfo, int rowIndex, int stitchIndex, int loopIndex, float yarnWidth, Loop[] loopsConsumed)
         {
             this.stitchInfo = stitchInfo;
@@ -99,6 +99,24 @@ namespace YarnGenerator
                     holdDirection,
                     loopsConsumedByBaseStitch);
             }
+        }
+
+        public Loop[] GetLoopsProduced()
+        {
+            Loop[] loopsProduced = new Loop[stitchInfo.nLoopsProduced];
+
+            // cycle through all baseStitches for each stitch in row
+            int j = 0;
+            foreach (BaseStitch baseStitch in baseStitches)
+            {
+                for (int i = 0; i  < baseStitch.loopsProduced.Length; i++)
+                {
+                    loopsProduced[j] = baseStitch.loopsProduced[i];
+                    j++;
+                }
+            }
+
+            return loopsProduced;
         }
 
         public void GenerateCurve()
