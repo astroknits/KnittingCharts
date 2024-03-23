@@ -65,7 +65,6 @@ namespace YarnGenerator
             this.rowIndex = rowIndex;
             this.stitchIndex = stitchIndex;
             this.baseStitchIndex = baseStitchIndex;
-            //        public Loop(int rowIndex, int loopIndex, BaseStitch[] producedBy)
             
             this.loopIndexConsumed = loopIndexConsumed;
             this.loopIndexProduced = loopIndexProduced;
