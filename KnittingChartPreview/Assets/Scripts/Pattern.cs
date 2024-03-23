@@ -53,23 +53,40 @@ namespace YarnGenerator
                 }
                 foreach (BaseStitch baseStitch in row.GetBaseStitches())
                 {
-                    if (baseStitch.loopsConsumed is not null)
+                    if (baseStitch.loopsConsumed is not null && baseStitch.loopsConsumed.Length > 0)
                     {
                         foreach (Loop consumed in baseStitch.loopsConsumed)
                         {
-                            Debug.Log($"Row {row.rowIndex} baseStitch {baseStitch.baseStitchIndex} consumed {consumed}");
+                            if (consumed is not null)
+                            {
+                                Debug.Log($"Row {row.rowIndex} {baseStitch.stitchIndex} {baseStitch.baseStitchInfo.BaseStitchType} {baseStitch.baseStitchIndex} consumed {consumed.rowIndex} {consumed.loopIndex}");
+                            }
+                            else
+                            {
+                                Debug.Log($"Row {row.rowIndex} {baseStitch.stitchIndex} {baseStitch.baseStitchInfo.BaseStitchType} {baseStitch.baseStitchIndex} consumed NULL");
+                            }
                         }
+                    } else
+                    {
+                        Debug.Log($"Row {row.rowIndex} {baseStitch.stitchIndex} {baseStitch.baseStitchInfo.BaseStitchType} {baseStitch.baseStitchIndex} consumed NULL TOTAL");
                     }
 
-                    if (baseStitch.loopsProduced is not null)
+                    if (baseStitch.loopsProduced is not null && baseStitch.loopsProduced.Length > 0)
                     {
                         foreach (Loop produced in baseStitch.loopsProduced)
                         {
-                            if (produced is null)
+                            if (produced is not null)
                             {
-                                Debug.Log($"Row {row.rowIndex} baseStitch {baseStitch.baseStitchIndex} produced {produced}");
+                                Debug.Log($"Row {row.rowIndex} {baseStitch.stitchIndex} {baseStitch.baseStitchInfo.BaseStitchType} {baseStitch.baseStitchIndex} produced {produced.rowIndex} {produced.loopIndex}");
+                            }
+                            else
+                            {
+                                Debug.Log($"Row {row.rowIndex} {baseStitch.stitchIndex} {baseStitch.baseStitchInfo.BaseStitchType} {baseStitch.baseStitchIndex} produced NULL");
                             }
                         }
+                    } else 
+                    {
+                        Debug.Log($"Row {row.rowIndex} {baseStitch.stitchIndex} {baseStitch.baseStitchInfo.BaseStitchType} {baseStitch.baseStitchIndex} produced NULL TOTAL");
                     }
                 }
             }
