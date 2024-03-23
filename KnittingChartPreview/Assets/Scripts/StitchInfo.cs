@@ -122,14 +122,14 @@ namespace YarnGenerator
         public SSKStitch() : 
             base()
         {
-            this.stitchType = StitchType.Knit2TogStitch;
+            this.stitchType = StitchType.SSKStitch;
             this.nBaseStitches = 1;
             this.nLoopsConsumed = 2;
             this.nLoopsProduced = 1;
             this.shiftDirection = ShiftDirection.Left;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
             {
-                BaseStitchType.Knit2Tog
+                BaseStitchType.SSK
             };
             this.baseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
         }

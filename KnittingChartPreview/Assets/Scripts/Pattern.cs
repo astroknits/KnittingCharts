@@ -184,7 +184,7 @@ namespace YarnGenerator
                 }
                 else
                 {
-                    stitches[stitchesPerRow - 1 - 1] = StitchType.Knit2TogStitch;
+                    stitches[stitchesPerRow - 1 - 1] = StitchType.SSKStitch;
                     stitches[stitchesPerRow - 1 - 0] = StitchType.KnitStitch;
                 }
 
@@ -227,7 +227,7 @@ namespace YarnGenerator
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
-                StitchType.Knit2TogStitch,
+                StitchType.SSKStitch,
                 StitchType.KnitStitch,
             };
             row = new Row(rowNumber, prevRow, stitches, yarnWidth);
@@ -257,7 +257,7 @@ namespace YarnGenerator
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
-                StitchType.Knit2TogStitch,
+                StitchType.SSKStitch,
                 StitchType.KnitStitch,
             };
             row = new Row(rowNumber, prevRow, stitches, yarnWidth);
@@ -287,7 +287,7 @@ namespace YarnGenerator
                 // StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
-                StitchType.Knit2TogStitch,
+                StitchType.SSKStitch,
                 StitchType.KnitStitch,
             };
             row = new Row(rowNumber, prevRow, stitches, yarnWidth);
@@ -317,7 +317,7 @@ namespace YarnGenerator
                 // StitchType.KnitStitch,
                 // StitchType.KnitStitch,
                 StitchType.KnitStitch,
-                StitchType.Knit2TogStitch,
+                StitchType.SSKStitch,
                 StitchType.KnitStitch,
             };
             row = new Row(rowNumber, prevRow, stitches, yarnWidth);
@@ -347,7 +347,7 @@ namespace YarnGenerator
                 // StitchType.KnitStitch,
                 // StitchType.KnitStitch,
                 // StitchType.KnitStitch,
-                StitchType.Knit2TogStitch,
+                StitchType.SSKStitch,
                 StitchType.KnitStitch,
             };
             row = new Row(rowNumber, prevRow, stitches, yarnWidth);
@@ -377,7 +377,7 @@ namespace YarnGenerator
                 // StitchType.KnitStitch,
                 // StitchType.KnitStitch,
                 // StitchType.KnitStitch,
-                StitchType.Knit2TogStitch,
+                StitchType.SSKStitch,
                 StitchType.KnitStitch,
             };
             row = new Row(rowNumber, prevRow, stitches, yarnWidth);

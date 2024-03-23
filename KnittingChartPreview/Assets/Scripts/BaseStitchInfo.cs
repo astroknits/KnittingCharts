@@ -18,6 +18,8 @@ namespace YarnGenerator
                     return new Purl();
                 case BaseStitchType.Knit2Tog:
                     return new Knit2Tog();
+                case BaseStitchType.SSK:
+                    return new SSK();
                 case BaseStitchType.YarnOver:
                     return new YarnOver();
                 case BaseStitchType.M1:
@@ -58,6 +60,16 @@ namespace YarnGenerator
         }
     }
     
+    public class SSK : BaseStitchInfo
+    {
+        public SSK() : base()
+        {
+            this.BaseStitchType = BaseStitchType.SSK;
+            this.nLoopsConsumed = 2;
+            this.nLoopsProduced = 1;
+        }
+    }
+
     public class M1 : BaseStitchInfo
     {
         public M1() : base()

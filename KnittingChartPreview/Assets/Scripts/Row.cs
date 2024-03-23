@@ -10,6 +10,11 @@ namespace YarnGenerator
         public float yarnWidth;
         // Index for this row
         public int rowIndex;
+        // Loop index offset for this row
+        // For cases where the index of the first loop
+        // is not zero (eg after right leaning decreases or increases)
+        public int loopIndexOffset;
+
         // Array of stitch objects
         public Stitch[] stitches;
         public int nStitches;
@@ -28,6 +33,7 @@ namespace YarnGenerator
         {
             this.yarnWidth = yarnWidth;
             this.rowIndex = rowIndex;
+            this.loopIndexOffset = 0;
 
             // Set the previous row, and set the loops consumed to
             // be equal to the set of loops produced by the previous row.
