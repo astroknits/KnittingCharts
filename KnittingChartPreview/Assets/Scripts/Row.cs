@@ -1,55 +1,167 @@
 using System;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace YarnGenerator
 {
     public class Row
     {
+        public float yarnWidth;
         // Index for this row
         public int rowIndex;
-        // Number of stitches for this row
-        public int nStitches;
-        // Number of loops (ie basic stitches) in row
-        public int nLoops;
+        // Loop index offset for this row
+        // For cases where the index of the first loop
+        // is not zero (eg after right leaning decreases or increases)
+        public int loopIndexOffset;
+
         // Array of stitch objects
         public Stitch[] stitches;
-        public float yarnWidth;
+        public int nStitches;
+        public int nBaseStitches;
+        public int nLoopsConsumed;
+        public int nLoopsProduced;
 
-        public Row(int rowIndex, StitchType[] stitchTypes, float yarnWidth)
+        public Row prevRow;
+        public Row nextRow;
+
+        internal BaseStitch[] baseStitches;
+        internal Loop[] loopsConsumed;
+        internal Loop[] loopsProduced;
+
+        public Row(int rowIndex, Row prevRow, StitchType[] stitchTypes, float yarnWidth)
         {
-            this.rowIndex = rowIndex;
             this.yarnWidth = yarnWidth;
-            // Create array of Stitch objects
-            this.stitches = GetStitches(stitchTypes);
-            this.nStitches = stitchTypes.Length;
-            this.nLoops = GetLoopsInRow();
+            this.rowIndex = rowIndex;
+            this.loopIndexOffset = 0;
+
+            // Set the previous row, and set the loops consumed to
+            // be equal to the set of loops produced by the previous row.
+            SetPreviousRow(prevRow);
+            SetLoopsConsumed();
+            // Generate the stitches for this row, and set the number of
+            // stitches, base stitches, and loops produced/consumed
+            Configure(stitchTypes);
         }
 
-        private Stitch[] GetStitches(StitchType[] stitchTypes)
+        public void Configure(StitchType[] stitchTypes)
         {
-            Stitch[] stitches = new Stitch[stitchTypes.Length];
+            // Create array of Stitch objects
+            GenerateStitches(stitchTypes);
+            // Calculate number of Stitch objects
+            this.nStitches = this.stitches.Length;
+
+            // Calculate number of BaseStitch objects for row
+            // Also calculate the number of baseStitches consumed and produced
+            // for this row (calc by looping through the BaseStitch objects)
+            this.nBaseStitches = 0;
+            this.nLoopsConsumed = 0;
+            this.nLoopsProduced = 0;
+            foreach (Stitch stitch in stitches)
+            {
+                foreach (BaseStitch baseStitch in stitch.baseStitches)
+                {
+                    this.nLoopsConsumed += baseStitch.baseStitchInfo.nLoopsConsumed;
+                    this.nLoopsProduced += baseStitch.baseStitchInfo.nLoopsProduced;
+                    this.nBaseStitches += 1;
+                }
+            }
+
+        }
+        public BaseStitch GetBaseStitch(int i)
+        {
+            return GetBaseStitches()[i];
+        }
+
+        public void SetPreviousRow(Row prevRowObj)
+        {
+            if (prevRowObj != null)
+            {
+                prevRow = prevRowObj;
+                prevRowObj.nextRow = this;
+            }
+        }
+
+        private void GenerateStitches(StitchType[] stitchTypes)
+        {
+            this.stitches = new Stitch[stitchTypes.Length];
 
             int loopIndex = 0;
             for (int stitchIndex = 0; stitchIndex < stitchTypes.Length; stitchIndex++)
             {
-                stitches[stitchIndex] = Stitch.GetStitch(
-                    stitchTypes[stitchIndex], rowIndex, stitchIndex, loopIndex, yarnWidth);
-                loopIndex += stitches[stitchIndex].loopsProduced;
-            }
+                StitchType stitchType = stitchTypes[stitchIndex];
+                StitchInfo stitchInfo = StitchInfo.GetStitchInfo(stitchType);
 
-            return stitches;
+                // Get loops consumed in the stitch
+                // based on the start loop index for the stitch and number of loops consumed
+                Loop[] loopsConsumedInStitch = GetLoopsConsumed(loopIndex, stitchInfo.nLoopsConsumed);
+
+                Stitch stitch = new Stitch(stitchInfo, rowIndex, stitchIndex, loopIndex, yarnWidth, loopsConsumedInStitch);
+                this.stitches[stitchIndex] = stitch;
+                loopIndex += stitchInfo.nLoopsConsumed;
+            }
         }
 
-        private int GetLoopsInRow()
+        public void SetLoopsConsumed()
         {
-            int nLoops = 0;
-            foreach (Stitch stitch in stitches)
+            if (prevRow is not null)
             {
-                nLoops += stitch.loopsProduced;
+                loopsConsumed = prevRow.GetLoopsProduced();
+            }
+        }
+
+        public Loop[] GetLoopsConsumed(int start, int nLoops)
+        {
+            if (loopsConsumed is null)
+            {
+                return Array.Empty<Loop>();
+            }
+            return loopsConsumed.Skip(start).Take(nLoops).ToArray();
+        }
+
+        public Loop[] GetLoopsProduced()
+        {
+            if (loopsProduced is not null)
+            {
+                return loopsProduced;
             }
 
-            return nLoops;
+            loopsProduced = new Loop[nLoopsProduced];
+
+            int loopIndex = 0;
+            foreach (Stitch stitch in stitches)
+            {
+                foreach (Loop loop in stitch.GetLoopsProduced())
+                {
+                    loopsProduced[loopIndex] = loop;
+                    loopIndex++;
+                }
+            }
+
+            return loopsProduced;
+        }
+        
+        public BaseStitch[] GetBaseStitches()
+        {
+            // use cached value
+            if (baseStitches is not null)
+            {
+                return baseStitches;
+            }
+
+            baseStitches = new BaseStitch[this.nBaseStitches];
+
+            int baseStitchIndex = 0;
+            for (int i = 0; i < stitches.Length; i++)
+            {
+                Stitch stitch = stitches[i];
+                for (int j = 0; j < stitch.stitchInfo.nBaseStitches; j++)
+                {
+                    baseStitches[baseStitchIndex] = stitch.baseStitches[j];
+                    baseStitchIndex += 1;
+                }
+            }
+            return baseStitches;
         }
 
         public GameObject GeneratePreview(Material material)
@@ -57,6 +169,7 @@ namespace YarnGenerator
             GameObject rowGameObject = new GameObject($"Row {this.rowIndex} for yarnWidth {this.yarnWidth}");
             foreach (Stitch stitch in this.stitches)
             {
+                stitch.GenerateCurve();
                 GameObject stitchGameObject = stitch.GenerateMesh(material);
                 stitchGameObject.transform.SetParent(rowGameObject.transform);
             }
