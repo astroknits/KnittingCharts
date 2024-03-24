@@ -30,16 +30,12 @@ namespace YarnGenerator
         // Indicates whether to place the first $held stitches
         // in front of (true) or behind (false) the needle
         public HoldDirection holdDirection;
-        // If decreasing, indicates which direction the
-        // following stitches will slant (eg m1L -> left, ssk -> left)
-        public ShiftDirection shiftDirection;
 
 
         public StitchInfo()
         {
             this.held = 0;
             this.holdDirection = HoldDirection.None;
-            this.shiftDirection = ShiftDirection.None;
         }
 
         public static StitchInfo GetStitchInfo(StitchType stitchType)
@@ -126,7 +122,6 @@ namespace YarnGenerator
             this.nBaseStitches = 1;
             this.nLoopsConsumed = 2;
             this.nLoopsProduced = 1;
-            this.shiftDirection = ShiftDirection.Left;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
             {
                 BaseStitchType.SSK
@@ -144,7 +139,6 @@ namespace YarnGenerator
             this.nBaseStitches = 1;
             this.nLoopsConsumed = 2;
             this.nLoopsProduced = 1;
-            this.shiftDirection = ShiftDirection.Right;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
             {
                 BaseStitchType.Knit2Tog

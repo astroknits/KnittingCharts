@@ -116,18 +116,6 @@ namespace YarnGenerator
             {
                 return Array.Empty<Loop>();
             }
-
-            for (int i = 0; i < loopsConsumed.Length; i++)
-            {
-                if (loopsConsumed[i] is null)
-                {
-                    Debug.Log($"GetLoopsConsumed: loop {i} is null");
-                }
-                else
-                {
-                    Debug.Log($"GetLoopsConsumed: loop {i}: rowIndex {loopsConsumed[i].rowIndex} loopIndex {loopsConsumed[i].loopIndex}");
-                }
-            }
             return loopsConsumed.Skip(start).Take(nLoops).ToArray();
         }
 

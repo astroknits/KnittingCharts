@@ -7,6 +7,13 @@ namespace YarnGenerator
         public int nLoopsConsumed;
         // # of baseStitches left on the needle at the end of this stitch
         public int nLoopsProduced;
+        // Direction to shift loops (if the stitch results in an increase or decrease)
+        public ShiftDirection shiftDirection;
+
+        public BaseStitchInfo()
+        {
+            this.shiftDirection = ShiftDirection.None;
+        }
         
         public static BaseStitchInfo GetBaseStitchInfo(BaseStitchType baseStitchType)
         {
@@ -57,6 +64,7 @@ namespace YarnGenerator
             this.BaseStitchType = BaseStitchType.Knit2Tog;
             this.nLoopsConsumed = 2;
             this.nLoopsProduced = 1;
+            this.shiftDirection = ShiftDirection.Right;
         }
     }
     
@@ -67,6 +75,7 @@ namespace YarnGenerator
             this.BaseStitchType = BaseStitchType.SSK;
             this.nLoopsConsumed = 2;
             this.nLoopsProduced = 1;
+            this.shiftDirection = ShiftDirection.Left;
         }
     }
 
@@ -77,6 +86,7 @@ namespace YarnGenerator
             this.BaseStitchType = BaseStitchType.M1;
             this.nLoopsConsumed = 1;
             this.nLoopsProduced = 2;
+            this.shiftDirection = ShiftDirection.Left;
         }
     }
 
