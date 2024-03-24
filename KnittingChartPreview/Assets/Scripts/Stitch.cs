@@ -41,14 +41,12 @@ namespace YarnGenerator
         {
             baseStitches = new BaseStitch[this.stitchInfo.nBaseStitches];
             
+            int loopIndexConsumed = 0;
             // Work through each of the baseStitches produced in the baseStitchTypeList
             for (int baseStitchIndex = 0; baseStitchIndex < this.stitchInfo.nBaseStitches; baseStitchIndex++)
             {
                 BaseStitchType baseStitchType = stitchInfo.baseStitchInfoList[baseStitchIndex].BaseStitchType;
                 BaseStitchInfo baseStitchInfo = BaseStitchInfo.GetBaseStitchInfo(baseStitchType);
-
-                // Index of the first loop consumed by this baseStitch
-                int loopIndexConsumed = this.loopIndex + baseStitchIndex;
 
                 // Create a list of the loops that are consumed by this baseStitch
                 Loop[] loopsConsumedByBaseStitch = Array.Empty<Loop>();
@@ -94,10 +92,12 @@ namespace YarnGenerator
                     rowIndex,
                     stitchIndex,
                     baseStitchIndex,
-                    loopIndexConsumed,
-                    loopIndexProduced,
+                    loopIndex + loopIndexConsumed,
+                    loopIndex + loopIndexProduced,
                     holdDirection,
                     loopsConsumedByBaseStitch);
+
+                loopIndexConsumed += baseStitchInfo.nLoopsConsumed;
             }
         }
 
