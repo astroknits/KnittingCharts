@@ -34,6 +34,9 @@ namespace YarnGenerator
 
         public StitchInfo()
         {
+            // Default: stitches don't have any held stitches
+            //          and they are not held in front/behind
+            //          the other loops
             this.held = 0;
             this.holdDirection = HoldDirection.None;
         }
