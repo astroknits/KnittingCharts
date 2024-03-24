@@ -28,7 +28,7 @@ namespace YarnGenerator
         // before starting to knit
         public int held;
         // Indicates whether to place the first $held stitches
-        // in front of (true) or behind (false) the needle
+        // in front of, or behind the needle.  Default is None.
         public HoldDirection holdDirection;
 
 
