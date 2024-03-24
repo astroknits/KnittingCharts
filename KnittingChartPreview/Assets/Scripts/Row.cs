@@ -38,7 +38,6 @@ namespace YarnGenerator
             // Set the previous row, and set the loops consumed to
             // be equal to the set of loops produced by the previous row.
             SetPreviousRow(prevRow);
-            SetLoopsConsumed();
             // Generate the stitches for this row, and set the number of
             // stitches, base stitches, and loops produced/consumed
             Configure(stitchTypes);
@@ -66,7 +65,6 @@ namespace YarnGenerator
                     this.nBaseStitches += 1;
                 }
             }
-
         }
         public BaseStitch GetBaseStitch(int i)
         {
@@ -80,6 +78,7 @@ namespace YarnGenerator
                 prevRow = prevRowObj;
                 prevRowObj.nextRow = this;
             }
+            SetLoopsConsumed();
         }
 
         private void GenerateStitches(StitchType[] stitchTypes)
@@ -98,7 +97,7 @@ namespace YarnGenerator
 
                 Stitch stitch = new Stitch(stitchInfo, rowIndex, stitchIndex, loopIndex, yarnWidth, loopsConsumedInStitch);
                 this.stitches[stitchIndex] = stitch;
-                loopIndex += stitchInfo.nLoopsConsumed;
+                loopIndex += stitchInfo.nLoopsProduced;
             }
         }
 
