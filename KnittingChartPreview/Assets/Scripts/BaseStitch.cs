@@ -9,7 +9,7 @@ namespace YarnGenerator
         public BaseStitchInfo baseStitchInfo;
 
         public float yarnWidth;
-        
+
         // row number for the given stitch
         public int rowIndex;
 
@@ -35,7 +35,7 @@ namespace YarnGenerator
         // (default value is loopIndexProduced - loopIndexConsumed
         // but might be tweaked by baseStitches in a row above/below)
         public float loopXOffset;
-        
+
         // for cables, whether the baseStitch is held in front or back
         // (default false)
         public HoldDirection holdDirection;
@@ -58,28 +58,28 @@ namespace YarnGenerator
             int loopIndexProduced,
             HoldDirection holdDirection,
             Loop[] loopsConsumed
-            )
+        )
         {
             this.baseStitchInfo = baseStitchInfo;
             this.yarnWidth = yarnWidth;
             this.rowIndex = rowIndex;
             this.stitchIndex = stitchIndex;
             this.baseStitchIndex = baseStitchIndex;
-            
+
             this.loopIndexConsumed = loopIndexConsumed;
             this.loopIndexProduced = loopIndexProduced;
             this.holdDirection = holdDirection;
-            SetLoopStartAndOffset();
             this.loopsConsumed = loopsConsumed;
             GenerateLoopsProduced();
         }
-        
+
         public void SetConsumes(int index, Loop loopObj)
         {
             if (loopsConsumed is null)
             {
                 this.loopsConsumed = new Loop[this.baseStitchInfo.nLoopsConsumed];
             }
+
             loopsConsumed[index] = loopObj;
         }
 
@@ -89,6 +89,7 @@ namespace YarnGenerator
             {
                 this.loopsProduced = new Loop[this.baseStitchInfo.nLoopsProduced];
             }
+
             loopsProduced[index] = loopObj;
         }
 
@@ -101,10 +102,12 @@ namespace YarnGenerator
                 this.loopsProduced[i] = loop;
             }
         }
+
         public GameObject GetMesh(Vector3[] vertices, int[] triangles, Material material)
         {
             // Create the mesh for the yarn in this row
-            GameObject gameObject = new GameObject($"BaseStitch {this.loopIndexConsumed} for yarnWidth {this.yarnWidth}");
+            GameObject gameObject =
+                new GameObject($"BaseStitch {this.loopIndexConsumed} for yarnWidth {this.yarnWidth}");
             MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
             Mesh mesh = new Mesh();
@@ -112,7 +115,7 @@ namespace YarnGenerator
             // setting to 32 bits allows for up to 4 billion vertices per mesh
             mesh.indexFormat = IndexFormat.UInt32;
             meshFilter.mesh = mesh;
-            
+
             mesh.vertices = vertices;
             mesh.triangles = triangles;
             mesh.RecalculateNormals();
@@ -126,7 +129,7 @@ namespace YarnGenerator
         {
             // Get the curve for the stitch
             curve = GenerateCurve();
-            
+
             // Set up vertices for the row based on the curve
             Vector3[] vertices = GenerateVertices();
 
@@ -165,7 +168,7 @@ namespace YarnGenerator
                     0.0f,
                     this.yarnWidth * (float) Mathf.Cos(angle),
                     this.yarnWidth * (float) Mathf.Sin(angle)
-                    );
+                );
 
                 // Rotate the circle so its normal is
                 // in direction of the diff vector
@@ -251,7 +254,8 @@ namespace YarnGenerator
             if (holdDirection == HoldDirection.Front)
             {
                 d = 0.5f;
-            } else if (holdDirection == HoldDirection.Back)
+            }
+            else if (holdDirection == HoldDirection.Back)
             {
                 d = 0.20f;
             }
@@ -262,7 +266,7 @@ namespace YarnGenerator
                 d *= -1.0f;
                 d2 *= -1.0f;
             }
-            
+
             if (this.baseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
             {
                 d *= 2.0f;
@@ -283,11 +287,12 @@ namespace YarnGenerator
             // check offset between where stitch was and where it ends up
             // (if it's a cable stitch that crosses over)
             loopXStart = 2.0f * loopIndexConsumed + yarnWidth;
-            loopXOffset = (float)loopIndexProduced - (float)loopIndexConsumed;
+            loopXOffset = (float) loopsProduced[0].loopIndex - (float) loopIndexConsumed;
         }
-        
+
         public Vector3[] GenerateCurve()
         {
+            SetLoopStartAndOffset();
             // check offset between where stitch was and where it ends up
             // (if it's a cable stitch that crosses over)
             curve = new Vector3[stitchRes];
@@ -327,6 +332,18 @@ namespace YarnGenerator
                 Vector3 v2 = vectorCurve[j + 1];
 
                 Debug.DrawLine(v1, v2, Color.green, 2, false);
+            }
+        }
+
+        public void UpdateAdjacentRows()
+        {
+            if (baseStitchInfo.BaseStitchType == BaseStitchType.SSK)
+            {
+                loopsConsumed[1].loopIndex -= 1;
+            }
+            else if (baseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
+            {
+                loopsConsumed[0].loopIndex += 1;
             }
         }
     }

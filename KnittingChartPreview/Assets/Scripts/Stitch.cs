@@ -18,7 +18,9 @@ namespace YarnGenerator
         // stitch number for the given stitch
         public int stitchIndex;
         // starting loop number for the given stitch
-        public int loopIndex;
+        public int loopIndexConsumed;
+        // starting loop number for the given stitch
+        public int loopIndexProduced;
         
         // list of loop objects
         public BaseStitch[] baseStitches;
@@ -26,12 +28,13 @@ namespace YarnGenerator
         // list of consumed loops
         public Loop[] loopsConsumed;
 
-        public Stitch(StitchInfo stitchInfo, int rowIndex, int stitchIndex, int loopIndex, float yarnWidth, Loop[] loopsConsumed)
+        public Stitch(StitchInfo stitchInfo, int rowIndex, int stitchIndex, int loopIndexConsumed, int loopIndexProduced, float yarnWidth, Loop[] loopsConsumed)
         {
             this.stitchInfo = stitchInfo;
             this.rowIndex = rowIndex;
             this.stitchIndex = stitchIndex;
-            this.loopIndex = loopIndex;
+            this.loopIndexConsumed = loopIndexConsumed;
+            this.loopIndexProduced = loopIndexProduced;
             this.yarnWidth = yarnWidth;
             this.loopsConsumed = loopsConsumed;
             GenerateBaseStitches();
@@ -41,7 +44,8 @@ namespace YarnGenerator
         {
             baseStitches = new BaseStitch[this.stitchInfo.nBaseStitches];
             
-            int loopIndexConsumed = 0;
+            int loopIndexConsumed1 = 0;
+            int loopIndexProduced1 = 0;
             // Work through each of the baseStitches produced in the baseStitchTypeList
             for (int baseStitchIndex = 0; baseStitchIndex < this.stitchInfo.nBaseStitches; baseStitchIndex++)
             {
@@ -52,7 +56,7 @@ namespace YarnGenerator
                 Loop[] loopsConsumedByBaseStitch = Array.Empty<Loop>();
                 if (loopsConsumed is not null && baseStitchInfo.nLoopsConsumed > 0)
                 {
-                    loopsConsumedByBaseStitch = loopsConsumed.Skip(loopIndexConsumed).Take(baseStitchInfo.nLoopsConsumed).ToArray();
+                    loopsConsumedByBaseStitch = loopsConsumed.Skip(loopIndexConsumed1).Take(baseStitchInfo.nLoopsConsumed).ToArray();
                 }
 
                 // Handle cable stitches which include holding stitches in front/behind
@@ -61,7 +65,7 @@ namespace YarnGenerator
 
                 // If there are no held stitches, the index of the first produced loop
                 // is equal to the index of the first consumed loop
-                int loopIndexProduced = loopIndexConsumed;
+                int loopIndexProduced2 = loopIndexProduced1;
                 HoldDirection holdDirection = HoldDirection.None;
                 if (this.stitchInfo.held != 0)
                 {
@@ -70,12 +74,12 @@ namespace YarnGenerator
                     // this.nLoopsProduced - this.held baseStitches
                     if (baseStitchIndex >= this.stitchInfo.held)
                     {
-                        loopIndexProduced = loopIndexConsumed - this.stitchInfo.held;
+                        loopIndexProduced1 = loopIndexProduced2 - this.stitchInfo.held;
                         holdDirection = stitchInfo.holdDirection;
                     }
                     else
                     {
-                        loopIndexProduced = loopIndexConsumed + this.stitchInfo.held;
+                        loopIndexProduced1 = loopIndexProduced2 + this.stitchInfo.held;
                         if (stitchInfo.holdDirection == HoldDirection.Front)
                         {
                             holdDirection = HoldDirection.Back;
@@ -92,12 +96,13 @@ namespace YarnGenerator
                     rowIndex,
                     stitchIndex,
                     baseStitchIndex,
-                    loopIndex + loopIndexConsumed,
-                    loopIndex + loopIndexProduced,
+                    this.loopIndexConsumed + loopIndexConsumed1,
+                    this.loopIndexProduced + loopIndexProduced2,
                     holdDirection,
                     loopsConsumedByBaseStitch);
 
-                loopIndexConsumed += baseStitchInfo.nLoopsConsumed;
+                loopIndexConsumed1 += baseStitchInfo.nLoopsConsumed;
+                loopIndexProduced1 += baseStitchInfo.nLoopsProduced;
             }
         }
 
@@ -135,7 +140,7 @@ namespace YarnGenerator
                 // Create a curve for each loop in the stitch
                 
                 // Create parent GameObject under which to nest the mesh for each loop
-                GameObject stitchGameObject = new GameObject($"Stitch - row {rowIndex} stitch {stitchIndex} loop {loopIndex}");
+                GameObject stitchGameObject = new GameObject($"Stitch - row {rowIndex} stitch {stitchIndex} loop {loopIndexConsumed}");
 
                 // Work through each of the baseStitches produced in the baseStitchTypeList
                 for (int i = 0; i < this.baseStitches.Length; i++)

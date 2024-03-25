@@ -66,6 +66,40 @@ namespace YarnGenerator
                 }
             }
         }
+
+        public void UpdateAdjacentRows()
+        {
+            int prevRowIndexOffset = 0;
+            foreach (BaseStitch baseStitch in baseStitches)
+            {
+                baseStitch.UpdateAdjacentRows();
+                /*
+                if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.SSK)
+                {
+                    prevRowIndexOffset -= 1;
+                } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
+                {
+                    prevRowIndexOffset -= 1;
+                } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.YarnOver)
+                {
+                    prevRowIndexOffset += 1;
+                } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.M1)
+                {
+                    prevRowIndexOffset += 1;
+                }
+
+                if (prevRowIndexOffset != 0)
+                {
+                    foreach (Loop loop in baseStitch.loopsConsumed)
+                    {
+                        loop.loopIndex += prevRowIndexOffset;
+                    }
+                }
+                */
+            }
+            
+        }
+
         public BaseStitch GetBaseStitch(int i)
         {
             return GetBaseStitches()[i];
@@ -85,7 +119,8 @@ namespace YarnGenerator
         {
             this.stitches = new Stitch[stitchTypes.Length];
 
-            int loopIndex = 0;
+            int loopIndexConsumed = 0;
+            int loopIndexProduced = 0;
             for (int stitchIndex = 0; stitchIndex < stitchTypes.Length; stitchIndex++)
             {
                 StitchType stitchType = stitchTypes[stitchIndex];
@@ -93,11 +128,12 @@ namespace YarnGenerator
 
                 // Get loops consumed in the stitch
                 // based on the start loop index for the stitch and number of loops consumed
-                Loop[] loopsConsumedInStitch = GetLoopsConsumed(loopIndex, stitchInfo.nLoopsConsumed);
+                Loop[] loopsConsumedInStitch = GetLoopsConsumed(loopIndexConsumed, stitchInfo.nLoopsConsumed);
 
-                Stitch stitch = new Stitch(stitchInfo, rowIndex, stitchIndex, loopIndex, yarnWidth, loopsConsumedInStitch);
+                Stitch stitch = new Stitch(stitchInfo, rowIndex, stitchIndex, loopIndexConsumed, loopIndexProduced, yarnWidth, loopsConsumedInStitch);
                 this.stitches[stitchIndex] = stitch;
-                loopIndex += stitchInfo.nLoopsProduced;
+                loopIndexConsumed += stitchInfo.nLoopsConsumed;
+                loopIndexProduced += stitchInfo.nLoopsProduced;
             }
         }
 
