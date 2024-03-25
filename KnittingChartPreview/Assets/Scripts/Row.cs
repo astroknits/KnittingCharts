@@ -69,35 +69,35 @@ namespace YarnGenerator
 
         public void UpdateAdjacentRows()
         {
-            int prevRowIndexOffset = 0;
             foreach (BaseStitch baseStitch in baseStitches)
             {
+                int prevRowIndexOffset = 0;
                 baseStitch.UpdateAdjacentRows();
-                /*
                 if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.SSK)
                 {
-                    prevRowIndexOffset -= 1;
+                    prevRowIndexOffset = -1;
                 } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
                 {
-                    prevRowIndexOffset -= 1;
+                    prevRowIndexOffset = -1;
                 } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.YarnOver)
                 {
-                    prevRowIndexOffset += 1;
+                    prevRowIndexOffset = 1;
                 } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.M1)
                 {
-                    prevRowIndexOffset += 1;
+                    prevRowIndexOffset = 1;
                 }
 
                 if (prevRowIndexOffset != 0)
                 {
-                    foreach (Loop loop in baseStitch.loopsConsumed)
+                    foreach (Loop loop in prevRow.loopsProduced)
                     {
-                        loop.loopIndex += prevRowIndexOffset;
+                        if (loop.loopIndex > baseStitch.loopIndexConsumed)
+                        {
+                            loop.loopIndex += prevRowIndexOffset;
+                        }
                     }
                 }
-                */
             }
-            
         }
 
         public BaseStitch GetBaseStitch(int i)
