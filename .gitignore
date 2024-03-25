@@ -133,6 +133,9 @@ crashlytics-build.properties
 */[Aa]ssets/[Ss]treamingAssets/aa.meta
 */[Aa]ssets/[Ss]treamingAssets/aa/*
 
-*/Assets/Scenes/KnittingChartScene.unity
-*/Assets/Scenes/KnittingChartScene.unity.meta
+KnittingChartPreview/Assets/Scenes/*
+
+
+
+
 
