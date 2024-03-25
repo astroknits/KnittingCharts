@@ -67,25 +67,31 @@ namespace YarnGenerator
             }
         }
 
+        public int GetRowIndexOffset(BaseStitch baseStitch)
+        {
+            if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.SSK)
+            {
+                return -1;
+            } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
+            {
+                return -1;
+            } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.YarnOver)
+            {
+                return 1;
+            } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.M1)
+            {
+                return 1;
+            }
+
+            return 0;
+        }
         public void UpdateAdjacentRows()
         {
             foreach (BaseStitch baseStitch in baseStitches)
             {
                 int prevRowIndexOffset = 0;
                 baseStitch.UpdateAdjacentRows();
-                if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.SSK)
-                {
-                    prevRowIndexOffset = -1;
-                } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
-                {
-                    prevRowIndexOffset = -1;
-                } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.YarnOver)
-                {
-                    prevRowIndexOffset = 1;
-                } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.M1)
-                {
-                    prevRowIndexOffset = 1;
-                }
+                prevRowIndexOffset = GetRowIndexOffset(baseStitch);
 
                 if (prevRowIndexOffset != 0)
                 {

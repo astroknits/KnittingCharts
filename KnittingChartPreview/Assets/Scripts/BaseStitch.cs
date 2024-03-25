@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -286,8 +287,21 @@ namespace YarnGenerator
         {
             // check offset between where stitch was and where it ends up
             // (if it's a cable stitch that crosses over)
-            loopXStart = 2.0f * loopIndexConsumed + yarnWidth;
-            loopXOffset = (float) loopsProduced[0].loopIndex - (float) loopIndexConsumed;
+            // loopXStart = 2.0f * loopIndexConsumed + yarnWidth;
+            // loopXOffset = (float) loopsProduced[0].loopIndex - (float) loopIndexConsumed;
+            int cons = loopIndexConsumed;
+            int prod = loopIndexProduced;
+            if (loopsProduced is not null && loopsProduced.Length > 0)
+            {
+                prod = loopsProduced[0].loopIndex;
+            }
+
+            if (loopsConsumed is not null && loopsConsumed.Length > 0)
+            {
+                cons = loopsConsumed[0].loopIndex;
+            }
+            loopXStart = 2.0f * cons + yarnWidth;
+            loopXOffset = (float) prod - (float) cons;
         }
 
         public Vector3[] GenerateCurve()
