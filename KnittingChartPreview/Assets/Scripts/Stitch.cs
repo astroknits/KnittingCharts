@@ -125,30 +125,35 @@ namespace YarnGenerator
             }
         }
 
+        public BaseStitch GetOrderedBaseStitch(int baseStitchIndex)
+        {
+            // If there are no held stitches, just return the base stitch
+            // at location baseStitchIndex
+            if (stitchInfo.held == 0)
+            {
+                return baseStitches[baseStitchIndex];
+            }
+            // If there are held stitches, put the held stitches
+            // on the needle after the other loops from this stitch have
+            // already been knitted, i.e. swap the order of the held/non-held loops
+            // produced by this stitch
+            if (IsStitchHeld(baseStitchIndex))
+            {
+                return baseStitches[baseStitchIndex + stitchInfo.held];
+            }
+            return baseStitches[baseStitchIndex - stitchInfo.held];
+        }
+
         public Loop[] GetLoopsProduced()
         {
             Loop[] loopsProduced = new Loop[stitchInfo.nLoopsProduced];
-
+            
             // cycle through all baseStitches for each stitch in row
             int loopProdducedIndex = 0;
             for (int baseStitchIndex=0; baseStitchIndex<baseStitches.Length; baseStitchIndex++)
             {
-                BaseStitch baseStitch = baseStitches[baseStitchIndex];
-                // If there are held stitches, put the held stitches
-                // on the needle after the other loops from this stitch have
-                // already been knitted, i.e. swap the order of the held/non-held loops
-                // produced by this stitch
-                if (stitchInfo.held != 0)
-                {
-                    if (IsStitchHeld(baseStitchIndex))
-                    {
-                        baseStitch = baseStitches[baseStitchIndex + stitchInfo.held];
-                    }
-                    else
-                    {
-                        baseStitch = baseStitches[baseStitchIndex - stitchInfo.held];
-                    }
-                }
+                BaseStitch baseStitch = GetOrderedBaseStitch(baseStitchIndex);
+
                 for (int loopIndex = 0; loopIndex  < baseStitch.loopsProduced.Length; loopIndex++)
                 {
                     loopsProduced[loopProdducedIndex] = baseStitch.loopsProduced[loopIndex];
