@@ -40,6 +40,39 @@ namespace YarnGenerator
             GenerateBaseStitches();
         }
 
+        public bool IsStitchHeld(int baseStitchIndex)
+        {
+            return baseStitchIndex < this.stitchInfo.held;
+        }
+
+        public HoldDirection GetHoldDirection(int baseStitchIndex)
+        {
+            HoldDirection holdDirection = HoldDirection.None;
+            if (this.stitchInfo.held != 0)
+            {
+                // hold the first this.held baseStitches in front of/behind the
+                // needle and first knit the remaining
+                // this.nLoopsProduced - this.held baseStitches
+                if (IsStitchHeld(baseStitchIndex))
+                {
+                    holdDirection = stitchInfo.holdDirection;
+                }
+                else
+                {
+                    if (stitchInfo.holdDirection == HoldDirection.Front)
+                    {
+                        holdDirection = HoldDirection.Back;
+                    }
+                    else if (stitchInfo.holdDirection == HoldDirection.Back)
+                    {
+                        holdDirection = HoldDirection.Front;
+                    }
+                }
+            }
+
+            return holdDirection;
+        }
+
         public void GenerateBaseStitches()
         {
             baseStitches = new BaseStitch[this.stitchInfo.nBaseStitches];
@@ -56,39 +89,17 @@ namespace YarnGenerator
                 Loop[] loopsConsumedByBaseStitch = Array.Empty<Loop>();
                 if (loopsConsumed is not null && baseStitchInfo.nLoopsConsumed > 0)
                 {
-                    loopsConsumedByBaseStitch = loopsConsumed.Skip(loopIndexConsumed1).Take(baseStitchInfo.nLoopsConsumed).ToArray();
+                    loopsConsumedByBaseStitch = loopsConsumed.Skip(loopIndexConsumed1)
+                        .Take(baseStitchInfo.nLoopsConsumed).ToArray();
                 }
 
                 // Handle cable stitches which include holding stitches in front/behind
                 // Default is to have stitchInfo.held == 0, which doesn't
                 // need this logic.
 
-                // If there are no held stitches, the index of the first produced loop
-                // is equal to the index of the first consumed loop
-                int loopIndexProduced2 = loopIndexProduced1;
-                HoldDirection holdDirection = HoldDirection.None;
-                if (this.stitchInfo.held != 0)
-                {
-                    // hold the first this.held baseStitches in front of/behind the
-                    // needle and first knit the remaining
-                    // this.nLoopsProduced - this.held baseStitches
-                    if (baseStitchIndex >= this.stitchInfo.held)
-                    {
-                        loopIndexProduced1 = loopIndexProduced2 - this.stitchInfo.held;
-                        holdDirection = stitchInfo.holdDirection;
-                    }
-                    else
-                    {
-                        loopIndexProduced1 = loopIndexProduced2 + this.stitchInfo.held;
-                        if (stitchInfo.holdDirection == HoldDirection.Front)
-                        {
-                            holdDirection = HoldDirection.Back;
-                        } else if (stitchInfo.holdDirection == HoldDirection.Back)
-                        {
-                            holdDirection = HoldDirection.Front;
-                        }
-                    }
-                }
+                // If there are no held stitches, get the held direction
+                // based on whether this current BaseStitch is being held or not
+                HoldDirection holdDirection = GetHoldDirection(baseStitchIndex);
 
                 baseStitches[baseStitchIndex] = new BaseStitch(
                     baseStitchInfo,
@@ -97,7 +108,7 @@ namespace YarnGenerator
                     stitchIndex,
                     baseStitchIndex,
                     this.loopIndexConsumed + loopIndexConsumed1,
-                    this.loopIndexProduced + loopIndexProduced2,
+                    this.loopIndexProduced + loopIndexProduced1,
                     holdDirection,
                     loopsConsumedByBaseStitch);
 
@@ -111,13 +122,29 @@ namespace YarnGenerator
             Loop[] loopsProduced = new Loop[stitchInfo.nLoopsProduced];
 
             // cycle through all baseStitches for each stitch in row
-            int j = 0;
-            foreach (BaseStitch baseStitch in baseStitches)
+            int loopProdducedIndex = 0;
+            for (int baseStitchIndex=0; baseStitchIndex<baseStitches.Length; baseStitchIndex++)
             {
-                for (int i = 0; i  < baseStitch.loopsProduced.Length; i++)
+                BaseStitch baseStitch = baseStitches[baseStitchIndex];
+                // If there are held stitches, put the held stitches
+                // on the needle after the other loops from this stitch have
+                // already been knitted, i.e. swap the order of the held/non-held loops
+                // produced by this stitch
+                if (stitchInfo.held != 0)
                 {
-                    loopsProduced[j] = baseStitch.loopsProduced[i];
-                    j++;
+                    if (IsStitchHeld(baseStitchIndex))
+                    {
+                        baseStitch = baseStitches[baseStitchIndex + stitchInfo.held];
+                    }
+                    else
+                    {
+                        baseStitch = baseStitches[baseStitchIndex - stitchInfo.held];
+                    }
+                }
+                for (int loopIndex = 0; loopIndex  < baseStitch.loopsProduced.Length; loopIndex++)
+                {
+                    loopsProduced[loopProdducedIndex] = baseStitch.loopsProduced[loopIndex];
+                    loopProdducedIndex++;
                 }
             }
 

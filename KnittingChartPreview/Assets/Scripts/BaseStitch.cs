@@ -27,16 +27,6 @@ namespace YarnGenerator
         // baseStitch index for the given baseStitch (once baseStitch is completed)
         public int loopIndexProduced;
 
-        // BaseStitch offset
-        // BaseStitch start location along x axis (can be loopIndexConsumed
-        // but might be offset by a bit)
-        public float loopXStart;
-
-        // offset by which to shear the baseStitch
-        // (default value is loopIndexProduced - loopIndexConsumed
-        // but might be tweaked by baseStitches in a row above/below)
-        public float loopXOffset;
-
         // for cables, whether the baseStitch is held in front or back
         // (default false)
         public HoldDirection holdDirection;
@@ -72,26 +62,6 @@ namespace YarnGenerator
             this.holdDirection = holdDirection;
             this.loopsConsumed = loopsConsumed;
             GenerateLoopsProduced();
-        }
-
-        public void SetConsumes(int index, Loop loopObj)
-        {
-            if (loopsConsumed is null)
-            {
-                this.loopsConsumed = new Loop[this.baseStitchInfo.nLoopsConsumed];
-            }
-
-            loopsConsumed[index] = loopObj;
-        }
-
-        public void SetProduces(int index, Loop loopObj)
-        {
-            if (loopsProduced is null)
-            {
-                this.loopsProduced = new Loop[this.baseStitchInfo.nLoopsProduced];
-            }
-
-            loopsProduced[index] = loopObj;
         }
 
         public void GenerateLoopsProduced()
@@ -283,32 +253,45 @@ namespace YarnGenerator
             return new Vector3(xVal, yVal, zVal);
         }
 
-        public void SetLoopStartAndOffset()
+        public int GetConsumedIndex()
         {
             // check offset between where stitch was and where it ends up
             // (if it's a cable stitch that crosses over)
-            // loopXStart = 2.0f * loopIndexConsumed + yarnWidth;
-            // loopXOffset = (float) loopsProduced[0].loopIndex - (float) loopIndexConsumed;
             int cons = loopIndexConsumed;
+            // Note we are currently not supporting generating curves
+            // for base stitches with loopsConsumed != 1 or loopsProduced != 1
+            if (loopsConsumed is not null && loopsConsumed.Length > 0)
+            {
+                cons = loopsConsumed[0].loopIndex;
+            }
+
+            return cons;
+        }
+
+        public int GetProducedIndex()
+        {
+            // check offset between where stitch was and where it ends up
+            // (if it's a cable stitch that crosses over)
             int prod = loopIndexProduced;
+            // Note we are currently not supporting generating curves
+            // for base stitches with loopsConsumed != 1 or loopsProduced != 1
             if (loopsProduced is not null && loopsProduced.Length > 0)
             {
                 prod = loopsProduced[0].loopIndex;
             }
 
-            if (loopsConsumed is not null && loopsConsumed.Length > 0)
-            {
-                cons = loopsConsumed[0].loopIndex;
-            }
-            loopXStart = 2.0f * cons + yarnWidth;
-            loopXOffset = (float) prod - (float) cons;
+            return prod;
         }
 
         public Vector3[] GenerateCurve()
         {
-            SetLoopStartAndOffset();
-            // check offset between where stitch was and where it ends up
-            // (if it's a cable stitch that crosses over)
+
+            int cons = GetConsumedIndex();
+            int prod = GetProducedIndex();
+
+            float loopXStart = 2.0f * cons + yarnWidth;
+            float loopXOffset = (float) prod - (float) cons;
+
             curve = new Vector3[stitchRes];
             for (int j = 0; j < stitchRes; j++)
             {
@@ -346,18 +329,6 @@ namespace YarnGenerator
                 Vector3 v2 = vectorCurve[j + 1];
 
                 Debug.DrawLine(v1, v2, Color.green, 2, false);
-            }
-        }
-
-        public void UpdateAdjacentRows()
-        {
-            if (baseStitchInfo.BaseStitchType == BaseStitchType.SSK)
-            {
-                loopsConsumed[1].loopIndex -= 1;
-            }
-            else if (baseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
-            {
-                loopsConsumed[0].loopIndex += 1;
             }
         }
     }

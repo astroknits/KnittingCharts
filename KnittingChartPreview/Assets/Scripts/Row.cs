@@ -85,26 +85,6 @@ namespace YarnGenerator
 
             return 0;
         }
-        public void UpdateAdjacentRows()
-        {
-            foreach (BaseStitch baseStitch in baseStitches)
-            {
-                int prevRowIndexOffset = 0;
-                baseStitch.UpdateAdjacentRows();
-                prevRowIndexOffset = GetRowIndexOffset(baseStitch);
-
-                if (prevRowIndexOffset != 0)
-                {
-                    foreach (Loop loop in prevRow.loopsProduced)
-                    {
-                        if (loop.loopIndex > baseStitch.loopIndexConsumed)
-                        {
-                            loop.loopIndex += prevRowIndexOffset;
-                        }
-                    }
-                }
-            }
-        }
 
         public BaseStitch GetBaseStitch(int i)
         {

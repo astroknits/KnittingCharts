@@ -40,22 +40,8 @@ namespace YarnGenerator
         {
             this.rows = GetPatternDefinition();
             SetAdjacentRows();
-            PrintLoopsInAdjacentRows();
-            UpdateLoops();
-        }
-
-        public void UpdateLoops()
-        {
-            // Once all the loops have been created for the pattern,
-            // iterate through each BaseStitch in each row, and
-            // update the loops surrounding that BaseStitch according
-            // to the parameters of the BaseStitch
-            // Row.loopIndexOffset
-
-            foreach (Row row in rows)
-            {
-                row.UpdateAdjacentRows();
-            }
+            // PrintLoopsInAdjacentRows();
+            // UpdateLoops();
         }
 
         public void PrintLoopsInAdjacentRows()

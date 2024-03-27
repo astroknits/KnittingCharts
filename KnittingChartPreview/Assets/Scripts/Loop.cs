@@ -51,11 +51,6 @@ namespace YarnGenerator
         {
             offset.z += zOffsetToAdd;
         }
-
-        public void SetConsumedBy(BaseStitch consumedBy)
-        {
-            this.consumbedBy = consumedBy;
-        }
         
     }
 }
