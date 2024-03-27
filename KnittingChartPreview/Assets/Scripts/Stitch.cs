@@ -47,6 +47,12 @@ namespace YarnGenerator
 
         public HoldDirection GetHoldDirection(int baseStitchIndex)
         {
+            // Handle cable stitches which include holding stitches in front/behind
+            // Default is to have stitchInfo.held == 0, which doesn't
+            // need this logic.
+
+            // If there are no held stitches, get the held direction
+            // based on whether this current BaseStitch is being held or not
             HoldDirection holdDirection = HoldDirection.None;
             if (this.stitchInfo.held != 0)
             {
@@ -73,32 +79,34 @@ namespace YarnGenerator
             return holdDirection;
         }
 
+        public Loop[] GetLoopsConsumedByBaseStitch(int loopIndexConsumed, BaseStitchInfo baseStitchInfo)
+        {
+            // Create a list of the loops that are consumed by this baseStitch
+            Loop[] loopsConsumedByBaseStitch = Array.Empty<Loop>();
+            if (loopsConsumed is not null && baseStitchInfo.nLoopsConsumed > 0)
+            {
+                loopsConsumedByBaseStitch = loopsConsumed.Skip(loopIndexConsumed)
+                    .Take(baseStitchInfo.nLoopsConsumed).ToArray();
+            }
+
+            return loopsConsumedByBaseStitch;
+        }
+
         public void GenerateBaseStitches()
         {
             baseStitches = new BaseStitch[this.stitchInfo.nBaseStitches];
             
             int loopIndexConsumed1 = 0;
             int loopIndexProduced1 = 0;
+
             // Work through each of the baseStitches produced in the baseStitchTypeList
             for (int baseStitchIndex = 0; baseStitchIndex < this.stitchInfo.nBaseStitches; baseStitchIndex++)
             {
                 BaseStitchType baseStitchType = stitchInfo.baseStitchInfoList[baseStitchIndex].BaseStitchType;
                 BaseStitchInfo baseStitchInfo = BaseStitchInfo.GetBaseStitchInfo(baseStitchType);
 
-                // Create a list of the loops that are consumed by this baseStitch
-                Loop[] loopsConsumedByBaseStitch = Array.Empty<Loop>();
-                if (loopsConsumed is not null && baseStitchInfo.nLoopsConsumed > 0)
-                {
-                    loopsConsumedByBaseStitch = loopsConsumed.Skip(loopIndexConsumed1)
-                        .Take(baseStitchInfo.nLoopsConsumed).ToArray();
-                }
+                Loop[] loopsConsumedByBaseStitch = GetLoopsConsumedByBaseStitch(loopIndexConsumed1, baseStitchInfo);
 
-                // Handle cable stitches which include holding stitches in front/behind
-                // Default is to have stitchInfo.held == 0, which doesn't
-                // need this logic.
-
-                // If there are no held stitches, get the held direction
-                // based on whether this current BaseStitch is being held or not
                 HoldDirection holdDirection = GetHoldDirection(baseStitchIndex);
 
                 baseStitches[baseStitchIndex] = new BaseStitch(
@@ -167,7 +175,8 @@ namespace YarnGenerator
                 // Create a curve for each loop in the stitch
                 
                 // Create parent GameObject under which to nest the mesh for each loop
-                GameObject stitchGameObject = new GameObject($"Stitch - row {rowIndex} stitch {stitchIndex} loop {loopIndexConsumed}");
+                string name = $"Stitch - row {rowIndex} stitch {stitchIndex} loop {loopIndexConsumed}";
+                GameObject stitchGameObject = new GameObject(name);
 
                 // Work through each of the baseStitches produced in the baseStitchTypeList
                 for (int i = 0; i < this.baseStitches.Length; i++)
