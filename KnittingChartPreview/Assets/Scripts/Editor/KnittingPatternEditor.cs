@@ -47,13 +47,12 @@ namespace YarnGenerator
 
         Pattern GetBasicPattern()
         {
-            return new BasicPattern(yarnWidth, nRows, basicStitchesPerRow);
+            return new BasicPattern(nRows, basicStitchesPerRow);
         }
 
         Pattern GetCablePattern()
         {
            return new CablePattern(
-                yarnWidth,
                 nRows,
                 padding,
                 cableStitchesPerRow,
@@ -95,7 +94,7 @@ namespace YarnGenerator
             }
             
             Pattern pattern = GetCablePattern();
-            pattern.RenderPreview(this.material);
+            pattern.RenderPreview(yarnWidth, material);
         }
         
         GUILayout.Space(10);
@@ -113,7 +112,7 @@ namespace YarnGenerator
             }
             
             Pattern pattern = GetBasicPattern();
-            pattern.RenderPreview(this.material);
+            pattern.RenderPreview(yarnWidth, material);
         }
     }
 }

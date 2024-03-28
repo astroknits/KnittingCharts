@@ -9,8 +9,6 @@ namespace YarnGenerator
     {
         public BaseStitchInfo baseStitchInfo;
 
-        public float yarnWidth;
-
         // row number for the given stitch
         public int rowIndex;
 
@@ -34,14 +32,11 @@ namespace YarnGenerator
         public int radialRes = KnitSettings.radialRes;
         public int stitchRes = KnitSettings.stitchRes;
 
-        private Vector3[] curve;
-
         public Loop[] loopsConsumed;
         public Loop[] loopsProduced;
 
         public BaseStitch(
             BaseStitchInfo baseStitchInfo,
-            float yarnWidth,
             int rowIndex,
             int stitchIndex,
             int baseStitchIndex,
@@ -52,7 +47,6 @@ namespace YarnGenerator
         )
         {
             this.baseStitchInfo = baseStitchInfo;
-            this.yarnWidth = yarnWidth;
             this.rowIndex = rowIndex;
             this.stitchIndex = stitchIndex;
             this.baseStitchIndex = baseStitchIndex;
@@ -74,11 +68,11 @@ namespace YarnGenerator
             }
         }
 
-        public GameObject GetMesh(Vector3[] vertices, int[] triangles, Material material)
+        public GameObject GetMesh(float yarnWidth, Vector3[] vertices, int[] triangles, Material material)
         {
             // Create the mesh for the yarn in this row
             GameObject gameObject =
-                new GameObject($"BaseStitch {this.loopIndexConsumed} for yarnWidth {this.yarnWidth}");
+                new GameObject($"BaseStitch {this.loopIndexConsumed} for yarnWidth {yarnWidth}");
             MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
             Mesh mesh = new Mesh();
@@ -96,22 +90,22 @@ namespace YarnGenerator
             return gameObject;
         }
 
-        public GameObject GenerateMesh(Material material)
+        public GameObject GenerateMesh(float yarnWidth, Material material)
         {
             // Get the curve for the stitch
-            curve = GenerateCurve();
+            Vector3[] curve = GenerateCurve(yarnWidth, loopIndexConsumed, loopIndexProduced, loopsConsumed, loopsProduced);
 
             // Set up vertices for the row based on the curve
-            Vector3[] vertices = GenerateVertices();
+            Vector3[] vertices = GenerateVertices(yarnWidth, rowIndex, curve);
 
             // Set up triangles for the row based on the vertices
-            int[] triangles = GenerateTriangles();
+            int[] triangles = GenerateTriangles(curve);
 
             // Create the mesh from the vertices & triangles
-            return GetMesh(vertices, triangles, material);
+            return GetMesh(yarnWidth, vertices, triangles, material);
         }
 
-        internal Vector3[] GenerateCircle(Vector3[] curve, int j)
+        internal Vector3[] GenerateCircle(float yarnWidth, Vector3[] curve, int j)
         {
             /* Create circle of points in a plane normal to the direction
              * of the curve.
@@ -137,8 +131,8 @@ namespace YarnGenerator
                 // for each point in the stitch curve
                 Vector3 circleVector = new Vector3(
                     0.0f,
-                    this.yarnWidth * (float) Mathf.Cos(angle),
-                    this.yarnWidth * (float) Mathf.Sin(angle)
+                    yarnWidth * (float) Mathf.Cos(angle),
+                    yarnWidth * (float) Mathf.Sin(angle)
                 );
 
                 // Rotate the circle so its normal is
@@ -152,7 +146,7 @@ namespace YarnGenerator
             return circle;
         }
 
-        internal Vector3[] GenerateVertices()
+        internal Vector3[] GenerateVertices(float yarnWidth, int rowIndex, Vector3[] curve)
         {
             // Note that nLoopsProduced > 1 or nLoopsConsumed > 1
             // is not currently supported.
@@ -165,20 +159,20 @@ namespace YarnGenerator
             ];
             for (int j = 0; j < curve.Length; j++)
             {
-                Vector3[] rotatedCircle = GenerateCircle(curve, j);
+                Vector3[] rotatedCircle = GenerateCircle(yarnWidth, curve, j);
                 for (int i = 0; i < radialRes; i++)
                 {
                     int index = j * radialRes + i;
                     vertices[index] = rotatedCircle[i];
                     // Shift the y position to the correct row
-                    vertices[index].y += this.rowIndex * (2.0f - 3.0f * this.yarnWidth);
+                    vertices[index].y += rowIndex * (2.0f - 3.0f * yarnWidth);
                 }
             }
 
             return vertices;
         }
 
-        internal int[] GenerateTriangles()
+        internal int[] GenerateTriangles(Vector3[] curve)
         {
             int[] triangles = new int[curve.Length * radialRes * 6];
 
@@ -212,12 +206,12 @@ namespace YarnGenerator
             return triangles;
         }
 
-        public Vector3 GetLoopValueForSegment(int j)
+        public Vector3 GetLoopValueForSegment(float yarnWidth, int j)
         {
             float h = 1.0f; // height of stitches
             float a = 1.6f; // width of stitch
             float d = 0.3f; // depth curve factor for stitch
-            float d2 = 2.1f * this.yarnWidth; // depth offset for stitch
+            float d2 = 2.1f * yarnWidth; // depth offset for stitch
 
             // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
             float angle = (float) j / (float) stitchRes * 2.0f * (float) Math.PI;
@@ -253,7 +247,7 @@ namespace YarnGenerator
             return new Vector3(xVal, yVal, zVal);
         }
 
-        public int GetConsumedIndex()
+        public int GetConsumedIndex(int loopIndexConsumed, Loop[] loopsConsumed)
         {
             // check offset between where stitch was and where it ends up
             // (if it's a cable stitch that crosses over)
@@ -268,7 +262,7 @@ namespace YarnGenerator
             return cons;
         }
 
-        public int GetProducedIndex()
+        public int GetProducedIndex(int loopIndexProduced, Loop[] loopsProduced)
         {
             // check offset between where stitch was and where it ends up
             // (if it's a cable stitch that crosses over)
@@ -283,19 +277,19 @@ namespace YarnGenerator
             return prod;
         }
 
-        public Vector3[] GenerateCurve()
+        public Vector3[] GenerateCurve(float yarnWidth, int loopIndexConsumed, int loopIndexProduced, Loop[] loopsConsumed, Loop[] loopsProduced)
         {
 
-            int cons = GetConsumedIndex();
-            int prod = GetProducedIndex();
+            int cons = GetConsumedIndex(loopIndexConsumed, loopsConsumed);
+            int prod = GetProducedIndex(loopIndexProduced, loopsProduced);
 
             float loopXStart = 2.0f * cons + yarnWidth;
             float loopXOffset = (float) prod - (float) cons;
 
-            curve = new Vector3[stitchRes];
+            Vector3[] curve = new Vector3[stitchRes];
             for (int j = 0; j < stitchRes; j++)
             {
-                curve[j] = GetLoopValueForSegment(j);
+                curve[j] = GetLoopValueForSegment(yarnWidth, j);
             }
 
             // Each stitch takes up 2 natural units.  Therefore, the next stitch

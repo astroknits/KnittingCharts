@@ -11,8 +11,6 @@ namespace YarnGenerator
         // StitchInfo object, containing StitchType and set of
         // attributes that define the stitch.  
         public StitchInfo stitchInfo;
-        // width of the yarn
-        public float yarnWidth;
         // row number for the given stitch
         public int rowIndex;
         // stitch number for the given stitch
@@ -28,14 +26,13 @@ namespace YarnGenerator
         // list of consumed loops
         public Loop[] loopsConsumed;
 
-        public Stitch(StitchInfo stitchInfo, int rowIndex, int stitchIndex, int loopIndexConsumed, int loopIndexProduced, float yarnWidth, Loop[] loopsConsumed)
+        public Stitch(StitchInfo stitchInfo, int rowIndex, int stitchIndex, int loopIndexConsumed, int loopIndexProduced, Loop[] loopsConsumed)
         {
             this.stitchInfo = stitchInfo;
             this.rowIndex = rowIndex;
             this.stitchIndex = stitchIndex;
             this.loopIndexConsumed = loopIndexConsumed;
             this.loopIndexProduced = loopIndexProduced;
-            this.yarnWidth = yarnWidth;
             this.loopsConsumed = loopsConsumed;
             GenerateBaseStitches();
         }
@@ -111,7 +108,6 @@ namespace YarnGenerator
 
                 baseStitches[baseStitchIndex] = new BaseStitch(
                     baseStitchInfo,
-                    yarnWidth,
                     rowIndex,
                     stitchIndex,
                     baseStitchIndex,
@@ -164,16 +160,7 @@ namespace YarnGenerator
             return loopsProduced;
         }
 
-        public void GenerateCurve()
-        {
-            // Work through each of the baseStitches produced in the baseStitchInfoList
-            for (int i = 0; i < this.baseStitches.Length; i++)
-            {
-                baseStitches[i].GenerateCurve();
-            }
-        }
-
-        public GameObject GenerateMesh(Material material)
+        public GameObject GenerateMesh(float yarnWidth, Material material)
             {
                 // Generate curves for each loop of this stitch
                 // loopNo = the index of the loop this stitch starts on
@@ -186,7 +173,7 @@ namespace YarnGenerator
                 // Work through each of the baseStitches produced in the baseStitchTypeList
                 for (int i = 0; i < this.baseStitches.Length; i++)
                 {
-                    GameObject mesh = baseStitches[i].GenerateMesh(material);
+                    GameObject mesh = baseStitches[i].GenerateMesh(yarnWidth, material);
                     mesh.transform.SetParent(stitchGameObject.transform);
                 }
 
