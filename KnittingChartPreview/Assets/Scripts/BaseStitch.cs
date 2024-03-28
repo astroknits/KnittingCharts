@@ -68,11 +68,26 @@ namespace YarnGenerator
             }
         }
 
-        public GameObject GetMesh(float yarnWidth, Vector3[] vertices, int[] triangles, Material material)
+        public GameObject GenerateMesh(float yarnWidth, Material material)
+        {
+            // Get the curve for the stitch
+            Vector3[] curve = GenerateCurve(yarnWidth, loopIndexConsumed, loopIndexProduced, loopsConsumed, loopsProduced);
+
+            // Set up vertices for the row based on the curve
+            Vector3[] vertices = GenerateVertices(yarnWidth, rowIndex, curve);
+
+            // Set up triangles for the row based on the vertices
+            int[] triangles = GenerateTriangles(curve);
+
+            // Create the mesh from the vertices & triangles
+            return GetMesh(yarnWidth, material, vertices, triangles, loopIndexConsumed);
+        }
+
+        public GameObject GetMesh(float yarnWidth, Material material, Vector3[] vertices, int[] triangles, int loopIndexConsumed)
         {
             // Create the mesh for the yarn in this row
             GameObject gameObject =
-                new GameObject($"BaseStitch {this.loopIndexConsumed} for yarnWidth {yarnWidth}");
+                new GameObject($"BaseStitch {loopIndexConsumed} for yarnWidth {yarnWidth}");
             MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
             Mesh mesh = new Mesh();
@@ -88,21 +103,6 @@ namespace YarnGenerator
             // Assign a default material
             meshRenderer.material = material;
             return gameObject;
-        }
-
-        public GameObject GenerateMesh(float yarnWidth, Material material)
-        {
-            // Get the curve for the stitch
-            Vector3[] curve = GenerateCurve(yarnWidth, loopIndexConsumed, loopIndexProduced, loopsConsumed, loopsProduced);
-
-            // Set up vertices for the row based on the curve
-            Vector3[] vertices = GenerateVertices(yarnWidth, rowIndex, curve);
-
-            // Set up triangles for the row based on the vertices
-            int[] triangles = GenerateTriangles(curve);
-
-            // Create the mesh from the vertices & triangles
-            return GetMesh(yarnWidth, vertices, triangles, material);
         }
 
         internal Vector3[] GenerateCircle(float yarnWidth, Vector3[] curve, int j)
