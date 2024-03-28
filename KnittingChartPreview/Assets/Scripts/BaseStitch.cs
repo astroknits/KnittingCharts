@@ -26,7 +26,7 @@ namespace YarnGenerator
         public int loopIndexProduced;
 
         // for cables, whether the baseStitch is held in front or back
-        // (default false)
+        // (default None)
         public HoldDirection holdDirection;
 
         public Loop[] loopsConsumed;

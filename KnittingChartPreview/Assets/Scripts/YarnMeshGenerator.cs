@@ -38,16 +38,24 @@ namespace YarnGenerator
                 );
 
             // Set up vertices for the row based on the curve
-            Vector3[] vertices = GenerateVertices(yarnWidth, rowIndex, curve);
+            Vector3[] vertices = GenerateVertices(
+                yarnWidth, rowIndex, curve);
 
             // Set up triangles for the row based on the vertices
             int[] triangles = GenerateTriangles(curve);
 
             // Create the mesh from the vertices & triangles
-            return GetMesh(yarnWidth, material, vertices, triangles, loopIndexConsumed);
+            return GetMesh(
+                yarnWidth, material, vertices, triangles, loopIndexConsumed);
         }
 
-        public GameObject GetMesh(float yarnWidth, Material material, Vector3[] vertices, int[] triangles, int loopIndexConsumed)
+        public GameObject GetMesh(
+            float yarnWidth,
+            Material material,
+            Vector3[] vertices,
+            int[] triangles,
+            int loopIndexConsumed
+            )
         {
             // Create the mesh for the yarn in this row
             GameObject gameObject =
@@ -69,7 +77,7 @@ namespace YarnGenerator
             return gameObject;
         }
 
-                internal Vector3[] GenerateVertices(float yarnWidth, int rowIndex, Vector3[] curve)
+        internal Vector3[] GenerateVertices(float yarnWidth, int rowIndex, Vector3[] curve)
         {
             // Note that nLoopsProduced > 1 or nLoopsConsumed > 1
             // is not currently supported.
