@@ -7,7 +7,6 @@ namespace YarnGenerator
     public class YarnMeshGenerator
     {
         public int radialRes = KnitSettings.radialRes;
-        public int stitchRes = KnitSettings.stitchRes;
 
         public BaseStitchInfo baseStitchInfo;
 
@@ -27,8 +26,9 @@ namespace YarnGenerator
             HoldDirection holdDirection
             )
         {
+            BaseStitchCurve baseStitchCurve = BaseStitchCurve.GetBaseStitchCurve(baseStitchInfo, holdDirection);
             // Get the curve for the stitch
-            Vector3[] curve = GenerateCurve(
+            Vector3[] curve = baseStitchCurve.GenerateCurve(
                 yarnWidth,
                 loopIndexConsumed,
                 loopIndexProduced,
@@ -135,116 +135,6 @@ namespace YarnGenerator
             }
 
             return triangles;
-        }
-
-        public int GetConsumedIndex(int loopIndexConsumed, Loop[] loopsConsumed)
-        {
-            // check offset between where stitch was and where it ends up
-            // (if it's a cable stitch that crosses over)
-            int cons = loopIndexConsumed;
-            // Note we are currently not supporting generating curves
-            // for base stitches with loopsConsumed != 1 or loopsProduced != 1
-            if (loopsConsumed is not null && loopsConsumed.Length > 0)
-            {
-                cons = loopsConsumed[0].loopIndex;
-            }
-
-            return cons;
-        }
-
-        public int GetProducedIndex(int loopIndexProduced, Loop[] loopsProduced)
-        {
-            // check offset between where stitch was and where it ends up
-            // (if it's a cable stitch that crosses over)
-            int prod = loopIndexProduced;
-            // Note we are currently not supporting generating curves
-            // for base stitches with loopsConsumed != 1 or loopsProduced != 1
-            if (loopsProduced is not null && loopsProduced.Length > 0)
-            {
-                prod = loopsProduced[0].loopIndex;
-            }
-
-            return prod;
-        }
-
-        public Vector3[] GenerateCurve(
-            float yarnWidth,
-            int loopIndexConsumed,
-            int loopIndexProduced,
-            Loop[] loopsConsumed,
-            Loop[] loopsProduced,
-            HoldDirection holdDirection)
-        {
-
-            int cons = GetConsumedIndex(loopIndexConsumed, loopsConsumed);
-            int prod = GetProducedIndex(loopIndexProduced, loopsProduced);
-
-            float loopXStart = 2.0f * cons + yarnWidth;
-            float loopXOffset = (float) prod - (float) cons;
-
-            Vector3[] curve = new Vector3[stitchRes];
-            for (int j = 0; j < stitchRes; j++)
-            {
-                curve[j] = GetLoopValueForSegment(yarnWidth, holdDirection, j);
-            }
-
-            // Each stitch takes up 2 natural units.  Therefore, the next stitch
-            // needs an offset of 2.0f from the previous stitch
-            Vector3 horizontalOffset = new Vector3(loopXStart, 0, 0);
-
-            for (int j = 0; j < curve.Length; j++)
-            {
-                curve[j] = curve[j] + horizontalOffset;
-
-                // Apply shear if there is a loopXOffset
-                curve[j].x += loopXOffset * (1 + yarnWidth);
-                curve[j].x += loopXOffset * (curve[j].y);
-            }
-
-            // DrawLine(curveForLoop);
-
-            return curve;
-        }
-
-        public Vector3 GetLoopValueForSegment(float yarnWidth, HoldDirection holdDirection, int j)
-        {
-            float h = 1.0f; // height of stitches
-            float a = 1.6f; // width of stitch
-            float d = 0.3f; // depth curve factor for stitch
-            float d2 = 2.1f * yarnWidth; // depth offset for stitch
-
-            // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
-            float angle = (float) j / (float) stitchRes * 2.0f * (float) Math.PI;
-
-            if (holdDirection == HoldDirection.Front)
-            {
-                d = 0.5f;
-            }
-            else if (holdDirection == HoldDirection.Back)
-            {
-                d = 0.20f;
-            }
-
-            if
-                (this.baseStitchInfo.BaseStitchType == BaseStitchType.Purl)
-            {
-                d *= -1.0f;
-                d2 *= -1.0f;
-            }
-
-            if (this.baseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
-            {
-                d *= 2.0f;
-                d2 *= 2.0f;
-            }
-
-            // parametric equation for stitch
-            // eg from https://www.cs.cmu.edu/~kmcrane/Projects/Other/YarnCurve.pdf
-            float xVal = (float) (angle + a * (float) Math.Sin(2.0f * angle)) / (float) Math.PI;
-            float yVal = h * (float) Math.Cos(angle + (float) Math.PI);
-            float zVal = d * (float) Math.Cos(2.0f * angle) - d2;
-
-            return new Vector3(xVal, yVal, zVal);
         }
 
         internal Vector3[] GenerateCircle(float yarnWidth, Vector3[] curve, int j)

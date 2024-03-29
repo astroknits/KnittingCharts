@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace YarnGenerator
 {
     public class BaseStitchInfo
@@ -10,8 +12,22 @@ namespace YarnGenerator
         // Direction to shift loops (if the stitch results in an increase or decrease)
         public ShiftDirection shiftDirection;
 
+        internal float stitchHeight;  // height of stitches
+        internal float stitchWidth;  // width of stitch
+        internal Dictionary<HoldDirection, float> stitchDepthFactorDict;  // depth curve factor for stitch
+        internal float stitchDepthOffset;  // depth offset for stitch
+
         public BaseStitchInfo()
         {
+            stitchHeight = 1.0f;
+            stitchWidth = 1.6f;
+            stitchDepthFactorDict = new Dictionary<HoldDirection, float>()
+            {
+                {HoldDirection.None, 0.3f},
+                {HoldDirection.Front, 0.55f},
+                {HoldDirection.Back, 0.10f}
+            };
+            stitchDepthOffset = 2.1f;
             this.shiftDirection = ShiftDirection.None;
         }
         
@@ -44,6 +60,13 @@ namespace YarnGenerator
             this.BaseStitchType = BaseStitchType.Knit;
             this.nLoopsConsumed = 1;
             this.nLoopsProduced = 1;
+            stitchDepthFactorDict = new Dictionary<HoldDirection, float>()
+            {
+                {HoldDirection.None, 0.3f},
+                {HoldDirection.Front, 0.9f},
+                {HoldDirection.Back, 0.20f}
+            };
+            this.stitchDepthOffset = this.stitchDepthOffset * -1.0f;
         }
     }
 
@@ -54,6 +77,13 @@ namespace YarnGenerator
             this.BaseStitchType = BaseStitchType.Purl;
             this.nLoopsConsumed = 1;
             this.nLoopsProduced = 1;
+            stitchDepthFactorDict = new Dictionary<HoldDirection, float>()
+            {
+                {HoldDirection.None, -0.3f},
+                {HoldDirection.Front, -0.5f},
+                {HoldDirection.Back, -0.20f}
+            };
+            this.stitchDepthOffset = this.stitchDepthOffset * -1.0f;
         }
     }
     
@@ -64,6 +94,13 @@ namespace YarnGenerator
             this.BaseStitchType = BaseStitchType.Knit2Tog;
             this.nLoopsConsumed = 2;
             this.nLoopsProduced = 1;
+            stitchDepthFactorDict = new Dictionary<HoldDirection, float>()
+            {
+                {HoldDirection.None, 0.6f},
+                {HoldDirection.Front, 1.0f},
+                {HoldDirection.Back, 0.40f}
+            };
+            this.stitchDepthOffset = this.stitchDepthOffset * 2.0f;
             this.shiftDirection = ShiftDirection.Right;
         }
     }
@@ -75,6 +112,13 @@ namespace YarnGenerator
             this.BaseStitchType = BaseStitchType.SSK;
             this.nLoopsConsumed = 2;
             this.nLoopsProduced = 1;
+            stitchDepthFactorDict = new Dictionary<HoldDirection, float>()
+            {
+                {HoldDirection.None, 0.6f},
+                {HoldDirection.Front, 1.0f},
+                {HoldDirection.Back, 0.40f}
+            };
+            this.stitchDepthOffset = this.stitchDepthOffset * 2.0f;
             this.shiftDirection = ShiftDirection.Left;
         }
     }

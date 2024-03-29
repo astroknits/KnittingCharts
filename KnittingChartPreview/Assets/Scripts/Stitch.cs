@@ -110,9 +110,9 @@ namespace YarnGenerator
                     baseStitchInfo,
                     rowIndex,
                     stitchIndex,
-                    baseStitchIndex,
+                    baseStitchIndex + GetIndexOffset(baseStitchIndex),
                     this.loopIndexConsumed + loopIndexConsumed1,
-                    this.loopIndexProduced + loopIndexProduced1,
+                    this.loopIndexProduced + loopIndexProduced1 + GetIndexOffset(baseStitchIndex),
                     holdDirection,
                     loopsConsumedByBaseStitch);
 
@@ -129,15 +129,30 @@ namespace YarnGenerator
             {
                 return baseStitches[baseStitchIndex];
             }
+            if (IsStitchHeld(baseStitchIndex))
+            {
+                return baseStitches[baseStitchIndex + stitchInfo.held];
+            }
+            return baseStitches[baseStitchIndex - stitchInfo.held];
+        }
+
+        public int GetIndexOffset(int baseStitchIndex)
+        {
+            // If there are no held stitches, just return the base stitch
+            // at location baseStitchIndex
+            if (stitchInfo.held == 0)
+            {
+                return 0;
+            }
             // If there are held stitches, put the held stitches
             // on the needle after the other loops from this stitch have
             // already been knitted, i.e. swap the order of the held/non-held loops
             // produced by this stitch
             if (IsStitchHeld(baseStitchIndex))
             {
-                return baseStitches[baseStitchIndex + stitchInfo.held];
+                return stitchInfo.held;
             }
-            return baseStitches[baseStitchIndex - stitchInfo.held];
+            return -stitchInfo.held;
         }
 
         public Loop[] GetLoopsProduced()
