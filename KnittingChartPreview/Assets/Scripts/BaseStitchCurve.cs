@@ -44,8 +44,17 @@ namespace YarnGenerator
             int loopIndexConsumed,
             int loopIndexProduced,
             Loop[] loopsConsumed,
-            Loop[] loopsProduced,
-            HoldDirection holdDirection)
+            Loop[] loopsProduced)
+        {
+            return GenerateSingleCurve(yarnWidth, loopIndexConsumed, loopIndexProduced, loopsConsumed, loopsProduced);
+        }
+
+        public Vector3[] GenerateSingleCurve(
+            float yarnWidth,
+            int loopIndexConsumed,
+            int loopIndexProduced,
+            Loop[] loopsConsumed,
+            Loop[] loopsProduced)
         {
 
             int cons = GetConsumedIndex(loopIndexConsumed, loopsConsumed);
@@ -60,6 +69,14 @@ namespace YarnGenerator
                 curve[j] = GetLoopValueForSegment(yarnWidth, j);
             }
 
+            curve = ApplyHorizontalOffset(yarnWidth, loopXStart, loopXOffset,  curve);
+            // DrawLine(curveForLoop);
+
+            return curve;
+        }
+
+        public Vector3[] ApplyHorizontalOffset(float yarnWidth, float loopXStart, float loopXOffset, Vector3[] curve)
+        {
             // Each stitch takes up 2 natural units.  Therefore, the next stitch
             // needs an offset of 2.0f from the previous stitch
             Vector3 horizontalOffset = new Vector3(loopXStart, 0, 0);
@@ -73,11 +90,8 @@ namespace YarnGenerator
                 curve[j].x += loopXOffset * (curve[j].y);
             }
 
-            // DrawLine(curveForLoop);
-
             return curve;
         }
-
         public Vector3 GetLoopValueForSegment(float yarnWidth, int j)
         {
             // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)

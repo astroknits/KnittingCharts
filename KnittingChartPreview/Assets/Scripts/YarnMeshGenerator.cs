@@ -33,8 +33,7 @@ namespace YarnGenerator
                 loopIndexConsumed,
                 loopIndexProduced,
                 loopsConsumed,
-                loopsProduced,
-                holdDirection
+                loopsProduced
                 );
 
             // Set up vertices for the row based on the curve
