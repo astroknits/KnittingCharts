@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace YarnGenerator
 {
@@ -70,7 +72,7 @@ namespace YarnGenerator
             this.BaseStitchType = BaseStitchType.Purl;
             this.nLoopsConsumed = 1;
             this.nLoopsProduced = 1;
-            foreach (HoldDirection holdDirection in stitchDepthFactorDict.Keys)
+            foreach (HoldDirection holdDirection in Enum.GetValues(typeof(HoldDirection)).Cast<HoldDirection>())
             {
                 stitchDepthFactorDict[holdDirection] = -1.0f * stitchDepthFactorDict[holdDirection];
             }

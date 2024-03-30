@@ -46,23 +46,19 @@ namespace YarnGenerator
             Loop[] loopsConsumed,
             Loop[] loopsProduced)
         {
-            return GenerateSingleCurve(yarnWidth, loopIndexConsumed, loopIndexProduced, loopsConsumed, loopsProduced);
-        }
-
-        public Vector3[] GenerateSingleCurve(
-            float yarnWidth,
-            int loopIndexConsumed,
-            int loopIndexProduced,
-            Loop[] loopsConsumed,
-            Loop[] loopsProduced)
-        {
-
             int cons = GetConsumedIndex(loopIndexConsumed, loopsConsumed);
             int prod = GetProducedIndex(loopIndexProduced, loopsProduced);
 
             float loopXStart = 2.0f * cons + yarnWidth;
             float loopXOffset = (float) prod - (float) cons;
+            return GenerateSingleCurve(yarnWidth, loopXStart, loopXOffset);
+        }
 
+        public Vector3[] GenerateSingleCurve(
+            float yarnWidth,
+            float loopXStart,
+            float loopXOffset)
+        {
             Vector3[] curve = new Vector3[stitchRes];
             for (int j = 0; j < stitchRes; j++)
             {
@@ -70,8 +66,11 @@ namespace YarnGenerator
             }
 
             curve = ApplyHorizontalOffset(yarnWidth, loopXStart, loopXOffset,  curve);
-            // DrawLine(curveForLoop);
 
+            for (int j = 0; j < curve.Length; j++)
+            {
+                curve[j].x = -1.0f * curve[j].x;
+            }
             return curve;
         }
 
