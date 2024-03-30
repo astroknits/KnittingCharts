@@ -70,10 +70,11 @@ namespace YarnGenerator
             this.BaseStitchType = BaseStitchType.Purl;
             this.nLoopsConsumed = 1;
             this.nLoopsProduced = 1;
-            stitchDepthFactorDict[HoldDirection.None] = stitchDepthFactorDict[HoldDirection.None] * -1.0f;
-            stitchDepthFactorDict[HoldDirection.Front] = stitchDepthFactorDict[HoldDirection.Front] * -1.0f;
-            stitchDepthFactorDict[HoldDirection.Back] = stitchDepthFactorDict[HoldDirection.Back] * -1.0f;
-            this.stitchDepthOffset = this.stitchDepthOffset * -1.0f;
+            foreach (HoldDirection holdDirection in stitchDepthFactorDict.Keys)
+            {
+                stitchDepthFactorDict[holdDirection] = -1.0f * stitchDepthFactorDict[holdDirection];
+            }
+            this.stitchDepthOffset = -1.0f * this.stitchDepthOffset;
         }
     }
     
