@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace YarnGenerator
@@ -20,8 +21,12 @@ namespace YarnGenerator
             this.stitchHeight = baseStitchInfo.stitchHeight;
             this.stitchWidth = baseStitchInfo.stitchWidth;
             this.stitchDepthFactor = baseStitchInfo.stitchDepthFactorDict[holdDirection];
-            Debug.Log($"{baseStitchInfo.BaseStitchType}/{holdDirection}");
             this.stitchDepthOffset = baseStitchInfo.stitchDepthOffset;
+            if (baseStitchInfo.isPurlStitch)
+            {
+                this.stitchDepthFactor = -1.0f * stitchDepthFactor;
+                this.stitchDepthOffset = -1.0f * stitchDepthOffset;
+            }
         }
 
         public static BaseStitchCurve GetBaseStitchCurve(BaseStitchInfo baseStitchInfo, HoldDirection holdDirection)
@@ -39,30 +44,36 @@ namespace YarnGenerator
             }
         }
 
-        public Vector3[] GenerateCurve(
+        public virtual Vector3[] GenerateCurve(
             float yarnWidth,
             int loopIndexConsumed,
             int loopIndexProduced,
             Loop[] loopsConsumed,
             Loop[] loopsProduced)
         {
-            int cons = GetConsumedIndex(loopIndexConsumed, loopsConsumed);
-            int prod = GetProducedIndex(loopIndexProduced, loopsProduced);
+            // Default rendered loop: basic knit stitch
 
-            float loopXStart = 2.0f * cons + yarnWidth;
-            float loopXOffset = (float) prod - (float) cons;
-            return GenerateSingleCurve(yarnWidth, loopXStart, loopXOffset);
+            // check offset between where stitch was and where it ends up
+            // (if it's a cable stitch that crosses over)
+            int cons = GetConsumedIndex(loopIndexConsumed, loopsConsumed, 0);
+            int prod = GetProducedIndex(loopIndexProduced, loopsProduced, 0);
+
+            return GenerateSingleCurve(yarnWidth, cons, prod, stitchDepthFactor, stitchDepthOffset);
         }
 
         public Vector3[] GenerateSingleCurve(
             float yarnWidth,
-            float loopXStart,
-            float loopXOffset)
+            int consumedIndex,
+            int producedIndex,
+            float stitchDepthFactor,
+            float stitchDepthOffset)
         {
+            float loopXStart = 2.0f * consumedIndex + yarnWidth;
+            float loopXOffset = (float) producedIndex - (float) consumedIndex;
             Vector3[] curve = new Vector3[stitchRes];
             for (int j = 0; j < stitchRes; j++)
             {
-                curve[j] = GetLoopValueForSegment(yarnWidth, j);
+                curve[j] = GetLoopValueForSegment(yarnWidth, stitchDepthFactor, stitchDepthOffset, j);
             }
 
             curve = ApplyHorizontalOffset(yarnWidth, loopXStart, loopXOffset,  curve);
@@ -91,7 +102,7 @@ namespace YarnGenerator
 
             return curve;
         }
-        public Vector3 GetLoopValueForSegment(float yarnWidth, int j)
+        public Vector3 GetLoopValueForSegment(float yarnWidth, float stitchDepthFactor, float stitchDepthOffset, int j)
         {
             // j goes from 0 to stitchRes - 1 (or stitchRes for last segment)
             float angle = (float) j / (float) stitchRes * 2.0f * (float) Math.PI;
@@ -105,31 +116,30 @@ namespace YarnGenerator
             return new Vector3(xVal, yVal, zVal);
         }
 
-        public int GetConsumedIndex(int loopIndexConsumed, Loop[] loopsConsumed)
+        public int GetConsumedIndex(int loopIndexConsumed, Loop[] loopsConsumed, int index)
         {
-            // check offset between where stitch was and where it ends up
-            // (if it's a cable stitch that crosses over)
+            // Get the index of the consumed stitch at provided index.
+            // If there are no loops consumed, default to using the value
+            // of loopIndexConsumed
             int cons = loopIndexConsumed;
-            // Note we are currently not supporting generating curves
-            // for base stitches with loopsConsumed != 1 or loopsProduced != 1
+
             if (loopsConsumed is not null && loopsConsumed.Length > 0)
             {
-                cons = loopsConsumed[0].loopIndex;
+                cons = loopsConsumed[index].loopIndex;
             }
 
             return cons;
         }
 
-        public int GetProducedIndex(int loopIndexProduced, Loop[] loopsProduced)
+        public int GetProducedIndex(int loopIndexProduced, Loop[] loopsProduced, int index)
         {
-            // check offset between where stitch was and where it ends up
-            // (if it's a cable stitch that crosses over)
+            // Get the index of the produced stitch at provided index.
+            // If there are no loops produced, default to using the value
+            // of loopIndexProduced
             int prod = loopIndexProduced;
-            // Note we are currently not supporting generating curves
-            // for base stitches with loopsConsumed != 1 or loopsProduced != 1
             if (loopsProduced is not null && loopsProduced.Length > 0)
             {
-                prod = loopsProduced[0].loopIndex;
+                prod = loopsProduced[index].loopIndex;
             }
 
             return prod;
@@ -154,6 +164,30 @@ namespace YarnGenerator
     {
         public Knit2TogStitchCurve(BaseStitchInfo baseStitchInfo, HoldDirection holdDirection) : base(baseStitchInfo, holdDirection)
         {
+        }
+
+        public override Vector3[] GenerateCurve(
+            float yarnWidth,
+            int loopIndexConsumed,
+            int loopIndexProduced,
+            Loop[] loopsConsumed,
+            Loop[] loopsProduced)
+        {
+            Vector3[] curve = Array.Empty<Vector3>();
+
+            int consumedIndex = GetConsumedIndex(loopIndexConsumed, loopsConsumed, 0);
+            int producedIndex = GetProducedIndex(loopIndexProduced, loopsProduced, 0);
+
+            Vector3[] newCurve = GenerateSingleCurve(
+                yarnWidth, consumedIndex, producedIndex, stitchDepthFactor, stitchDepthOffset);
+            curve = curve.Concat(newCurve).ToArray();
+
+            consumedIndex = GetConsumedIndex(loopIndexConsumed, loopsConsumed, 1);
+            newCurve =
+                GenerateSingleCurve(
+                    yarnWidth, consumedIndex, producedIndex,
+                    stitchDepthFactor * 1.5f, stitchDepthOffset);
+            return curve.Concat(newCurve).ToArray();
         }
     }
 

@@ -7,6 +7,9 @@ namespace YarnGenerator
     public class BaseStitchInfo
     {
         public BaseStitchType BaseStitchType;
+
+        // indicates whether the stitch is knitwise or purlwise
+        public bool isPurlStitch;
         // # of baseStitches from previous row used by this stitch
         public int nLoopsConsumed;
         // # of baseStitches left on the needle at the end of this stitch
@@ -21,6 +24,7 @@ namespace YarnGenerator
 
         public BaseStitchInfo()
         {
+            isPurlStitch = false;
             stitchHeight = 1.0f;
             stitchWidth = 1.6f;
             stitchDepthFactorDict = new Dictionary<HoldDirection, float>()
@@ -69,14 +73,10 @@ namespace YarnGenerator
     {
         public Purl(): base()
         {
+            this.isPurlStitch = true;
             this.BaseStitchType = BaseStitchType.Purl;
             this.nLoopsConsumed = 1;
             this.nLoopsProduced = 1;
-            foreach (HoldDirection holdDirection in Enum.GetValues(typeof(HoldDirection)).Cast<HoldDirection>())
-            {
-                stitchDepthFactorDict[holdDirection] = -1.0f * stitchDepthFactorDict[holdDirection];
-            }
-            this.stitchDepthOffset = -1.0f * this.stitchDepthOffset;
         }
     }
     
