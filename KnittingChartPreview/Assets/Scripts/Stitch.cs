@@ -26,7 +26,7 @@ namespace YarnGenerator
         // list of consumed loops
         public Loop[] loopsConsumed;
 
-        public Stitch(StitchInfo stitchInfo, int rowIndex, int stitchIndex, int loopIndexConsumed, int loopIndexProduced, Loop[] loopsConsumed)
+        public Stitch(StitchInfo stitchInfo, int rowIndex, int stitchIndex, int loopIndexConsumed, int loopIndexProduced, Loop prevLoop, Loop[] loopsConsumed)
         {
             this.stitchInfo = stitchInfo;
             this.rowIndex = rowIndex;
@@ -34,7 +34,7 @@ namespace YarnGenerator
             this.loopIndexConsumed = loopIndexConsumed;
             this.loopIndexProduced = loopIndexProduced;
             this.loopsConsumed = loopsConsumed;
-            GenerateBaseStitches();
+            GenerateBaseStitches(prevLoop);
         }
 
         public bool IsStitchHeld(int baseStitchIndex)
@@ -89,7 +89,7 @@ namespace YarnGenerator
             return loopsConsumedByBaseStitch;
         }
 
-        public void GenerateBaseStitches()
+        public void GenerateBaseStitches(Loop prevLoop)
         {
             baseStitches = new BaseStitch[this.stitchInfo.nBaseStitches];
             
@@ -114,6 +114,7 @@ namespace YarnGenerator
                     this.loopIndexConsumed + loopIndexConsumed1,
                     this.loopIndexProduced + loopIndexProduced1 + GetIndexOffset(baseStitchIndex),
                     holdDirection,
+                    prevLoop,
                     loopsConsumedByBaseStitch);
 
                 loopIndexConsumed1 += baseStitchInfo.nLoopsConsumed;

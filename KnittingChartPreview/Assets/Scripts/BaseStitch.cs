@@ -40,6 +40,7 @@ namespace YarnGenerator
             int loopIndexConsumed,
             int loopIndexProduced,
             HoldDirection holdDirection,
+            Loop prevLoop,
             Loop[] loopsConsumed
         )
         {
@@ -53,7 +54,7 @@ namespace YarnGenerator
             this.holdDirection = holdDirection;
             this.loopsConsumed = loopsConsumed;
             SetLoopsConsumed();
-            GenerateLoopsProduced();
+            GenerateLoopsProduced(prevLoop);
         }
 
         public void SetLoopsConsumed()
@@ -64,19 +65,28 @@ namespace YarnGenerator
             }
         }
 
-        public void GenerateLoopsProduced()
+        public void GenerateLoopsProduced(Loop prevLoop)
         {
             this.loopsProduced = new Loop[this.baseStitchInfo.nLoopsProduced];
+            Loop prevLoopInStitch = prevLoop;
             for (int i = 0; i < this.baseStitchInfo.nLoopsProduced; i++)
             {
-                Loop loop = new Loop(rowIndex, loopIndexProduced + i, this);
+                Loop loop = new Loop(rowIndex, loopIndexProduced + i, prevLoopInStitch, this);
                 this.loopsProduced[i] = loop;
+            }
+        }
+
+        public void UpdateLoopsForBaseStitch()
+        {
+            foreach (Loop loop in this.loopsProduced)
+            {
                 if (baseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
                 {
                     // lek
                     Loop[] prevRowConsumed = loop.producedBy.loopsConsumed;
                     Loop prevRowConsumedLoop = prevRowConsumed[1];
-                    prevRowConsumedLoop.AddXOffset(-1.0f);
+                    // prevRowConsumedLoop.AddXOffset(-1.0f);
+                    prevRowConsumedLoop.AddIndexOffset(-1, baseStitchInfo.shiftDirection);
                     prevRowConsumedLoop.producedBy.baseStitchInfo.stitchDepthFactorDict[HoldDirection.None] = 0.6f;
 
                     if (prevRowConsumedLoop.producedBy is not null)
@@ -84,12 +94,12 @@ namespace YarnGenerator
                         foreach (Loop test in prevRowConsumedLoop.producedBy.loopsConsumed)
                         {
                             Debug.Log($"loopsConsumed.Length {prevRowConsumedLoop.producedBy.loopsConsumed}");
-                            test.AddXOffset(-0.4f);
+                            test.AddXOffset(-0.4f, ShiftDirection.Right);
                         }
                     }
                 }
             }
-        }
+        } 
 
         public GameObject GenerateMesh(float yarnWidth, Material material)
         {

@@ -201,7 +201,6 @@ namespace YarnGenerator
             nRows = 17;
             Row[] rows = new Row[nRows];
             int rowNumber = 0;
-            stitchesPerRow = 8;
             StitchType[] stitches = new StitchType[8] {
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
@@ -216,7 +215,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 1;
-            stitchesPerRow = 7;
             stitches = new StitchType[7] {
                 StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -231,7 +229,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;            
             rowNumber = 2;
-            stitchesPerRow = 7;
             stitches = new StitchType[] {
                 StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -246,7 +243,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 3;
-            stitchesPerRow = 6;
             stitches = new StitchType[] {
                 StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -261,7 +257,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 4;
-            stitchesPerRow = 6;
             stitches = new StitchType[] {
                 StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -276,7 +271,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 5;
-            stitchesPerRow = 5;
             stitches = new StitchType[] {
                 StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -291,7 +285,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 6;
-            stitchesPerRow = 5;
             stitches = new StitchType[] {
                 StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -306,7 +299,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 7;
-            stitchesPerRow = 4;
             stitches = new StitchType[] {
                 StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -321,7 +313,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 8;
-            stitchesPerRow = 4;
             stitches = new StitchType[] {
                 StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -336,7 +327,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 9;
-            stitchesPerRow = 3;
             stitches = new StitchType[] {
                 StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -351,7 +341,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 10;
-            stitchesPerRow = 3;
             stitches = new StitchType[] {
                 StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -366,7 +355,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 11;
-            stitchesPerRow = 2;
             stitches = new StitchType[] {
                 // StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -381,7 +369,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 12;
-            stitchesPerRow = 2;
             stitches = new StitchType[] {
                 // StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -396,7 +383,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 13;
-            stitchesPerRow = 3;
             stitches = new StitchType[] {
                 // StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -411,7 +397,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 14;
-            stitchesPerRow = 3;
             stitches = new StitchType[] {
                 // StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -427,7 +412,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 15;
-            stitchesPerRow = 4;
             stitches = new StitchType[] {
                 // StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -444,7 +428,6 @@ namespace YarnGenerator
             prevRow = row;
             rows[rowNumber] = row;
             rowNumber = 16;
-            stitchesPerRow = 4;
             stitches = new StitchType[] {
                 // StitchType.KnitStitch,
                 // StitchType.KnitStitch,

@@ -58,6 +58,7 @@ namespace YarnGenerator
             {
                 foreach (BaseStitch baseStitch in stitch.baseStitches)
                 {
+                    baseStitch.UpdateLoopsForBaseStitch();
                     this.nLoopsConsumed += baseStitch.baseStitchInfo.nLoopsConsumed;
                     this.nLoopsProduced += baseStitch.baseStitchInfo.nLoopsProduced;
                     this.nBaseStitches += 1;
@@ -100,6 +101,7 @@ namespace YarnGenerator
 
             int loopIndexConsumed = 0;
             int loopIndexProduced = 0;
+            Loop prevLoop = null;
             for (int stitchIndex = 0; stitchIndex < stitchTypes.Length; stitchIndex++)
             {
                 StitchType stitchType = stitchTypes[stitchIndex];
@@ -115,9 +117,11 @@ namespace YarnGenerator
                     stitchIndex,
                     loopIndexConsumed,
                     loopIndexProduced,
+                    prevLoop,
                     loopsConsumedInStitch
                     );
                 this.stitches[stitchIndex] = stitch;
+                prevLoop = stitch.GetLoopsProduced().LastOrDefault();
                 loopIndexConsumed += stitchInfo.nLoopsConsumed;
                 loopIndexProduced += stitchInfo.nLoopsProduced;
             }
