@@ -55,16 +55,16 @@ namespace YarnGenerator
 
             // check offset between where stitch was and where it ends up
             // (if it's a cable stitch that crosses over)
-            int cons = GetConsumedIndex(loopIndexConsumed, loopsConsumed, 0);
-            int prod = GetProducedIndex(loopIndexProduced, loopsProduced, 0);
+            float cons = GetConsumedIndex(loopIndexConsumed, loopsConsumed, 0);
+            float prod = GetProducedIndex(loopIndexProduced, loopsProduced, 0);
 
             return GenerateSingleCurve(yarnWidth, cons, prod, stitchDepthFactor, stitchDepthOffset);
         }
 
         public Vector3[] GenerateSingleCurve(
             float yarnWidth,
-            int consumedIndex,
-            int producedIndex,
+            float consumedIndex,
+            float producedIndex,
             float stitchDepthFactor,
             float stitchDepthOffset)
         {
@@ -116,30 +116,30 @@ namespace YarnGenerator
             return new Vector3(xVal, yVal, zVal);
         }
 
-        public int GetConsumedIndex(int loopIndexConsumed, Loop[] loopsConsumed, int index)
+        public float GetConsumedIndex(int loopIndexConsumed, Loop[] loopsConsumed, int index)
         {
             // Get the index of the consumed stitch at provided index.
             // If there are no loops consumed, default to using the value
             // of loopIndexConsumed
-            int cons = loopIndexConsumed;
+            float cons = loopIndexConsumed;
 
             if (loopsConsumed is not null && loopsConsumed.Length > 0)
             {
-                cons = loopsConsumed[index].loopIndex;
+                cons = loopsConsumed[index].GetIndex();
             }
 
             return cons;
         }
 
-        public int GetProducedIndex(int loopIndexProduced, Loop[] loopsProduced, int index)
+        public float GetProducedIndex(int loopIndexProduced, Loop[] loopsProduced, int index)
         {
             // Get the index of the produced stitch at provided index.
             // If there are no loops produced, default to using the value
             // of loopIndexProduced
-            int prod = loopIndexProduced;
+            float prod = loopIndexProduced;
             if (loopsProduced is not null && loopsProduced.Length > 0)
             {
-                prod = loopsProduced[index].loopIndex;
+                prod = loopsProduced[index].GetIndex();
             }
 
             return prod;
@@ -164,30 +164,6 @@ namespace YarnGenerator
     {
         public Knit2TogStitchCurve(BaseStitchInfo baseStitchInfo, HoldDirection holdDirection) : base(baseStitchInfo, holdDirection)
         {
-        }
-
-        public override Vector3[] GenerateCurve(
-            float yarnWidth,
-            int loopIndexConsumed,
-            int loopIndexProduced,
-            Loop[] loopsConsumed,
-            Loop[] loopsProduced)
-        {
-            Vector3[] curve = Array.Empty<Vector3>();
-
-            int consumedIndex = GetConsumedIndex(loopIndexConsumed, loopsConsumed, 0);
-            int producedIndex = GetProducedIndex(loopIndexProduced, loopsProduced, 0);
-
-            Vector3[] newCurve = GenerateSingleCurve(
-                yarnWidth, consumedIndex, producedIndex, stitchDepthFactor, stitchDepthOffset);
-            curve = curve.Concat(newCurve).ToArray();
-
-            consumedIndex = GetConsumedIndex(loopIndexConsumed, loopsConsumed, 1);
-            newCurve =
-                GenerateSingleCurve(
-                    yarnWidth, consumedIndex, producedIndex,
-                    stitchDepthFactor * 1.5f, stitchDepthOffset);
-            return curve.Concat(newCurve).ToArray();
         }
     }
 

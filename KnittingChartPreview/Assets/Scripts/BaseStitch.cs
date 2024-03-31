@@ -52,7 +52,16 @@ namespace YarnGenerator
             this.loopIndexProduced = loopIndexProduced;
             this.holdDirection = holdDirection;
             this.loopsConsumed = loopsConsumed;
+            SetLoopsConsumed();
             GenerateLoopsProduced();
+        }
+
+        public void SetLoopsConsumed()
+        {
+            foreach (Loop loop in this.loopsConsumed)
+            {
+                loop.SetConsumedBy(this);
+            }
         }
 
         public void GenerateLoopsProduced()
@@ -62,6 +71,23 @@ namespace YarnGenerator
             {
                 Loop loop = new Loop(rowIndex, loopIndexProduced + i, this);
                 this.loopsProduced[i] = loop;
+                if (baseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
+                {
+                    // lek
+                    Loop[] prevRowConsumed = loop.producedBy.loopsConsumed;
+                    Loop prevRowConsumedLoop = prevRowConsumed[1];
+                    prevRowConsumedLoop.AddXOffset(-1.0f);
+                    prevRowConsumedLoop.producedBy.baseStitchInfo.stitchDepthFactorDict[HoldDirection.None] = 0.6f;
+
+                    if (prevRowConsumedLoop.producedBy is not null)
+                    {
+                        foreach (Loop test in prevRowConsumedLoop.producedBy.loopsConsumed)
+                        {
+                            Debug.Log($"loopsConsumed.Length {prevRowConsumedLoop.producedBy.loopsConsumed}");
+                            test.AddXOffset(-0.4f);
+                        }
+                    }
+                }
             }
         }
 

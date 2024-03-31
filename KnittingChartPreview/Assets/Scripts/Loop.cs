@@ -32,6 +32,16 @@ namespace YarnGenerator
             this.consumbedBy = null;
         }
 
+        public void SetConsumedBy(BaseStitch baseStitch)
+        {
+            this.consumbedBy = baseStitch;
+        }
+
+        public float GetIndex()
+        {
+            return (float)loopIndex + offset.x;
+        }
+
         public void AddOffset(Vector3 offsetToAdd)
         {
             offset += offsetToAdd;
