@@ -63,12 +63,13 @@ namespace YarnGenerator
         public void AddIndexOffset(int offset, ShiftDirection shiftDirection)
         {
             indexOffset += offset;
+            
             if (shiftDirection == ShiftDirection.Left)
             {
                 Loop loop = this.prevLoop;
                 while (loop is not null)
                 {
-                    loop.AddIndexOffset(offset, shiftDirection);
+                    loop.indexOffset += offset;
                     loop = loop.prevLoop;
                 }
             } else if (shiftDirection == ShiftDirection.Right)
@@ -76,7 +77,7 @@ namespace YarnGenerator
                 Loop loop = this.nextLoop;
                 while (loop is not null)
                 {
-                    loop.AddIndexOffset(offset, shiftDirection);
+                    loop.indexOffset += offset;
                     loop = loop.nextLoop;
                 }
             }
@@ -89,22 +90,42 @@ namespace YarnGenerator
         
         public void AddXOffset(float xOffsetToAdd, ShiftDirection shiftDirection)
         {
-            offset.x += xOffsetToAdd;
+            Debug.Log($"    IN ADDXOFFSET: Starting with loop {rowIndex}/{loopIndex}");
+            // offset.x += xOffsetToAdd;
             if (shiftDirection == ShiftDirection.Left)
             {
                 Loop loop = this.prevLoop;
                 while (loop is not null)
                 {
-                    loop.AddXOffset(xOffsetToAdd, shiftDirection);
+                    Debug.Log($"    Adding {xOffsetToAdd} to loop {loop.rowIndex}/{loop.loopIndex}");
+                    // loop.AddXOffset(xOffsetToAdd, shiftDirection);
+                    loop.offset.x += xOffsetToAdd;
                     loop = loop.prevLoop;
-                }
+                    if (loop is not null)
+                    {
+                        Debug.Log($"    ... now about to add {xOffsetToAdd} to loop {loop.rowIndex}/{loop.loopIndex}");
+                    }
+                    else
+                    {
+                        Debug.Log("    ... next loop is null");
+                    }                }
             } else if (shiftDirection == ShiftDirection.Right)
             {
                 Loop loop = this.nextLoop;
                 while (loop is not null)
                 {
-                    loop.AddXOffset(xOffsetToAdd, shiftDirection);
+                    Debug.Log($"    Adding {xOffsetToAdd} to loop {loop.rowIndex}/{loop.loopIndex}");
+                    // loop.AddXOffset(xOffsetToAdd, shiftDirection);
+                    loop.offset.x += xOffsetToAdd;
                     loop = loop.nextLoop;
+                    if (loop is not null)
+                    {
+                        Debug.Log($"    ... now about to add {xOffsetToAdd} to loop {loop.rowIndex}/{loop.loopIndex}");
+                    }
+                    else
+                    {
+                        Debug.Log("    ... next loop is null");
+                    }
                 }
             }
         }

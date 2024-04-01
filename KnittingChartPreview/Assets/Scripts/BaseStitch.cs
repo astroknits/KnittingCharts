@@ -85,16 +85,14 @@ namespace YarnGenerator
                     // lek
                     Loop[] prevRowConsumed = loop.producedBy.loopsConsumed;
                     Loop prevRowConsumedLoop = prevRowConsumed[1];
-                    // prevRowConsumedLoop.AddXOffset(-1.0f);
                     prevRowConsumedLoop.AddIndexOffset(-1, baseStitchInfo.shiftDirection);
                     prevRowConsumedLoop.producedBy.baseStitchInfo.stitchDepthFactorDict[HoldDirection.None] = 0.6f;
 
                     if (prevRowConsumedLoop.producedBy is not null)
                     {
-                        foreach (Loop test in prevRowConsumedLoop.producedBy.loopsConsumed)
+                        foreach (Loop test in prevRowConsumedLoop.producedBy.loopsProduced)
                         {
-                            Debug.Log($"loopsConsumed.Length {prevRowConsumedLoop.producedBy.loopsConsumed}");
-                            test.AddXOffset(-0.4f, ShiftDirection.Right);
+                            test.AddXOffset(0.4f, ShiftDirection.Right);
                         }
                     }
                 }
