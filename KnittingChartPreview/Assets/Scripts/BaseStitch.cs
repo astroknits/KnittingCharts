@@ -82,7 +82,6 @@ namespace YarnGenerator
             {
                 if (baseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
                 {
-                    // lek
                     Loop[] prevRowConsumed = loop.producedBy.loopsConsumed;
                     Loop prevRowConsumedLoop = prevRowConsumed[1];
                     prevRowConsumedLoop.AddIndexOffset(-1, baseStitchInfo.shiftDirection);
@@ -92,7 +91,13 @@ namespace YarnGenerator
                     {
                         foreach (Loop test in prevRowConsumedLoop.producedBy.loopsProduced)
                         {
-                            test.AddXOffset(0.4f, ShiftDirection.Right);
+                            if (test.producedBy.loopsConsumed is not null)
+                            {
+                                foreach (Loop test2 in test.producedBy.loopsConsumed)
+                                {
+                                    test2.AddXOffset(-0.4f, ShiftDirection.Right);
+                                }
+                            }
                         }
                     }
                 }
