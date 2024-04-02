@@ -314,10 +314,10 @@ namespace YarnGenerator
             stitches = new StitchType[] {
                 StitchType.NoStitch,
                 StitchType.NoStitch,
+                StitchType.NoStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
+                StitchType.SSKStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 // StitchType.KnitStitch,
@@ -336,7 +336,7 @@ namespace YarnGenerator
             stitches = new StitchType[] {
                 StitchType.NoStitch,
                 StitchType.NoStitch,
-                StitchType.KnitStitch,
+                StitchType.NoStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
@@ -358,7 +358,7 @@ namespace YarnGenerator
             stitches = new StitchType[] {
                 StitchType.NoStitch,
                 StitchType.NoStitch,
-                StitchType.KnitStitch,
+                StitchType.NoStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
@@ -380,7 +380,7 @@ namespace YarnGenerator
             stitches = new StitchType[] {
                 StitchType.NoStitch,
                 StitchType.NoStitch,
-                StitchType.KnitStitch,
+                StitchType.NoStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
@@ -402,7 +402,7 @@ namespace YarnGenerator
             stitches = new StitchType[] {
                 StitchType.NoStitch,
                 StitchType.NoStitch,
-                StitchType.KnitStitch,
+                StitchType.NoStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
@@ -424,7 +424,7 @@ namespace YarnGenerator
             stitches = new StitchType[] {
                 StitchType.NoStitch,
                 StitchType.NoStitch,
-                StitchType.KnitStitch,
+                StitchType.NoStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
@@ -446,7 +446,7 @@ namespace YarnGenerator
             stitches = new StitchType[] {
                 StitchType.NoStitch,
                 StitchType.NoStitch,
-                StitchType.KnitStitch,
+                StitchType.NoStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
@@ -468,7 +468,7 @@ namespace YarnGenerator
             stitches = new StitchType[] {
                 StitchType.NoStitch,
                 StitchType.NoStitch,
-                StitchType.KnitStitch,
+                StitchType.NoStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
@@ -490,7 +490,7 @@ namespace YarnGenerator
             stitches = new StitchType[] {
                 StitchType.NoStitch,
                 StitchType.NoStitch,
-                StitchType.KnitStitch,
+                StitchType.NoStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
@@ -512,7 +512,7 @@ namespace YarnGenerator
             stitches = new StitchType[] {
                 StitchType.NoStitch,
                 StitchType.NoStitch,
-                StitchType.KnitStitch,
+                StitchType.NoStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
@@ -535,7 +535,7 @@ namespace YarnGenerator
             stitches = new StitchType[] {
                 StitchType.NoStitch,
                 StitchType.NoStitch,
-                StitchType.KnitStitch,
+                StitchType.NoStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
@@ -559,7 +559,7 @@ namespace YarnGenerator
             stitches = new StitchType[] {
                 StitchType.NoStitch,
                 StitchType.NoStitch,
-                StitchType.KnitStitch,
+                StitchType.NoStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
