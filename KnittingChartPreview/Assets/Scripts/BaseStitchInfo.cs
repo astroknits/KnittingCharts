@@ -41,6 +41,8 @@ namespace YarnGenerator
         {
             switch (baseStitchType)
             {
+                case BaseStitchType.None:
+                    return new None();
                 case BaseStitchType.Knit:
                     return new Knit();
                 case BaseStitchType.Purl:
@@ -59,6 +61,16 @@ namespace YarnGenerator
         }
     }
     
+    public class None : BaseStitchInfo
+    {
+        public None() : base()
+        {
+            this.BaseStitchType = BaseStitchType.None;
+            this.nLoopsConsumed = 0;
+            this.nLoopsProduced = 1;
+        }
+    }
+
     public class Knit : BaseStitchInfo
     {
         public Knit() : base()

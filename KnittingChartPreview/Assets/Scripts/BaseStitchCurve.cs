@@ -33,6 +33,8 @@ namespace YarnGenerator
         {
             switch (baseStitchInfo.BaseStitchType)
             {
+                case BaseStitchType.None:
+                    return new NoStitchCurve(baseStitchInfo, holdDirection);
                 case BaseStitchType.Knit:
                     return new KnitStitchCurve(baseStitchInfo, holdDirection);
                 case BaseStitchType.Purl:
@@ -144,6 +146,25 @@ namespace YarnGenerator
 
             return prod;
         }
+    }
+
+    public class NoStitchCurve : BaseStitchCurve
+    {
+        public NoStitchCurve(BaseStitchInfo baseStitchInfo, HoldDirection holdDirection) : base(baseStitchInfo, holdDirection)
+        {
+        }
+        
+        public override Vector3[] GenerateCurve(
+            float yarnWidth,
+            int loopIndexConsumed,
+            int loopIndexProduced,
+            Loop[] loopsConsumed,
+            Loop[] loopsProduced)
+        {
+            return Array.Empty<Vector3>();
+        }
+
+
     }
 
     public class KnitStitchCurve : BaseStitchCurve

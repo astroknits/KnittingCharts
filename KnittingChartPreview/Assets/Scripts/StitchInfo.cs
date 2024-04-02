@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace YarnGenerator
 {
     public class StitchInfo
@@ -45,6 +47,8 @@ namespace YarnGenerator
         {
             switch (stitchType)
             {
+                case StitchType.NoStitch:
+                    return new NoStitch();
                 case StitchType.KnitStitch:
                     return new KnitStitch();
                 case StitchType.PurlStitch:
@@ -82,6 +86,23 @@ namespace YarnGenerator
         }
     }
     
+    public class NoStitch : StitchInfo
+    {
+        public NoStitch() : 
+            base()
+        {
+            this.stitchType = StitchType.NoStitch;
+            this.nBaseStitches = 1;
+            this.nLoopsConsumed = 1;
+            this.nLoopsProduced = 1;
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[]
+            {
+                BaseStitchType.None
+            };
+            this.baseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
+        }
+    }
+
     public class KnitStitch : StitchInfo
     {
         public KnitStitch() : 
