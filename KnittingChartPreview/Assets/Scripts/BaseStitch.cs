@@ -101,6 +101,27 @@ namespace YarnGenerator
                         }
                     }
                 }
+                else if (baseStitchInfo.BaseStitchType == BaseStitchType.SSK)
+                {
+                    Loop[] prevRowConsumed = loop.producedBy.loopsConsumed;
+                    Loop prevRowConsumedLoop = prevRowConsumed[0];
+                    prevRowConsumedLoop.AddIndexOffset(1, baseStitchInfo.shiftDirection);
+                    prevRowConsumedLoop.producedBy.baseStitchInfo.stitchDepthFactorDict[HoldDirection.None] = 0.6f;
+
+                    if (prevRowConsumedLoop.producedBy is not null)
+                    {
+                        foreach (Loop test in prevRowConsumedLoop.producedBy.loopsProduced)
+                        {
+                            if (test.producedBy.loopsConsumed is not null)
+                            {
+                                foreach (Loop test2 in test.producedBy.loopsConsumed)
+                                {
+                                    test2.AddXOffset(0.4f, ShiftDirection.Left);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         } 
 

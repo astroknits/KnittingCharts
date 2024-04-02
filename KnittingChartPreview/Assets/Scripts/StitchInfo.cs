@@ -93,7 +93,7 @@ namespace YarnGenerator
         {
             this.stitchType = StitchType.NoStitch;
             this.nBaseStitches = 1;
-            this.nLoopsConsumed = 1;
+            this.nLoopsConsumed = 0;
             this.nLoopsProduced = 1;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[]
             {

@@ -141,7 +141,7 @@ namespace YarnGenerator
             {
                 return Array.Empty<Loop>();
             }
-            return loopsConsumed.Skip(start).Take(nLoops).ToArray();
+            return loopsConsumed.Where(loop => !loop.IsNull()).Skip(start).Take(nLoops).ToArray();
         }
 
         public Loop[] GetLoopsProduced()

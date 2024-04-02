@@ -47,7 +47,11 @@ namespace YarnGenerator
             // This will get updated only if there is a
             // next row of stitches defined (otherwise stays null).
             this.consumbedBy = null;
-            
+        }
+
+        public bool IsNull()
+        {
+            return this.producedBy.baseStitchInfo.BaseStitchType == BaseStitchType.None;
         }
 
         public void SetConsumedBy(BaseStitch baseStitch)
