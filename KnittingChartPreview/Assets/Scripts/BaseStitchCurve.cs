@@ -41,6 +41,8 @@ namespace YarnGenerator
                     return new PurlStitchCurve(baseStitchInfo, holdDirection);
                 case BaseStitchType.Knit2Tog:
                     return new Knit2TogStitchCurve(baseStitchInfo, holdDirection);
+                case BaseStitchType.YarnOver:
+                    return new YarnOverStitchCurve(baseStitchInfo, holdDirection);
                 default:
                     return new KnitStitchCurve(baseStitchInfo, holdDirection);
             }
@@ -192,6 +194,23 @@ namespace YarnGenerator
     {
         public SSKStitchCurve(BaseStitchInfo baseStitchInfo, HoldDirection holdDirection) : base(baseStitchInfo, holdDirection)
         {
+        }
+    }
+
+    public class YarnOverStitchCurve : BaseStitchCurve
+    {
+        public YarnOverStitchCurve(BaseStitchInfo baseStitchInfo, HoldDirection holdDirection) : base(baseStitchInfo, holdDirection)
+        {
+        }
+
+        public override Vector3[] GenerateCurve(
+            float yarnWidth,
+            int loopIndexConsumed,
+            int loopIndexProduced,
+            Loop[] loopsConsumed,
+            Loop[] loopsProduced)
+        {
+            return Array.Empty<Vector3>();
         }
     }
 }
