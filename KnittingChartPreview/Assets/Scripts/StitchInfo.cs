@@ -55,6 +55,8 @@ namespace YarnGenerator
                     return new PurlStitch();
                 case StitchType.Cable1Lo1RStitch:
                     return new Cable1Lo1RStitch();
+                case StitchType.Cable1Ro2LStitch:
+                    return new Cable1Ro2LStitch();
                 case StitchType.Cable2Lo2RStitch:
                     return new Cable2Lo2RStitch();
                 case StitchType.CableKnitStitch:
@@ -237,6 +239,26 @@ namespace YarnGenerator
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[4]
             {
                 BaseStitchType.Knit,
+                BaseStitchType.Knit,
+                BaseStitchType.Knit,
+                BaseStitchType.Knit
+            };
+            this.baseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
+        }
+    }
+    
+    public class Cable1Ro2LStitch : StitchInfo
+    {
+        public Cable1Ro2LStitch() : base()
+        {
+            this.stitchType = StitchType.Cable1Ro2LStitch;
+            this.nBaseStitches = 3;
+            this.nLoopsConsumed = 3;
+            this.nLoopsProduced = 3;
+            this.held = 1;
+            this.holdDirection = HoldDirection.Back;
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[]
+            {
                 BaseStitchType.Knit,
                 BaseStitchType.Knit,
                 BaseStitchType.Knit

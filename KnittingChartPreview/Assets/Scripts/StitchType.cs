@@ -13,5 +13,6 @@ namespace YarnGenerator
         Cable2Lo2RStitch,
         CableKnitStitch,
         CableKnitStitch4,
+        Cable1Ro2LStitch
     }
 }
