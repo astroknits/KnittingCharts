@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace YarnGenerator
 {
     public class StitchInfo
@@ -34,6 +36,9 @@ namespace YarnGenerator
 
         public StitchInfo()
         {
+            // Default: stitches don't have any held stitches
+            //          and they are not held in front/behind
+            //          the other loops
             this.held = 0;
             this.holdDirection = HoldDirection.None;
         }
@@ -42,12 +47,16 @@ namespace YarnGenerator
         {
             switch (stitchType)
             {
+                case StitchType.NoStitch:
+                    return new NoStitch();
                 case StitchType.KnitStitch:
                     return new KnitStitch();
                 case StitchType.PurlStitch:
                     return new PurlStitch();
                 case StitchType.Cable1Lo1RStitch:
                     return new Cable1Lo1RStitch();
+                case StitchType.Cable1Ro2LStitch:
+                    return new Cable1Ro2LStitch();
                 case StitchType.Cable2Lo2RStitch:
                     return new Cable2Lo2RStitch();
                 case StitchType.CableKnitStitch:
@@ -79,6 +88,23 @@ namespace YarnGenerator
         }
     }
     
+    public class NoStitch : StitchInfo
+    {
+        public NoStitch() : 
+            base()
+        {
+            this.stitchType = StitchType.NoStitch;
+            this.nBaseStitches = 1;
+            this.nLoopsConsumed = 0;
+            this.nLoopsProduced = 1;
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[]
+            {
+                BaseStitchType.None
+            };
+            this.baseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
+        }
+    }
+
     public class KnitStitch : StitchInfo
     {
         public KnitStitch() : 
@@ -213,6 +239,26 @@ namespace YarnGenerator
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[4]
             {
                 BaseStitchType.Knit,
+                BaseStitchType.Knit,
+                BaseStitchType.Knit,
+                BaseStitchType.Knit
+            };
+            this.baseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
+        }
+    }
+    
+    public class Cable1Ro2LStitch : StitchInfo
+    {
+        public Cable1Ro2LStitch() : base()
+        {
+            this.stitchType = StitchType.Cable1Ro2LStitch;
+            this.nBaseStitches = 3;
+            this.nLoopsConsumed = 3;
+            this.nLoopsProduced = 3;
+            this.held = 1;
+            this.holdDirection = HoldDirection.Back;
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[]
+            {
                 BaseStitchType.Knit,
                 BaseStitchType.Knit,
                 BaseStitchType.Knit

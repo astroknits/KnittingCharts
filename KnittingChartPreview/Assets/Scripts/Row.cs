@@ -7,7 +7,6 @@ namespace YarnGenerator
 {
     public class Row
     {
-        public float yarnWidth;
         // Index for this row
         public int rowIndex;
         // Loop index offset for this row
@@ -29,16 +28,14 @@ namespace YarnGenerator
         internal Loop[] loopsConsumed;
         internal Loop[] loopsProduced;
 
-        public Row(int rowIndex, Row prevRow, StitchType[] stitchTypes, float yarnWidth)
+        public Row(int rowIndex, Row prevRow, StitchType[] stitchTypes)
         {
-            this.yarnWidth = yarnWidth;
             this.rowIndex = rowIndex;
             this.loopIndexOffset = 0;
 
             // Set the previous row, and set the loops consumed to
             // be equal to the set of loops produced by the previous row.
             SetPreviousRow(prevRow);
-            SetLoopsConsumed();
             // Generate the stitches for this row, and set the number of
             // stitches, base stitches, and loops produced/consumed
             Configure(stitchTypes);
@@ -66,11 +63,36 @@ namespace YarnGenerator
                     this.nBaseStitches += 1;
                 }
             }
-
         }
-        public BaseStitch GetBaseStitch(int i)
+
+        public void UpdateLoops()
         {
-            return GetBaseStitches()[i];
+            foreach (Stitch stitch in stitches)
+            {
+                foreach (BaseStitch baseStitch in stitch.baseStitches)
+                {
+                    baseStitch.UpdateLoopsForBaseStitch();
+                }
+            }
+        }
+
+        public int GetRowIndexOffset(BaseStitch baseStitch)
+        {
+            if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.SSK)
+            {
+                return -1;
+            } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
+            {
+                return -1;
+            } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.YarnOver)
+            {
+                return 1;
+            } else if (baseStitch.baseStitchInfo.BaseStitchType == BaseStitchType.M1)
+            {
+                return 1;
+            }
+
+            return 0;
         }
 
         public void SetPreviousRow(Row prevRowObj)
@@ -80,13 +102,16 @@ namespace YarnGenerator
                 prevRow = prevRowObj;
                 prevRowObj.nextRow = this;
             }
+            SetLoopsConsumed();
         }
 
         private void GenerateStitches(StitchType[] stitchTypes)
         {
             this.stitches = new Stitch[stitchTypes.Length];
 
-            int loopIndex = 0;
+            int loopIndexConsumed = 0;
+            int loopIndexProduced = 0;
+            Loop prevLoop = null;
             for (int stitchIndex = 0; stitchIndex < stitchTypes.Length; stitchIndex++)
             {
                 StitchType stitchType = stitchTypes[stitchIndex];
@@ -94,11 +119,21 @@ namespace YarnGenerator
 
                 // Get loops consumed in the stitch
                 // based on the start loop index for the stitch and number of loops consumed
-                Loop[] loopsConsumedInStitch = GetLoopsConsumed(loopIndex, stitchInfo.nLoopsConsumed);
+                Loop[] loopsConsumedInStitch = GetLoopsConsumed(loopIndexConsumed, stitchInfo.nLoopsConsumed);
 
-                Stitch stitch = new Stitch(stitchInfo, rowIndex, stitchIndex, loopIndex, yarnWidth, loopsConsumedInStitch);
+                Stitch stitch = new Stitch(
+                    stitchInfo,
+                    rowIndex,
+                    stitchIndex,
+                    loopIndexConsumed,
+                    loopIndexProduced,
+                    prevLoop,
+                    loopsConsumedInStitch
+                    );
                 this.stitches[stitchIndex] = stitch;
-                loopIndex += stitchInfo.nLoopsConsumed;
+                prevLoop = stitch.GetLoopsProduced().LastOrDefault();
+                loopIndexConsumed += stitchInfo.nLoopsConsumed;
+                loopIndexProduced += stitchInfo.nLoopsProduced;
             }
         }
 
@@ -116,7 +151,7 @@ namespace YarnGenerator
             {
                 return Array.Empty<Loop>();
             }
-            return loopsConsumed.Skip(start).Take(nLoops).ToArray();
+            return loopsConsumed.Where(loop => !loop.IsNull()).Skip(start).Take(nLoops).ToArray();
         }
 
         public Loop[] GetLoopsProduced()
@@ -164,13 +199,12 @@ namespace YarnGenerator
             return baseStitches;
         }
 
-        public GameObject GeneratePreview(Material material)
+        public GameObject GeneratePreview(float yarnWidth, Material material)
         {
-            GameObject rowGameObject = new GameObject($"Row {this.rowIndex} for yarnWidth {this.yarnWidth}");
+            GameObject rowGameObject = new GameObject($"Row {this.rowIndex} for yarnWidth {yarnWidth}");
             foreach (Stitch stitch in this.stitches)
             {
-                stitch.GenerateCurve();
-                GameObject stitchGameObject = stitch.GenerateMesh(material);
+                GameObject stitchGameObject = stitch.GenerateMesh(yarnWidth, material);
                 stitchGameObject.transform.SetParent(rowGameObject.transform);
             }
 

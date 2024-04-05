@@ -1,8 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace YarnGenerator
 {
     public class BaseStitchInfo
     {
         public BaseStitchType BaseStitchType;
+
+        // indicates whether the stitch is knitwise or purlwise
+        public bool isPurlStitch;
         // # of baseStitches from previous row used by this stitch
         public int nLoopsConsumed;
         // # of baseStitches left on the needle at the end of this stitch
@@ -10,8 +17,23 @@ namespace YarnGenerator
         // Direction to shift loops (if the stitch results in an increase or decrease)
         public ShiftDirection shiftDirection;
 
+        internal float stitchHeight;  // height of stitches
+        internal float stitchWidth;  // width of stitch
+        internal Dictionary<HoldDirection, float> stitchDepthFactorDict;  // depth curve factor for stitch
+        internal float stitchDepthOffset;  // depth offset for stitch
+
         public BaseStitchInfo()
         {
+            isPurlStitch = false;
+            stitchHeight = 1.0f;
+            stitchWidth = 1.6f;
+            stitchDepthFactorDict = new Dictionary<HoldDirection, float>()
+            {
+                {HoldDirection.None, 0.3f},
+                {HoldDirection.Front, 0.55f},
+                {HoldDirection.Back, 0.10f}
+            };  
+            stitchDepthOffset = 2.1f;
             this.shiftDirection = ShiftDirection.None;
         }
         
@@ -19,6 +41,8 @@ namespace YarnGenerator
         {
             switch (baseStitchType)
             {
+                case BaseStitchType.None:
+                    return new None();
                 case BaseStitchType.Knit:
                     return new Knit();
                 case BaseStitchType.Purl:
@@ -37,6 +61,16 @@ namespace YarnGenerator
         }
     }
     
+    public class None : BaseStitchInfo
+    {
+        public None() : base()
+        {
+            this.BaseStitchType = BaseStitchType.None;
+            this.nLoopsConsumed = 0;
+            this.nLoopsProduced = 1;
+        }
+    }
+
     public class Knit : BaseStitchInfo
     {
         public Knit() : base()
@@ -51,6 +85,7 @@ namespace YarnGenerator
     {
         public Purl(): base()
         {
+            this.isPurlStitch = true;
             this.BaseStitchType = BaseStitchType.Purl;
             this.nLoopsConsumed = 1;
             this.nLoopsProduced = 1;
@@ -97,6 +132,7 @@ namespace YarnGenerator
             this.BaseStitchType = BaseStitchType.YarnOver;
             this.nLoopsConsumed = 0;
             this.nLoopsProduced = 1;
+            this.shiftDirection = ShiftDirection.Left;
         }
     }
 }

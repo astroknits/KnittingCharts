@@ -2,6 +2,7 @@ namespace YarnGenerator
 {
     public enum StitchType
     {
+        NoStitch,
         KnitStitch,
         PurlStitch,
         Knit2TogStitch,
@@ -12,5 +13,6 @@ namespace YarnGenerator
         Cable2Lo2RStitch,
         CableKnitStitch,
         CableKnitStitch4,
+        Cable1Ro2LStitch
     }
 }
