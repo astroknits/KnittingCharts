@@ -95,7 +95,7 @@ namespace YarnGenerator
                     int index = j * radialRes + i;
                     vertices[index] = rotatedCircle[i];
                     // Shift the y position to the correct row
-                    vertices[index].y += rowIndex * (2.0f - 3.0f * yarnWidth);
+                    vertices[index].y += KnitSettings.stitchHeight * rowIndex * (2.0f - 3.0f * yarnWidth);
                 }
             }
 

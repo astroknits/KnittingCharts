@@ -114,7 +114,7 @@ namespace YarnGenerator
             // parametric equation for stitch
             // eg from https://www.cs.cmu.edu/~kmcrane/Projects/Other/YarnCurve.pdf
             float xVal = (float) (angle + stitchWidth * (float) Math.Sin(2.0f * angle)) / (float) Math.PI;
-            float yVal = stitchHeight * (float) Math.Cos(angle + (float) Math.PI);
+            float yVal = KnitSettings.stitchHeight * stitchHeight * (float) Math.Cos(angle + (float) Math.PI);
             float zVal = stitchDepthFactor * (float) Math.Cos(2.0f * angle) - stitchDepthOffset * yarnWidth;
 
             return new Vector3(xVal, yVal, zVal);
