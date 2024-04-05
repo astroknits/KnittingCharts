@@ -78,8 +78,49 @@ namespace YarnGenerator
 
         public void UpdateLoopsForBaseStitch()
         {
+            foreach (Loop loop in this.loopsConsumed)
+            {
+                if (baseStitchInfo.BaseStitchType == BaseStitchType.Knit)
+                {
+                    if (loop.consumbedBy is not null && loop.consumbedBy.loopsProduced is not null &&
+                        loop.consumbedBy.loopsProduced.Length > 0)
+                    {
+                        Loop[] baseStitchProduced = loop.consumbedBy.loopsProduced;
+                        Loop baseStitchProducedLoop = baseStitchProduced[0];
+                        if (holdDirection != HoldDirection.None)
+                        {
+                            float offset = loop.GetIndex() - baseStitchProducedLoop.GetIndex();
+                            baseStitchProducedLoop.offset.x += 0.2f * offset;
+                            if (baseStitchProducedLoop.consumbedBy is not null)
+                            {
+                                baseStitchProducedLoop.consumbedBy.baseStitchInfo.stitchDepthFactorDict[
+                                    baseStitchProducedLoop.consumbedBy.holdDirection] = loop.producedBy.baseStitchInfo.stitchDepthFactorDict[holdDirection];
+                            }
+                        }
+                    }
+                }
+            }
             foreach (Loop loop in this.loopsProduced)
             {
+                if (baseStitchInfo.BaseStitchType == BaseStitchType.Knit)
+                {
+                    if (loop.producedBy is not null && loop.producedBy.loopsConsumed is not null && loop.producedBy.loopsConsumed.Length > 0)
+                    {
+                        Loop[] baseStitchConsumed = loop.producedBy.loopsConsumed;
+                        Loop baseStitchConsumedLoop = baseStitchConsumed[0];
+                        if (holdDirection != HoldDirection.None)
+                        {
+                            float offset = loop.GetIndex() - baseStitchConsumedLoop.GetIndex();
+                            baseStitchConsumedLoop.offset.x += 0.2f * offset;
+                            if (baseStitchConsumedLoop.producedBy is not null)
+                            {
+                                baseStitchConsumedLoop.producedBy.baseStitchInfo.stitchDepthFactorDict[
+                                    baseStitchConsumedLoop.producedBy.holdDirection] = loop.producedBy.baseStitchInfo.stitchDepthFactorDict[holdDirection];
+                            }
+                        }
+                    }
+                }
+
                 if (baseStitchInfo.BaseStitchType == BaseStitchType.Knit2Tog)
                 {
                     Loop[] prevRowConsumed = loop.producedBy.loopsConsumed;

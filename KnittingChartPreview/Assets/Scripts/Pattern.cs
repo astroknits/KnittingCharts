@@ -37,6 +37,10 @@ namespace YarnGenerator
         {
             this.rows = GetPatternDefinition();
             SetAdjacentRows();
+            foreach (Row row in this.rows)
+            {
+                row.UpdateLoops();
+            }
             // PrintLoopsInAdjacentRows();
             // UpdateLoops();
         }

@@ -58,10 +58,20 @@ namespace YarnGenerator
             {
                 foreach (BaseStitch baseStitch in stitch.baseStitches)
                 {
-                    baseStitch.UpdateLoopsForBaseStitch();
                     this.nLoopsConsumed += baseStitch.baseStitchInfo.nLoopsConsumed;
                     this.nLoopsProduced += baseStitch.baseStitchInfo.nLoopsProduced;
                     this.nBaseStitches += 1;
+                }
+            }
+        }
+
+        public void UpdateLoops()
+        {
+            foreach (Stitch stitch in stitches)
+            {
+                foreach (BaseStitch baseStitch in stitch.baseStitches)
+                {
+                    baseStitch.UpdateLoopsForBaseStitch();
                 }
             }
         }
