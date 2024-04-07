@@ -96,7 +96,7 @@ namespace YarnGenerator
             int loopIndexConsumed1 = 0;
             int loopIndexProduced1 = 0;
 
-            // Work through each of the baseStitches produced in the baseStitchTypeList
+            // Work through each of the baseStitches in the baseStitchTypeList
             for (int baseStitchIndex = 0; baseStitchIndex < this.stitchInfo.nBaseStitches; baseStitchIndex++)
             {
                 BaseStitchType baseStitchType = stitchInfo.baseStitchInfoList[baseStitchIndex].BaseStitchType;
@@ -106,11 +106,11 @@ namespace YarnGenerator
 
                 HoldDirection holdDirection = GetHoldDirection(baseStitchIndex);
 
-                baseStitches[baseStitchIndex] = new BaseStitch(
+                baseStitches[baseStitchIndex + GetIndexOffset(baseStitchIndex)] = new BaseStitch(
                     baseStitchInfo,
                     rowIndex,
                     stitchIndex,
-                    baseStitchIndex + GetIndexOffset(baseStitchIndex),
+                    baseStitchIndex,
                     this.loopIndexConsumed + loopIndexConsumed1,
                     this.loopIndexProduced + loopIndexProduced1 + GetIndexOffset(baseStitchIndex),
                     holdDirection,
@@ -120,21 +120,6 @@ namespace YarnGenerator
                 loopIndexConsumed1 += baseStitchInfo.nLoopsConsumed;
                 loopIndexProduced1 += baseStitchInfo.nLoopsProduced;
             }
-        }
-
-        public BaseStitch GetOrderedBaseStitch(int baseStitchIndex)
-        {
-            // If there are no held stitches, just return the base stitch
-            // at location baseStitchIndex
-            if (stitchInfo.held == 0)
-            {
-                return baseStitches[baseStitchIndex];
-            }
-            if (IsStitchHeld(baseStitchIndex))
-            {
-                return baseStitches[baseStitchIndex + stitchInfo.held];
-            }
-            return baseStitches[baseStitchIndex - stitchInfo.held];
         }
 
         public int GetIndexOffset(int baseStitchIndex)
@@ -151,7 +136,7 @@ namespace YarnGenerator
             // produced by this stitch
             if (IsStitchHeld(baseStitchIndex))
             {
-                return stitchInfo.held;
+                return (baseStitches.Length - stitchInfo.held);
             }
             return -stitchInfo.held;
         }
@@ -164,7 +149,7 @@ namespace YarnGenerator
             int loopProdducedIndex = 0;
             for (int baseStitchIndex=0; baseStitchIndex<baseStitches.Length; baseStitchIndex++)
             {
-                BaseStitch baseStitch = GetOrderedBaseStitch(baseStitchIndex);
+                BaseStitch baseStitch = baseStitches[baseStitchIndex];
 
                 for (int loopIndex = 0; loopIndex  < baseStitch.loopsProduced.Length; loopIndex++)
                 {

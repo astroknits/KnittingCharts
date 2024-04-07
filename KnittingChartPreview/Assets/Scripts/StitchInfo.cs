@@ -256,7 +256,7 @@ namespace YarnGenerator
             this.nLoopsConsumed = 3;
             this.nLoopsProduced = 3;
             this.held = 1;
-            this.holdDirection = HoldDirection.Back;
+            this.holdDirection = HoldDirection.Front;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[]
             {
                 BaseStitchType.Knit,
