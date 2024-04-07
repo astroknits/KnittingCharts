@@ -59,10 +59,6 @@ namespace YarnGenerator
                     return new Cable1Ro2LStitch();
                 case StitchType.Cable2Lo2RStitch:
                     return new Cable2Lo2RStitch();
-                case StitchType.CableKnitStitch:
-                    return new CableKnitStitch();
-                case StitchType.CableKnitStitch4:
-                    return new CableKnitStitch4();
                 case StitchType.Knit2TogStitch:
                     return new Knit2TogStitch();
                 case StitchType.SSKStitch:
@@ -259,41 +255,6 @@ namespace YarnGenerator
             this.holdDirection = HoldDirection.Front;
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[]
             {
-                BaseStitchType.Knit,
-                BaseStitchType.Knit,
-                BaseStitchType.Knit
-            };
-            this.baseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
-        }
-    }
-    
-    public class CableKnitStitch : StitchInfo
-    {
-        public CableKnitStitch() : base()
-        {
-            this.stitchType = StitchType.CableKnitStitch;
-            this.nBaseStitches = 2;
-            this.nLoopsConsumed = 2;
-            this.nLoopsProduced = 2;
-            BaseStitchType[] baseStitchTypeList = new BaseStitchType[2]
-            {
-                BaseStitchType.Knit,
-                BaseStitchType.Knit
-            };
-            this.baseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
-        }
-    }
-    
-    public class CableKnitStitch4 : StitchInfo
-    {
-        public CableKnitStitch4() : base()
-        {
-            this.stitchType = StitchType.CableKnitStitch4;
-            this.nBaseStitches = 4;
-            this.nLoopsConsumed = 4;
-            this.nLoopsProduced = 4;
-            BaseStitchType[] baseStitchTypeList = new BaseStitchType[4] {
-                BaseStitchType.Knit,
                 BaseStitchType.Knit,
                 BaseStitchType.Knit,
                 BaseStitchType.Knit

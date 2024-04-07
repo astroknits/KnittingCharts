@@ -666,8 +666,7 @@ namespace YarnGenerator
 
         int GetCableBlockSize(StitchType cableBlockType)
         {
-            StitchInfo stitchInfo = StitchInfo.GetStitchInfo(this.cableBlockType);
-            Debug.Log($"stitchType: {cableBlockType}, stitchInfo.nBaseStitches: {stitchInfo.nBaseStitches}");
+            StitchInfo stitchInfo = StitchInfo.GetStitchInfo(cableBlockType);
             return stitchInfo.nBaseStitches;
         }
 
