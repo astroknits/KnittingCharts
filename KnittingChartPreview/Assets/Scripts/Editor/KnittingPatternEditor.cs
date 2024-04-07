@@ -22,8 +22,8 @@ namespace YarnGenerator
         // Number of cable blocks per row
         public int cableStitchesPerRow = 10;
 
-        // size of cable (eg for 2x2)
-        public int cableBlockSize = 4;
+        // type of cable block (eg for 2x2)
+        public int cableBlockType = (int) StitchType.Cable2Lo2RStitch;
 
         // Number of rows between cable stitches (knit stitches in between) 
         public int cableLength = 4;
@@ -69,7 +69,7 @@ namespace YarnGenerator
                 nRows,
                 padding,
                 cableStitchesPerRow,
-                cableBlockSize,
+                (StitchType)cableBlockType,
                 cableSeparationSize,
                 cableLength);
         }
@@ -87,8 +87,10 @@ namespace YarnGenerator
         GUILayout.Label("Cable Pattern Options", EditorStyles.boldLabel);
         cableStitchesPerRow = EditorGUILayout.IntSlider(
             "Cables Per Row", cableStitchesPerRow, 1, 10);
-        cableBlockSize = EditorGUILayout.IntPopup(
-            "Cable Block Size", cableBlockSize, new string[] {"1x1", "2x2"}, new int[] {2, 4});
+        cableBlockType = EditorGUILayout.IntPopup(
+            "Cable Block Size", cableBlockType,
+            new string[] {"1x1", "1x2", "2x2"},
+            new int[] {(int) StitchType.Cable1Lo1RStitch, (int) StitchType.Cable1Ro2LStitch, (int) StitchType.Cable2Lo2RStitch});
         cableLength = EditorGUILayout.IntSlider(
             "Cable Length", cableLength, 1, 8);
         cableSeparationSize = EditorGUILayout.IntSlider(
