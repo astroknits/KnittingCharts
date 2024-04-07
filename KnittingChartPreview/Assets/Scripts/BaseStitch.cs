@@ -108,7 +108,6 @@ namespace YarnGenerator
                     {
                         Loop[] baseStitchConsumed = loop.producedBy.loopsConsumed;
                         Loop baseStitchConsumedLoop = baseStitchConsumed[0];
-                        Debug.Log($"loop.producedBy: {loop.producedBy.rowIndex}.  holdDirection {holdDirection}");
                         if (holdDirection != HoldDirection.None)
                         {
                             float offset = loop.GetIndex() - baseStitchConsumedLoop.GetIndex();

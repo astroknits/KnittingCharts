@@ -22,8 +22,8 @@ namespace YarnGenerator
         // Number of cable blocks per row
         public int cableStitchesPerRow = 10;
 
-        // size of cable (eg for 2x2)
-        public int cableBlockSize = 4;
+        // type of cable block (eg for 2x2)
+        public int cableBlockType = (int) StitchType.Cable2Lo2RStitch;
 
         // Number of rows between cable stitches (knit stitches in between) 
         public int cableLength = 4;
@@ -33,10 +33,10 @@ namespace YarnGenerator
 
         // number of purl stitches on either side
         public int padding = 2;
-        
+
         // number of stitches per row, for basic pattern
         public int basicStitchesPerRow = 8;
-        
+
         // number of stitches per row for lace pattern
         public int laceStitchesPerRow = 30;
 
@@ -65,93 +65,87 @@ namespace YarnGenerator
 
         Pattern GetCablePattern()
         {
-           return new CablePattern(
+            return new CablePattern(
                 nRows,
                 padding,
                 cableStitchesPerRow,
-                cableBlockSize,
+                (StitchType) cableBlockType,
                 cableSeparationSize,
                 cableLength);
         }
 
         void OnGUI()
-    {
-        GUILayout.Label("Basic Preview Options", EditorStyles.boldLabel);
-        nRows = EditorGUILayout.IntSlider(
-            "# Rows", nRows, 1, 50);
-        yarnWidth = EditorGUILayout.Slider(
-            "Yarn Width", yarnWidth, 0.0001f, 0.33f);
-        material = (Material) EditorGUILayout.ObjectField(material, typeof(Material));
-        
-        GUILayout.Space(10);
-        GUILayout.Label("Cable Pattern Options", EditorStyles.boldLabel);
-        cableStitchesPerRow = EditorGUILayout.IntSlider(
-            "Cables Per Row", cableStitchesPerRow, 1, 10);
-        cableBlockSize = EditorGUILayout.IntPopup(
-            "Cable Block Size", cableBlockSize, new string[] {"1x1", "2x2"}, new int[] {2, 4});
-        cableLength = EditorGUILayout.IntSlider(
-            "Cable Length", cableLength, 1, 8);
-        cableSeparationSize = EditorGUILayout.IntSlider(
-            "Cable Separation Size", cableSeparationSize, 0, 8);
-        padding = EditorGUILayout.IntSlider(
-            "Row padding", padding, 0, 8);
+        {
+            GUILayout.Label("Basic Preview Options", EditorStyles.boldLabel);
+            nRows = EditorGUILayout.IntSlider(
+                "# Rows", nRows, 1, 50);
+            yarnWidth = EditorGUILayout.Slider(
+                "Yarn Width", yarnWidth, 0.0001f, 0.33f);
+            material = (Material) EditorGUILayout.ObjectField(material, typeof(Material));
+
+            GUILayout.Space(10);
+            GUILayout.Label("Cable Pattern Options", EditorStyles.boldLabel);
+            cableStitchesPerRow = EditorGUILayout.IntSlider(
+                "Cables Per Row", cableStitchesPerRow, 1, 10);
+            cableBlockType = EditorGUILayout.IntPopup(
+                "Cable Block Size", cableBlockType,
+                new string[] {"1x1", "1x2", "2x2"},
+                new int[]
+                {
+                    (int) StitchType.Cable1Lo1RStitch, (int) StitchType.Cable1Ro2LStitch,
+                    (int) StitchType.Cable2Lo2RStitch
+                });
+            cableLength = EditorGUILayout.IntSlider(
+                "Cable Length", cableLength, 1, 8);
+            cableSeparationSize = EditorGUILayout.IntSlider(
+                "Cable Separation Size", cableSeparationSize, 0, 8);
+            padding = EditorGUILayout.IntSlider(
+                "Row padding", padding, 0, 8);
 
 
-        if (GUILayout.Button("Generate Cable Pattern"))
-        {
-            if (yarnWidth > 1.0f / 3.0f)
+            if (GUILayout.Button("Generate Cable Pattern"))
             {
-                Debug.LogError("Yarn Width needs to be less than 1/6 the stitch length"
-                               + $"Please choose a yarn width less than {2.0f / 6.0f}");
-                return;
-            }
-            
-            Pattern pattern = GetCablePattern();
-            pattern.RenderPreview(yarnWidth, material);
-        }
-        
-        GUILayout.Space(10);
-        GUILayout.Label("Basic Pattern Options", EditorStyles.boldLabel);
-        basicStitchesPerRow = EditorGUILayout.IntSlider(
-            "Stitches Per Row", basicStitchesPerRow, 1, 10);
-        
-        if (GUILayout.Button("Generate Basic Pattern"))
-        {
-            if (yarnWidth > 1.0f / 3.0f)
-            {
-                Debug.LogError("Yarn Width needs to be less than 1/6 the stitch length"
-                               + $"Please choose a yarn width less than {2.0f / 6.0f}");
-                return;
-            }
-            
-            Pattern pattern = GetBasicPattern();
-            pattern.RenderPreview(yarnWidth, material);
-        }
+                if (yarnWidth > 1.0f / 3.0f)
+                {
+                    Debug.LogError("Yarn Width needs to be less than 1/6 the stitch length"
+                                   + $"Please choose a yarn width less than {2.0f / 6.0f}");
+                    return;
+                }
 
-        if (GUILayout.Button("Generate Lace Pattern"))
-        {
-            if (yarnWidth > 1.0f / 3.0f)
-            {
-                Debug.LogError("Yarn Width needs to be less than 1/6 the stitch length"
-                               + $"Please choose a yarn width less than {2.0f / 6.0f}");
-                return;
+                Pattern pattern = GetCablePattern();
+                pattern.RenderPreview(yarnWidth, material);
             }
-            
-            Pattern pattern = GetLacePattern();
-            pattern.RenderPreview(yarnWidth, material);
-        }
-        if (GUILayout.Button("Generate Cable Practice Pattern"))
-        {
-            if (yarnWidth > 1.0f / 3.0f)
+
+            GUILayout.Space(10);
+            GUILayout.Label("Basic Pattern Options", EditorStyles.boldLabel);
+            basicStitchesPerRow = EditorGUILayout.IntSlider(
+                "Stitches Per Row", basicStitchesPerRow, 1, 10);
+
+            if (GUILayout.Button("Generate Basic Pattern"))
             {
-                Debug.LogError("Yarn Width needs to be less than 1/6 the stitch length"
-                               + $"Please choose a yarn width less than {2.0f / 6.0f}");
-                return;
+                if (yarnWidth > 1.0f / 3.0f)
+                {
+                    Debug.LogError("Yarn Width needs to be less than 1/6 the stitch length"
+                                   + $"Please choose a yarn width less than {2.0f / 6.0f}");
+                    return;
+                }
+
+                Pattern pattern = GetBasicPattern();
+                pattern.RenderPreview(yarnWidth, material);
             }
-            
-            Pattern pattern = GetCablePracticePattern();
-            pattern.RenderPreview(yarnWidth, material);
+
+            if (GUILayout.Button("Generate Lace Pattern"))
+            {
+                if (yarnWidth > 1.0f / 3.0f)
+                {
+                    Debug.LogError("Yarn Width needs to be less than 1/6 the stitch length"
+                                   + $"Please choose a yarn width less than {2.0f / 6.0f}");
+                    return;
+                }
+
+                Pattern pattern = GetLacePattern();
+                pattern.RenderPreview(yarnWidth, material);
+            }
         }
     }
-}
 }

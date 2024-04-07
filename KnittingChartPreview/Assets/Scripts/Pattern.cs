@@ -641,6 +641,7 @@ namespace YarnGenerator
         private int padding;
         private int cableStitchesPerRow;
         private int cableBlockSize;
+        private StitchType cableBlockType;
         private int cableSeparationSize;
         private int cableLength;
 
@@ -648,7 +649,7 @@ namespace YarnGenerator
             int nRows,
             int padding,
             int cableStitchesPerRow,
-            int cableBlockSize,
+            StitchType cableBlockType,
             int cableSeparationSize,
             int cableLength
         ): base(nRows)
@@ -656,10 +657,17 @@ namespace YarnGenerator
             this.nRows = nRows;
             this.padding = padding;
             this.cableStitchesPerRow = cableStitchesPerRow;
-            this.cableBlockSize = cableBlockSize;
+            this.cableBlockType = cableBlockType;
+            this.cableBlockSize = GetCableBlockSize(cableBlockType);
             this.cableSeparationSize = cableSeparationSize;
             this.cableLength = cableLength;
             GetPatternRows();
+        }
+
+        int GetCableBlockSize(StitchType cableBlockType)
+        {
+            StitchInfo stitchInfo = StitchInfo.GetStitchInfo(cableBlockType);
+            return stitchInfo.nBaseStitches;
         }
 
         int GetTotalStitchesPerRow()
@@ -682,9 +690,14 @@ namespace YarnGenerator
 
             Row prevRow = null;
             Row[] rows = new Row[nRows];
+
             for (int rowNumber = 0; rowNumber < nRows; rowNumber++)
             {
-                StitchType[] stitches = new StitchType[stitchesPerRow];
+                StitchType[] stitches = new StitchType[stitchesPerRow];;
+                if (rowNumber % cableLength != 0)
+                {
+                    stitches = new StitchType[stitchesPerRow + (cableBlockSize) * cableStitchesPerRow];
+                }
 
                 int stitchIndex = 0;
                 for (int i = 0; i < padding; i++)
@@ -693,36 +706,22 @@ namespace YarnGenerator
                     stitchIndex += 1;
                 }
 
-
-                StitchType cableStitchType;
-                StitchType nonCableStitchType;
-                switch (cableBlockSize)
-                {
-                    case 2:
-                        cableStitchType = StitchType.Cable1Lo1RStitch;
-                        nonCableStitchType = StitchType.CableKnitStitch;
-                        break;
-                    case 4:
-                        cableStitchType = StitchType.Cable2Lo2RStitch;
-                        nonCableStitchType = StitchType.CableKnitStitch4;
-                        break;
-                    default:
-                        cableStitchType = StitchType.Cable2Lo2RStitch;
-                        nonCableStitchType = StitchType.CableKnitStitch;
-                        break;
-                }
                 for (int i = 0; i < cableStitchesPerRow; i++)
                 {
                     if (rowNumber % cableLength == 0)
                     {
-                        stitches[stitchIndex] = cableStitchType;
+                        stitches[stitchIndex] = cableBlockType;
+                        stitchIndex += 1;
                     }
                     else
                     {
-                        stitches[stitchIndex] = nonCableStitchType;
+                        for (int j = 0; j < cableBlockSize; j++)
+                        {
+                            stitches[stitchIndex] = StitchType.KnitStitch;
+                            stitchIndex += 1;
+                        }
                     }
 
-                    stitchIndex += 1;
                     if (cableStitchesPerRow > 1 && i < cableStitchesPerRow - 1)
                     {
                         for (int j = 0; j < cableSeparationSize; j++)
