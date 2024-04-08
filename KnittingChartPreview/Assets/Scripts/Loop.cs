@@ -10,6 +10,9 @@ namespace YarnGenerator
         // Loop # in the given row
         public int loopIndex;
 
+        // For increases/decreases, to propagate
+        // the increase/decrease to the rest of the
+        // loops in the row
         public int indexOffset;
 
         // Loop location offset

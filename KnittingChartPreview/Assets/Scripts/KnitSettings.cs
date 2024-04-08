@@ -10,5 +10,8 @@ namespace YarnGenerator
 
         // Stitch height - controls aspect ratio of stitches
         public static float stitchHeight = 1.2f;
+
+        // Stitch height - controls aspect ratio of stitches
+        public static float stitchWidth = 1.0f;
     }
 }

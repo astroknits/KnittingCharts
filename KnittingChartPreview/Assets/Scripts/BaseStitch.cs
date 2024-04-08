@@ -175,7 +175,7 @@ namespace YarnGenerator
         public GameObject GenerateMesh(float yarnWidth, Material material)
         {
             YarnMeshGenerator yarnMeshGenerator = new YarnMeshGenerator(baseStitchInfo);
-            return yarnMeshGenerator.GenerateMesh(
+            return yarnMeshGenerator.GenerateGameObject(
                 yarnWidth,
                 material,
                 rowIndex,
