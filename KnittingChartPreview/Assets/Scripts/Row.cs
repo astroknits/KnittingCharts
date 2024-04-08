@@ -36,17 +36,19 @@ namespace YarnGenerator
             // Set the previous row, and set the loops consumed to
             // be equal to the set of loops produced by the previous row.
             SetPreviousRow(prevRow);
-            // Generate the stitches for this row, and set the number of
-            // stitches, base stitches, and loops produced/consumed
+            // Set the number of stitches, base stitches, and
+            // loops produced/consumed for this row
             Configure(stitchTypes);
+            // Set the loops consumed by this row
+            SetLoopsConsumed();
+            // Create array of Stitch objects
+            GenerateStitches(stitchTypes);
         }
 
         public void Configure(StitchType[] stitchTypes)
         {
-            // Create array of Stitch objects
-            GenerateStitches(stitchTypes);
             // Calculate number of Stitch objects
-            this.nStitches = this.stitches.Length;
+            this.nStitches = stitchTypes.Length;
 
             // Calculate number of BaseStitch objects for row
             // Also calculate the number of baseStitches consumed and produced
@@ -54,14 +56,12 @@ namespace YarnGenerator
             this.nBaseStitches = 0;
             this.nLoopsConsumed = 0;
             this.nLoopsProduced = 0;
-            foreach (Stitch stitch in stitches)
+            foreach (StitchType stitchType in stitchTypes)
             {
-                foreach (BaseStitch baseStitch in stitch.baseStitches)
-                {
-                    this.nLoopsConsumed += baseStitch.baseStitchInfo.nLoopsConsumed;
-                    this.nLoopsProduced += baseStitch.baseStitchInfo.nLoopsProduced;
-                    this.nBaseStitches += 1;
-                }
+                StitchInfo stitchInfo = StitchInfo.GetStitchInfo(stitchType);
+                this.nLoopsConsumed += stitchInfo.nLoopsConsumed;
+                this.nLoopsProduced += stitchInfo.nLoopsProduced;
+                this.nBaseStitches += stitchInfo.nBaseStitches;
             }
         }
 
@@ -102,7 +102,6 @@ namespace YarnGenerator
                 prevRow = prevRowObj;
                 prevRowObj.nextRow = this;
             }
-            SetLoopsConsumed();
         }
 
         private void GenerateStitches(StitchType[] stitchTypes)
@@ -142,6 +141,15 @@ namespace YarnGenerator
             if (prevRow is not null)
             {
                 loopsConsumed = prevRow.GetLoopsProduced();
+            }
+            else
+            {
+                Loop prevLoop = null;
+                loopsConsumed = new Loop[nLoopsConsumed];
+                for (int i = 0; i < nLoopsConsumed; i++)
+                {
+                    loopsConsumed[i] = new Loop(rowIndex - 1, i, prevLoop, null);
+                }
             }
         }
 

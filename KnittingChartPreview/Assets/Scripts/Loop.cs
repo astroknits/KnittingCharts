@@ -51,6 +51,10 @@ namespace YarnGenerator
 
         public bool IsNull()
         {
+            if (this.producedBy is null)
+            {
+                return false;
+            }
             return this.producedBy.baseStitchInfo.BaseStitchType == BaseStitchType.None;
         }
 

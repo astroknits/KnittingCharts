@@ -87,12 +87,6 @@ namespace YarnGenerator
             {
                 if (baseStitchInfo.BaseStitchType == BaseStitchType.Knit)
                 {
-                    if (rowIndex == 1 || rowIndex == 5)
-                    {
-                        PrintInfo("UpdateLoopsForBaseStitch");
-                        loop.PrintInfo($"    loopConsumed ");
-                        loop.producedBy.PrintInfo("         is produced by ");
-                    }
                     if (loop.producedBy is not null && loop.producedBy.loopsConsumed is not null &&
                         loop.producedBy.loopsConsumed.Length > 0)
                     {
