@@ -64,6 +64,11 @@ namespace YarnGenerator
             return (float)loopIndex + (float)indexOffset + offset.x;
         }
 
+        public void PrintInfo(string message)
+        {
+            Debug.Log($"{message} {rowIndex}/{loopIndex}");
+        }
+
         public void AddIndexOffset(int offset, ShiftDirection shiftDirection)
         {
             indexOffset += offset;
