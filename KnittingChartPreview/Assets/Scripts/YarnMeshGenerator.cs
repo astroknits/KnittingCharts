@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
 namespace YarnGenerator
 {
@@ -15,7 +16,7 @@ namespace YarnGenerator
             this.baseStitchInfo = baseStitchInfo;
         }
 
-        public GameObject GenerateMesh(
+        public GameObject GenerateGameObject(
             float yarnWidth,
             Material material,
             int rowIndex,
@@ -26,33 +27,50 @@ namespace YarnGenerator
             HoldDirection holdDirection
             )
         {
-            BaseStitchCurve baseStitchCurve = BaseStitchCurve.GetBaseStitchCurve(baseStitchInfo, holdDirection);
-            // Get the curve for the stitch
-            Vector3[] curve = baseStitchCurve.GenerateCurve(
+            BaseStitchCurve baseStitchCurve = BaseStitchCurve.GetBaseStitchCurve(
+                baseStitchInfo,
+                holdDirection,
                 yarnWidth,
+                rowIndex,
                 loopIndexConsumed,
                 loopIndexProduced,
                 loopsConsumed,
                 loopsProduced
                 );
+            // Get the curve for the stitch
+            baseStitchCurve.GenerateCurve();
 
             // Set up vertices for the row based on the curve
             Vector3[] vertices = GenerateVertices(
-                yarnWidth, rowIndex, curve);
+                yarnWidth, rowIndex, baseStitchCurve.curve);
 
             // Set up triangles for the row based on the vertices
-            int[] triangles = GenerateTriangles(curve);
+            int[] triangles = GenerateTriangles(baseStitchCurve.curve);
 
             // Create the mesh from the vertices & triangles
-            return GetMesh(
-                yarnWidth, material, vertices, triangles, loopIndexConsumed);
+            return GetGameObject(
+                yarnWidth,
+                material,
+                vertices,
+                triangles,
+                baseStitchCurve.loopXStart,
+                baseStitchCurve.loopXOffset,
+                baseStitchCurve.loopYOffset,
+                baseStitchCurve.rotationAngle,
+                baseStitchCurve.loopLength,
+                loopIndexConsumed);
         }
 
-        public GameObject GetMesh(
+        public GameObject GetGameObject(
             float yarnWidth,
             Material material,
             Vector3[] vertices,
             int[] triangles,
+            float loopXStart,
+            float loopXOffset,
+            float loopYOffset,
+            float rotationAngle,
+            float loopLength,
             int loopIndexConsumed
             )
         {
@@ -70,6 +88,18 @@ namespace YarnGenerator
             mesh.vertices = vertices;
             mesh.triangles = triangles;
             mesh.RecalculateNormals();
+
+            Vector3 position = new Vector3(-1.0f * loopXStart, loopYOffset);
+            gameObject.transform.position = position;
+
+            // Rotate the BaseStitch per the offset
+            Vector3 eulerAngles = gameObject.transform.eulerAngles;
+            eulerAngles.z += rotationAngle;
+            gameObject.transform.eulerAngles = eulerAngles;
+
+            Vector3 localScale =  gameObject.transform.localScale;
+            localScale = new Vector3(1, loopLength, 1);
+            gameObject.transform.localScale = localScale;
 
             // Assign a default material
             meshRenderer.material = material;
@@ -94,8 +124,6 @@ namespace YarnGenerator
                 {
                     int index = j * radialRes + i;
                     vertices[index] = rotatedCircle[i];
-                    // Shift the y position to the correct row
-                    vertices[index].y += KnitSettings.stitchHeight * rowIndex * (2.0f - 3.0f * yarnWidth);
                 }
             }
 
