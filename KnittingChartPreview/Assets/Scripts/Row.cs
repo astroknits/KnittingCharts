@@ -71,8 +71,7 @@ namespace YarnGenerator
             {
                 foreach (BaseStitch baseStitch in stitch.baseStitches)
                 {
-                    continue;
-                    // baseStitch.UpdateLoopsForBaseStitch();
+                    baseStitch.UpdateLoopsForBaseStitch();
                 }
             }
         }

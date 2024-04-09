@@ -48,17 +48,13 @@ namespace YarnGenerator
             float producedIndex = GetProducedIndex(loopIndexProduced, loopsProduced, 0);
             loopXStart = 2.0f * consumedIndex + yarnWidth;
             loopXOffset = (float) producedIndex - (float) consumedIndex;
-            Debug.Log($"   {loopXStart}/{loopXOffset}");
             loopYOffset = KnitSettings.stitchHeight * rowIndex * (2.0f - 3.0f * yarnWidth);
             rotationAngle = (float) Math.Atan(
                 loopXOffset * KnitSettings.stitchWidth / KnitSettings.stitchHeight
                 );
-            /*
             loopLength = (float) Math.Sqrt(
-                (float)Math.Pow(2.0f * loopXOffset * KnitSettings.stitchWidth, 2) +
-                (float)Math.Pow(2.0f * KnitSettings.stitchHeight, 2))/2.0f;
-            */
-            loopLength = 1.0f;
+                (float)Math.Pow(loopXOffset * KnitSettings.stitchWidth, 2) +
+                (float)Math.Pow(1.0f, 2));
             rotationAngle = rotationAngle * 180.0f / (float) Math.PI;
         }
 
