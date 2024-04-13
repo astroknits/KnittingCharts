@@ -49,12 +49,16 @@ namespace YarnGenerator
                     return new Purl();
                 case BaseStitchType.Knit2Tog:
                     return new Knit2Tog();
+                case BaseStitchType.Knit3Tog:
+                    return new Knit3Tog();
                 case BaseStitchType.SSK:
                     return new SSK();
                 case BaseStitchType.YarnOver:
                     return new YarnOver();
                 case BaseStitchType.M1:
                     return new M1();
+                case BaseStitchType.K1KtblK1:
+                    return new K1KtblK1();
                 default:
                     return new Knit();
             }
@@ -103,6 +107,17 @@ namespace YarnGenerator
         }
     }
     
+    public class Knit3Tog : BaseStitchInfo
+    {
+        public Knit3Tog() : base()
+        {
+            this.BaseStitchType = BaseStitchType.Knit3Tog;
+            this.nLoopsConsumed = 3;
+            this.nLoopsProduced = 1;
+            this.shiftDirection = ShiftDirection.None;
+        }
+    }
+
     public class SSK : BaseStitchInfo
     {
         public SSK() : base()
@@ -122,6 +137,17 @@ namespace YarnGenerator
             this.nLoopsConsumed = 1;
             this.nLoopsProduced = 2;
             this.shiftDirection = ShiftDirection.Left;
+        }
+    }
+
+    public class K1KtblK1 : BaseStitchInfo
+    {
+        public K1KtblK1() : base()
+        {
+            this.BaseStitchType = BaseStitchType.K1KtblK1;
+            this.nLoopsConsumed = 1;
+            this.nLoopsProduced = 3;
+            this.shiftDirection = ShiftDirection.None;
         }
     }
 
