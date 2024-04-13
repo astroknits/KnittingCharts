@@ -146,6 +146,17 @@ namespace YarnGenerator
                 Pattern pattern = GetLacePattern();
                 pattern.RenderPreview(yarnWidth, material);
             }
-        }
+            if (GUILayout.Button("Generate K3Tog Pattern"))
+            {
+                if (yarnWidth > 1.0f / 3.0f)
+                {
+                    Debug.LogError("Yarn Width needs to be less than 1/6 the stitch length"
+                                   + $"Please choose a yarn width less than {2.0f / 6.0f}");
+                    return;
+                }
+
+                Pattern pattern = GetCablePracticePattern();
+                pattern.RenderPreview(yarnWidth, material);
+            }        }
     }
 }

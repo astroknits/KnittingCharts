@@ -61,12 +61,16 @@ namespace YarnGenerator
                     return new Cable2Lo2RStitch();
                 case StitchType.Knit2TogStitch:
                     return new Knit2TogStitch();
+                case StitchType.Knit3TogStitch:
+                    return new Knit3TogStitch();
                 case StitchType.SSKStitch:
                     return new SSKStitch();
                 case StitchType.YarnOverStitch:
                     return new YarnOverStitch();
                 case StitchType.M1Stitch:
                     return new M1Stitch();
+                case StitchType.K1KtblK1Stitch:
+                    return new K1KtblK1Stitch();
                 default:
                     return new KnitStitch();
             }
@@ -169,6 +173,23 @@ namespace YarnGenerator
         }
     }
 
+    public class Knit3TogStitch : StitchInfo
+    {
+        public Knit3TogStitch() :
+            base()
+        {
+            this.stitchType = StitchType.Knit3TogStitch;
+            this.nBaseStitches = 1;
+            this.nLoopsConsumed = 3;
+            this.nLoopsProduced = 1;
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
+            {
+                BaseStitchType.Knit3Tog
+            };
+            this.baseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
+        }
+    }
+
     public class M1Stitch : StitchInfo
     {
         public M1Stitch() : 
@@ -181,6 +202,23 @@ namespace YarnGenerator
             BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
             {
                 BaseStitchType.M1
+            };
+            this.baseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
+        }
+    }
+
+    public class K1KtblK1Stitch : StitchInfo
+    {
+        public K1KtblK1Stitch() :
+            base()
+        {
+            this.stitchType = StitchType.K1KtblK1Stitch;
+            this.nBaseStitches = 1;
+            this.nLoopsConsumed = 1;
+            this.nLoopsProduced = 3;
+            BaseStitchType[] baseStitchTypeList = new BaseStitchType[1]
+            {
+                BaseStitchType.K1KtblK1
             };
             this.baseStitchInfoList = GetBaseStitchInfoList(baseStitchTypeList);
         }

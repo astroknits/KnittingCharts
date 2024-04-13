@@ -764,6 +764,1060 @@ namespace YarnGenerator
 
         public override Row[] GetPatternDefinition()
         {
+            Row prevRow = null;
+            nRows = 36;
+            Row[] rows = new Row[nRows];
+            int rowNumber = 0;
+            StitchType[] stitches = new StitchType[]
+            {
+                StitchType.NoStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+            };
+            Row row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 1;
+            stitches = new StitchType[]
+            {
+                StitchType.NoStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 2;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 3;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 4;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 5;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 6;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 7;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 8;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 9;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 10;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 11;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 12;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 13;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 14;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 15;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 16;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 17;
+            stitches = new StitchType[]
+            {
+                StitchType.NoStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 18;
+            stitches = new StitchType[]
+            {
+                StitchType.NoStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 19;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 20;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 21;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 22;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 23;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 24;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 25;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 26;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 27;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 28;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 29;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 30;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 31;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 32;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 33;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.K1KtblK1Stitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 34;
+            stitches = new StitchType[]
+            {
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 35;
+            stitches = new StitchType[]
+            {
+                StitchType.NoStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch,
+                StitchType.PurlStitch,
+                StitchType.Knit3TogStitch,
+                StitchType.PurlStitch,
+                StitchType.KnitStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+
+            return rows;
+        }
+
+        public Row[] GetPatternDefinition2()
+        {
             // Lace Pattern 37 from Japanese knitting book, page 33
             Row prevRow = null;
             // nRows = 19;
@@ -1095,7 +2149,6 @@ namespace YarnGenerator
         {
             // Lace Pattern 37 from Japanese knitting book, page 33
             Row prevRow = null;
-            // nRows = 19;
             nRows = 7;
             Row[] rows = new Row[nRows];
             int rowNumber = 0;
@@ -1119,24 +2172,6 @@ namespace YarnGenerator
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 // 15
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 20
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 25
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 30
             };
             Row row = new Row(rowNumber, prevRow, stitches);
             prevRow = row;
@@ -1144,18 +2179,19 @@ namespace YarnGenerator
             rowNumber = 1;
             stitches = new StitchType[]
             {
+                StitchType.NoStitch,
+                // 0
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 // 5
-                StitchType.Cable1Ro2LStitch,
-                StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 // StitchType.KnitStitch,
+                StitchType.Knit3TogStitch,
                 // StitchType.KnitStitch,
-                // StitchType.KnitStitch,
+                StitchType.KnitStitch,
                 // 10
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
@@ -1163,25 +2199,7 @@ namespace YarnGenerator
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 // 15
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 20
-                StitchType.Cable1Ro2LStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // StitchType.KnitStitch,
-                // StitchType.KnitStitch,
-                // StitchType.KnitStitch,
-                // 25
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 30
+                StitchType.NoStitch
             };
             row = new Row(rowNumber, prevRow, stitches);
             prevRow = row;
@@ -1189,6 +2207,8 @@ namespace YarnGenerator
             rowNumber = 2;
             stitches = new StitchType[]
             {
+                StitchType.NoStitch,
+                // 0
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
@@ -1196,9 +2216,9 @@ namespace YarnGenerator
                 StitchType.KnitStitch,
                 // 5
                 StitchType.KnitStitch,
+                // StitchType.KnitStitch,
                 StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
+                // StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 // 10
                 StitchType.KnitStitch,
@@ -1207,24 +2227,7 @@ namespace YarnGenerator
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 // 15
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 20
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 25
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 30
+                StitchType.NoStitch
             };
             row = new Row(rowNumber, prevRow, stitches);
             prevRow = row;
@@ -1239,9 +2242,9 @@ namespace YarnGenerator
                 StitchType.KnitStitch,
                 // 5
                 StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
+                // StitchType.KnitStitch,
+                StitchType.K1KtblK1Stitch,
+                // StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 // 10
                 StitchType.KnitStitch,
@@ -1250,24 +2253,7 @@ namespace YarnGenerator
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 // 15
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 20
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 25
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 30
+                StitchType.NoStitch
             };
             row = new Row(rowNumber, prevRow, stitches);
             prevRow = row;
@@ -1281,12 +2267,11 @@ namespace YarnGenerator
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 // 5
-                StitchType.Cable1Ro2LStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
-                // StitchType.KnitStitch,
-                // StitchType.KnitStitch,
-                // StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
                 // 10
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
@@ -1294,25 +2279,7 @@ namespace YarnGenerator
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 // 15
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 20
-                StitchType.Cable1Ro2LStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // StitchType.KnitStitch,
-                // StitchType.KnitStitch,
-                // StitchType.KnitStitch,
-                // 25
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 30
+                StitchType.NoStitch
             };
             row = new Row(rowNumber, prevRow, stitches);
             prevRow = row;
@@ -1338,24 +2305,6 @@ namespace YarnGenerator
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 // 15
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 20
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 25
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                StitchType.KnitStitch,
-                // 30
             };
             row = new Row(rowNumber, prevRow, stitches);
             prevRow = row;
@@ -1381,24 +2330,206 @@ namespace YarnGenerator
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 // 15
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            return rows;
+        }
+
+        public Row[] GetPatternDefinition2()
+        {
+            // Lace Pattern 37 from Japanese knitting book, page 33
+            Row prevRow = null;
+            nRows = 7;
+            Row[] rows = new Row[nRows];
+            int rowNumber = 0;
+            StitchType[] stitches = new StitchType[]
+            {
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
-                // 20
+                // 5
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
-                // 25
+                // 10
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
                 StitchType.KnitStitch,
-                // 30
+                // 15
+            };
+            Row row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 1;
+            stitches = new StitchType[]
+            {
+                StitchType.NoStitch,
+                // 0
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 5
+                StitchType.KnitStitch,
+                // StitchType.KnitStitch,
+                StitchType.Knit3TogStitch,
+                // StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 10
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 15
+                StitchType.NoStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 2;
+            stitches = new StitchType[]
+            {
+                StitchType.NoStitch,
+                // 0
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 5
+                StitchType.KnitStitch,
+                // StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 10
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 15
+                StitchType.NoStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 3;
+            stitches = new StitchType[]
+            {
+                StitchType.NoStitch,
+                // 0
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 5
+                StitchType.KnitStitch,
+                // StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 10
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 15
+                StitchType.NoStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 4;
+            stitches = new StitchType[]
+            {
+                StitchType.NoStitch,
+                // 0
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 5
+                StitchType.KnitStitch,
+                // StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 10
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 15
+                StitchType.NoStitch
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 5;
+            stitches = new StitchType[]
+            {
+                StitchType.NoStitch,
+                // 0
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 5
+                StitchType.KnitStitch,
+                // StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 10
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 15
+            };
+            row = new Row(rowNumber, prevRow, stitches);
+            prevRow = row;
+            rows[rowNumber] = row;
+            rowNumber = 6;
+            stitches = new StitchType[]
+            {
+                StitchType.NoStitch,
+                // 0
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 5
+                StitchType.KnitStitch,
+                // StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 10
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                StitchType.KnitStitch,
+                // 15
             };
             row = new Row(rowNumber, prevRow, stitches);
             prevRow = row;

@@ -169,6 +169,44 @@ namespace YarnGenerator
                         }
                     }
                 }
+                if (baseStitchInfo.BaseStitchType == BaseStitchType.Knit3Tog)
+                {
+                    Loop[] prevRowConsumed = loop.producedBy.loopsConsumed;
+                    Loop prevRowConsumedLoop = prevRowConsumed[2];
+                    prevRowConsumedLoop.AddIndexOffset(-1, ShiftDirection.Right);
+                    prevRowConsumedLoop.producedBy.baseStitchInfo.stitchDepthFactorDict[HoldDirection.None] = 0.6f;
+
+                    if (prevRowConsumedLoop.producedBy is not null)
+                    {
+                        foreach (Loop test in prevRowConsumedLoop.producedBy.loopsProduced)
+                        {
+                            if (test.producedBy.loopsConsumed is not null)
+                            {
+                                foreach (Loop test2 in test.producedBy.loopsConsumed)
+                                {
+                                    test2.AddXOffset(-0.4f, ShiftDirection.Right);
+                                }
+                            }
+                        }
+                    }
+                    prevRowConsumedLoop = prevRowConsumed[0];
+                    prevRowConsumedLoop.AddIndexOffset(1, ShiftDirection.Left);
+                    prevRowConsumedLoop.producedBy.baseStitchInfo.stitchDepthFactorDict[HoldDirection.None] = 0.6f;
+
+                    if (prevRowConsumedLoop.producedBy is not null)
+                    {
+                        foreach (Loop test in prevRowConsumedLoop.producedBy.loopsProduced)
+                        {
+                            if (test.producedBy.loopsConsumed is not null)
+                            {
+                                foreach (Loop test2 in test.producedBy.loopsConsumed)
+                                {
+                                    test2.AddXOffset(0.4f, ShiftDirection.Left);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         } 
 
