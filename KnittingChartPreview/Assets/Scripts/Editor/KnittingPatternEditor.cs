@@ -157,6 +157,7 @@ namespace YarnGenerator
 
                 Pattern pattern = GetCablePracticePattern();
                 pattern.RenderPreview(yarnWidth, material);
-            }        }
+            }
+        }
     }
 }
